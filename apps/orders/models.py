@@ -7,6 +7,7 @@ from apps.common.models import TimestampModel, UUIDModel
 from apps.partners.models import MerchantRelationMixin
 
 from . import OrderStatuses
+from .managers import OrdersManager
 
 
 class Lead(UUIDModel):
@@ -28,7 +29,6 @@ class Order(MerchantRelationMixin, TimestampModel):
         null=True, blank=True,
         on_delete=models.PROTECT,
     )
-
     user = models.ForeignKey(
         "users.User",
         on_delete=models.PROTECT,
@@ -44,6 +44,8 @@ class Order(MerchantRelationMixin, TimestampModel):
     status_reason = models.TextField(
         _("Причина присвоения статуса")
     )
+
+    objects = OrdersManager()
 
 
 class Cart(TimestampModel):
