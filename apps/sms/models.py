@@ -7,7 +7,7 @@ from phonenumbers import PhoneNumber
 from django.conf import settings
 from django.db import models, transaction
 
-from apps.test_app.models import TimestampModel, CharIDModel
+from apps.common.models import TimestampModel, CharIDModel
 from .manager import OTPQueryset
 
 

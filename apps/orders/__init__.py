@@ -1,5 +1,7 @@
 from django.db.models import TextChoices
 
+default_app_config = 'apps.orders.apps.OrdersConfig'
+
 
 class OrderStatuses(TextChoices):
     NEW = "NEW", "",
