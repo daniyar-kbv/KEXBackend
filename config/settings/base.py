@@ -36,10 +36,14 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    # "apps.users.apps.UsersConfig",
+    "apps.users.apps.UsersConfig",
+    "apps.test_app.apps.TestAppConfig",
+    "apps.sms.apps.SmsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+AUTH_USER_MODEL = "users.User"
 
 
 MIDDLEWARE = [

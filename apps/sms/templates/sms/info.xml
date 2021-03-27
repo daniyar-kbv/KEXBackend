@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package login="{{ login }}" password="{{ password }}"><status>{% for info in messages_info %}<msg sms_id="{{ info.id }}"/>{% endfor %}</status></package>
