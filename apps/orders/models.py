@@ -3,16 +3,31 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-from apps.common.models import TimestampModel
+from apps.common.models import TimestampModel, UUIDModel
 from apps.partners.models import MerchantRelationMixin
 
 from . import OrderStatuses
+
+
+class Lead(UUIDModel):
+    class Meta:
+        verbose_name = _("Лид")
+        verbose_name_plural = _("Лиды")
 
 
 class Order(MerchantRelationMixin, TimestampModel):
     class Meta:
         verbose_name = _("Заказ")
         verbose_name_plural = _("Заказы")
+
+    lead = models.OneToOneField(
+        "orders.Lead",
+        to_field="uuid",
+        related_name="order",
+        verbose_name="Лид",
+        null=True, blank=True,
+        on_delete=models.PROTECT,
+    )
 
     user = models.ForeignKey(
         "users.User",

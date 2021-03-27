@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
@@ -21,6 +23,13 @@ class CharIDModel(models.Model):
         max_length=16,
         primary_key=True
     )
+
+    class Meta:
+        abstract = True
+
+
+class UUIDModel(models.Model):
+    uuid = models.UUIDField("Идентификатор", default=uuid4, unique=True, editable=False)
 
     class Meta:
         abstract = True
