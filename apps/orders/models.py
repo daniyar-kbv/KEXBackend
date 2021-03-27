@@ -3,56 +3,10 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-from apps.common.models import TimestampModel, AbstractNameModel
+from apps.common.models import TimestampModel
 from apps.partners.models import MerchantRelationMixin
 
 from . import OrderStatuses
-
-
-class Category(MerchantRelationMixin, AbstractNameModel):
-    class Meta:
-        verbose_name = _("Категория")
-        verbose_name_plural = _("Категории позиции")
-
-
-class Position(MerchantRelationMixin, AbstractNameModel):
-    class Meta:
-        verbose_name = _("Позиция(Блюдо)")
-        verbose_name_plural = _("Позиции(Блюда)")
-
-    description = models.TextField(_("Описание"))
-    price = models.DecimalField(
-        _("Цена"),
-        decimal_places=2,
-        max_digits=12
-    )
-    category = models.ForeignKey(
-        "orders.Category",
-        on_delete=models.PROTECT,
-        null=True, blank=True,
-        related_name="positions",
-        verbose_name=_("Категория"),
-    )
-    is_additional = models.BooleanField(
-        _("Дополнительная позиция"),
-        default=False,
-    )
-
-    def __str__(self):
-        return self.name
-
-
-class Combo(MerchantRelationMixin, AbstractNameModel):
-    class Meta:
-        verbose_name = _("Комбо")
-        verbose_name_plural = _("Комбо")
-
-    price = models.DecimalField(
-        _("Цена"),
-        decimal_places=2,
-        max_digits=12
-    )
-    positions = models.ManyToManyField("orders.Position",)
 
 
 class Order(MerchantRelationMixin, TimestampModel):

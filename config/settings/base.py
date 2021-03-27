@@ -41,6 +41,7 @@ LOCAL_APPS = [
     "apps.common.apps.CommonConfig",
     "apps.orders.apps.OrdersConfig",
     "apps.partners.apps.PartnersConfig",
+    "apps.nomenclature.apps.NomenclatureConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
