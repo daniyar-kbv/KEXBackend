@@ -3,6 +3,8 @@ import os
 from datetime import timedelta
 from urllib.parse import urljoin
 
+from .application_variables import *
+
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
@@ -11,8 +13,7 @@ HOTP_KEY = base64.b32encode(SECRET_KEY.encode("utf-8"))
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -146,19 +147,19 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
 }
 
-# SIMPLE_JWT = {
-#     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
-#     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-#     "ROTATE_REFRESH_TOKENS": True,
-#     "BLACKLIST_AFTER_ROTATION": True,
-#     "ALGORITHM": "HS256",
-#     "SIGNING_KEY": SECRET_KEY,
-#     "VERIFYING_KEY": None,
-#     "AUTH_HEADER_TYPES": ("JWT",),
-#     "USER_ID_FIELD": "id",
-#     "USER_ID_CLAIM": "user_id",
-#     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-# }
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
 
 SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,
@@ -177,3 +178,33 @@ CACHES = {
         }
     }
 }
+
+CONSTANCE_REDIS_CONNECTION = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 0,
+}
+
+# Celery settings
+CELERY_BROKER_URL = "{protocol}://{user}:{pwd}@{host}:{port}/{vhost}".format(
+    protocol=os.getenv("RABBIT_PROTOCOL", "pyamqp"),
+    user=os.getenv("RABBIT_USER", "guest"),
+    pwd=os.getenv("RABBIT_PASSWORD", "guest"),
+    host=os.getenv("RABBIT_HOST", "localhost"),
+    port=os.getenv("RABBIT_PORT", "5672"),
+    vhost=os.getenv("RABBIT_VHOST", "/"),
+)
+CELERY_RESULT_BACKEND = "redis://{host}:{port}/{db_index}".format(
+    host=os.getenv("CELERY_REDIS_HOST", "localhost"),
+    port=os.getenv("CELERY_REDIS_PORT", "6379"),
+    db_index=os.getenv("CELERY_REDIS_DB_INDEX", "0"),
+)
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+
+CELERY_RESULT_EXTENDED = False
+CELERY_RESULT_EXPIRES = 3600
+CELERY_ALWAYS_EAGER = False
+CELERY_ACKS_LATE = True
+CELERY_TASK_PUBLISH_RETRY = True
+CELERY_DISABLE_RATE_LIMITS = False
+CELERY_TASK_TRACK_STARTED = True
