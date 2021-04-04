@@ -48,11 +48,11 @@ class AbstractHandler(ABC):
 
 class HandlerCode200(AbstractHandler):
     def format_logic(self):
-        return self.data, None
+        return self.raw_data, None
 
 
 class HandlerCode401(AbstractHandler):
-    _default_error_code = error_codes.ACCESS_EXPIRED
+    _default_error_code = error_codes.NOT_AUTHENTICATED
 
     def format_logic(self):
         return None, CustomError(

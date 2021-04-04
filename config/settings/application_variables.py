@@ -18,7 +18,7 @@ CONSTANCE_CONFIG = {
     f"{NO_ACTIVE_ACCOUNT}_{Languages.KAZAKH}": ("kiretin dannilar duris emes, brat", ""),
     f"{NO_ACTIVE_ACCOUNT}_{Languages.ENGLISH}": ("invalid auth credentials to sign in", ""),
 
-    f"{ACCESS_EXPIRED}_{Languages.RUSSIAN}": ("Необходимо заново зайти в аккаунт", ""),
-    f"{ACCESS_EXPIRED}_{Languages.KAZAKH}": ("Kaitadan kir, brat", ""),
-    f"{ACCESS_EXPIRED}_{Languages.ENGLISH}": ("need to sign in again", ""),
+    f"{NOT_AUTHENTICATED}_{Languages.RUSSIAN}": ("Необходимо заново зайти в аккаунт", ""),
+    f"{NOT_AUTHENTICATED}_{Languages.KAZAKH}": ("Kaitadan kir, brat", ""),
+    f"{NOT_AUTHENTICATED}_{Languages.ENGLISH}": ("need to sign in again", ""),
 }
