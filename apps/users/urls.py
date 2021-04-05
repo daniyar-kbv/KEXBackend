@@ -8,5 +8,5 @@ router = DefaultRouter()
 
 urlpatterns = [
     # path("", include(router.urls)),
-    path("test/", Test.as_view()),
+    path("video/", Test.as_view()),
 ]

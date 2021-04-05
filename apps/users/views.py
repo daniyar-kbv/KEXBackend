@@ -24,6 +24,7 @@ class UserViewSet(ModelViewSet):
 
 
 from .serializers import TestSerializer
-class Test(JSONRendererMixin, ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = TestSerializer
+from django.views.generic import TemplateView
+
+class Test(TemplateView):
+    template_name = "test.html"
