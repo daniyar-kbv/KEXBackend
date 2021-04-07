@@ -53,16 +53,3 @@ class TimestampModel(models.Model):
     @property
     def updated_at_pretty(self):
         return self.updated_at.strftime("%d/%m/%Y %H:%M:%S")  # noqa
-
-
-class Address(models.Model):
-    # todo моделька должна находится в другом app-e
-    country = models.CharField(_("Страна"), max_length=255, null=True, blank=True)
-    region = models.CharField(_("Регион"), max_length=255, null=True, blank=True)
-    city = models.CharField(_("Город"), max_length=255, null=True, blank=True)
-    district = models.CharField(_("Район"), max_length=255, null=True, blank=True)
-    street = models.CharField(_("Улица"), max_length=255, null=True, blank=True)
-    building = models.CharField(_("Дом / здание"), max_length=100, null=True, blank=True)
-    corpus = models.CharField(_("Корпус"), max_length=100, null=True, blank=True)
-    flat = models.CharField(_("Квартира"), max_length=50, null=True, blank=True)
-    postal_code = models.CharField(_("Почтовый индекс"), max_length=7, null=True, blank=True)

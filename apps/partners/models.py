@@ -24,7 +24,7 @@ class Merchant(AbstractNameModel):
         related_name="merchants",
     )
     address = models.ForeignKey(
-        "common.Address",
+        "location.Address",
         on_delete=models.PROTECT,
         null=True, blank=True,
         verbose_name=_("Юр. адрес"),
