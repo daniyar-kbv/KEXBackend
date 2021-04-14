@@ -17,7 +17,11 @@ class Address(models.Model):
 
 
 class Country(AbstractNameModel):
-    ...
+    country_code = models.CharField(
+        _("Код страны"),
+        max_length=32,
+        null=True, blank=True,
+    )
 
 
 class City(AbstractNameModel):

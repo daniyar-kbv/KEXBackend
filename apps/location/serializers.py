@@ -6,7 +6,7 @@ from .models import Country, City
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = "name",
+        fields = "name", "country_code"
 
 
 class CitySerializer(serializers.ModelSerializer):

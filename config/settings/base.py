@@ -9,7 +9,11 @@ PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 SECRET_KEY = '8e@ww05^%&0n^9x1vi#&3_a0%nfvd72#=yn@=hbkc6fdsw$t0c'
+
+# OTP settings
 HOTP_KEY = base64.b32encode(SECRET_KEY.encode("utf-8"))
+OTP_LENGTH = 4
+OTP_VALIDITY_PERIOD = 5 # in minutes
 
 DEBUG = True
 

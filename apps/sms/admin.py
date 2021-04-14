@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import OTP, SMSMessage, SMSType, SMSTemplate
+from .models import OTP, SMSMessage, SMSTemplate
 
 
 class SMSMessageAdmin(admin.ModelAdmin):
@@ -40,6 +40,5 @@ class SMSTemplateAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SMSMessage, SMSMessageAdmin)
-admin.site.register(SMSType)
 admin.site.register(SMSTemplate, SMSTemplateAdmin)
 admin.site.register(OTP, OTPAdmin)

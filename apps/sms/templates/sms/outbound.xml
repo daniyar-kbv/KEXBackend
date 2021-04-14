@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<package login="{{ login }}" password="{{ password }}"><message><default sender="{{ sender }}"/>{% for msg in messages %}<msg {% if 'id' in msg and msg.id %} id="{{ msg.id }}"{% endif %} recipient="{{ msg.recipient }}" sender="{{ msg.sender }}" {% if 'send_date' in msg %} date_beg="{{ send_date }}" {% endif %} url="url" type="0" priority="high">{{ msg.message }}</msg>{% endfor %}</message></package>

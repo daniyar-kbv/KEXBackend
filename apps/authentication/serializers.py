@@ -1,61 +1,41 @@
-from django.contrib.auth import authenticate
+from uuid import uuid4
+
+from phonenumber_field.serializerfields import PhoneNumberField
+from django.db import transaction
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer as BaseTokenObtainPairSerializer,
 )
 
+User = get_user_model()
 
-class TokenObtainPairSerializer(BaseTokenObtainPairSerializer):  # noqa
+
+class RegisterAccountSerializer(serializers.ModelSerializer):
+    mobile_phone = PhoneNumberField(
+        required=True, write_only=True, label="Мобильный телефон"
+    )
+
+    class Meta:
+        model = User
+        fields = "mobile_phone",
+
+    @transaction.atomic
+    def create(self, validated_data):
+        user, created = User.objects.get_or_create(
+            mobile_phone=validated_data.pop("mobile_phone"),
+        )
+
+        return user
+
+
+class TokenObtainPairSerializer(serializers.Serializer): # noqa
     def validate(self, attrs):
-        try:
-            attrs["request"] = self.context["request"]
-        except KeyError:
-            pass
+        user = self.context["user"]
+        refresh = BaseTokenObtainPairSerializer.get_token(user)
 
-        self.user = authenticate(**attrs) # noqa
-
-        if self.user is None or not self.user.is_active:
-            raise AuthenticationFailed(
-                self.error_messages["no_active_account"], "no_active_account",
-            )
-
-        refresh = self.get_token(self.user)  # noqa
-
-        data = {
+        return {
+            "secret_key": user.secret_key,
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }
-
-        return data
-
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-
-        # if user.is_staff or user.is_credit_manager or user.is_supervisor:
-        #     serializer = UserInfoSerializer(instance=user)
-        #     token["email"] = user.email
-        #     token["full_name"] = serializer.data["full_name"]
-        #     token["merchant"] = serializer.data["merchant"]
-        #     token["branch"] = serializer.data["branch"]
-        #     token["role"] = serializer.data["role"]
-        #
-        # else:
-        #     token["iin"] = user.person.iin
-        #     record = user.person.records.last()
-        #
-        #     if record:
-        #         token["first_name"] = record.first_name
-        #         token["last_name"] = record.last_name
-        #         token["middle_name"] = record.middle_name
-        #
-        #     else:
-        #         token["first_name"] = token["last_name"] = token["middle_name"] = None
-        #
-        return token
-
-
-class TokenOutputSerializer(serializers.Serializer):
-    access = serializers.CharField()
-    refresh = serializers.CharField()
