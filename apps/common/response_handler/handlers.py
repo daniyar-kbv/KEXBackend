@@ -51,6 +51,14 @@ class HandlerCode200(AbstractHandler):
         return self.raw_data, None
 
 
+class HandlerCode400(AbstractHandler):
+    _default_error_code = error_codes.INVALID_INPUT_DATA
+
+    def format_logic(self):
+        print(self.raw_data)
+        return None, CustomError(*self.get_error_detail()).__dict__
+
+
 class HandlerCode401(AbstractHandler):
     _default_error_code = error_codes.NOT_AUTHENTICATED
 

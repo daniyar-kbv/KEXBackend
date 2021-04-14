@@ -10,6 +10,6 @@ class VerifyOTPSerializer(serializers.Serializer):  # noqa
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        verify_otp(code=attrs.pop("code"), mobile_phone=attrs["mobile_phone"])
+        verify_otp(code=attrs.pop("code"), mobile_phone=attrs["mobile_phone"], save=True)
 
         return attrs
