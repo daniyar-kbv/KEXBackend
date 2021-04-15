@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
+from django.contrib.contenttypes.fields import GenericRelation
 
 
 class AbstractNameModel(models.Model):
@@ -53,3 +54,10 @@ class TimestampModel(models.Model):
     @property
     def updated_at_pretty(self):
         return self.updated_at.strftime("%d/%m/%Y %H:%M:%S")  # noqa
+
+
+class ServiceHistoryModel(models.Model):
+    history = GenericRelation('pipeline.ServiceHistory')
+
+    class Meta:
+        abstract = True

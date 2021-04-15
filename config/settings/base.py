@@ -47,6 +47,7 @@ LOCAL_APPS = [
     'apps.orders.apps.OrdersConfig',
     'apps.partners.apps.PartnersConfig',
     'apps.location.apps.LocationConfig',
+    'apps.pipeline.apps.PipelineConfig',
     'apps.nomenclature.apps.NomenclatureConfig',
 ]
 
@@ -177,7 +178,7 @@ SWAGGER_SETTINGS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": f"redis://{os.getenv('REDIS_HOST', 'localhost')}:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -185,7 +186,7 @@ CACHES = {
 }
 
 CONSTANCE_REDIS_CONNECTION = {
-    'host': 'localhost',
+    'host': os.getenv("REDIS_HOST", "localhost"),
     'port': 6379,
     'db': 0,
 }
