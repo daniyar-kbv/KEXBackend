@@ -2,16 +2,16 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel
-from apps.partners.models import MerchantRelationMixin
+from apps.partners.models import OrganizationRelationMixin
 
 
-class Category(MerchantRelationMixin, AbstractNameModel):
+class Category(OrganizationRelationMixin, AbstractNameModel):
     class Meta:
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории позиции")
 
 
-class Position(MerchantRelationMixin, AbstractNameModel):
+class Position(OrganizationRelationMixin, AbstractNameModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
@@ -38,7 +38,7 @@ class Position(MerchantRelationMixin, AbstractNameModel):
         return self.name
 
 
-class Combo(MerchantRelationMixin, AbstractNameModel):
+class Combo(OrganizationRelationMixin, AbstractNameModel):
     class Meta:
         verbose_name = _("Комбо")
         verbose_name_plural = _("Комбо")

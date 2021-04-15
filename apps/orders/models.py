@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 from apps.common.models import TimestampModel, UUIDModel
-from apps.partners.models import MerchantRelationMixin
+from apps.partners.models import OrganizationRelationMixin
 
 from . import OrderStatuses
 from .managers import OrdersManager
@@ -16,7 +16,7 @@ class Lead(UUIDModel):
         verbose_name_plural = _("Лиды")
 
 
-class Order(MerchantRelationMixin, TimestampModel):
+class Order(OrganizationRelationMixin, TimestampModel):
     class Meta:
         verbose_name = _("Заказ")
         verbose_name_plural = _("Заказы")

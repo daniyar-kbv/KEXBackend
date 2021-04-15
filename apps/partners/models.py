@@ -4,22 +4,44 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from apps.common.models import AbstractNameModel
 
 
+class Brand(AbstractNameModel):
+    class Meta:
+        verbose_name = _("Брэнд")
+        verbose_name_plural = _("Брэнды")
+
+
+class BrandAPILogin(models.Model):
+    class Meta:
+        unique_together = "brand", "city"
+        verbose_name = _("API-логин")
+        verbose_name_plural = _("API-логин")
+
+    brand = models.ForeignKey(
+        "partners.Brand",
+        on_delete=models.CASCADE,
+        related_name="api_logins",
+        verbose_name=_("Брэнд"),
+    )
+    city = models.ForeignKey(
+        "location.City",
+        on_delete=models.CASCADE,
+        related_name="api_logins",
+        verbose_name=_("Город"),
+    )
+    api_login = models.CharField(
+        _("API-логин"),
+        unique=True,
+        max_length=255,
+    )
+
+
 class Organization(AbstractNameModel):
     class Meta:
-        verbose_name = "Организация(бренд)"
-        verbose_name_plural = "Организации"
+        verbose_name = _("Организация")
+        verbose_name_plural = _("Организации")
 
-    def __str__(self):
-        return self.name
-
-
-class Merchant(AbstractNameModel):
-    class Meta:
-        verbose_name = "Мерчант (точка продажи)"
-        verbose_name_plural = "Мерчанты"
-
-    organization = models.ForeignKey(
-        "partners.Organization",
+    brand = models.ForeignKey(
+        "partners.Brand",
         on_delete=models.PROTECT,
         related_name="merchants",
     )
@@ -31,9 +53,9 @@ class Merchant(AbstractNameModel):
     )
 
 
-class MerchantRelationMixin(models.Model):
+class OrganizationRelationMixin(models.Model):
     merchant = models.ForeignKey(
-        "partners.Merchant",
+        "partners.Organization",
         on_delete=models.PROTECT,
         null=True,
     )
