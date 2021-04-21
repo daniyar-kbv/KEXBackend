@@ -36,7 +36,7 @@ class TestPropertyTask(Task):
     number = 2
     timeout = 10
     autoretry_for: Tuple[Exception] = (Timeout, HTTPError, ConnectionError)
-    max_retries = 3
+    retry_kwargs = {"max_retries": 5}
     default_retry_delay: int = 3
 
     @property
@@ -51,6 +51,7 @@ class TestPropertyTask(Task):
         return self.number
 
     def run(self, *args, **kwargs):
+        raise ConnectionError("lolkek")
         try:
             print("sending get request")
             res = get("https://adil.kek.mek")
@@ -61,11 +62,10 @@ class TestPropertyTask(Task):
             print("http error handler")
         except ConnectionError:
             print("connection error handler is called")
-            self.retry()
             raise ConnectionError
 
-        finally:
-            print("finally block is called")
-            print("heeyya")
+        # finally:
+        #     print("finally block is called")
+        #     print("heeyya")
 
 test_property_task = celery_app.register_task(TestPropertyTask())

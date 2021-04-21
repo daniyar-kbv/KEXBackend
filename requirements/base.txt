@@ -12,7 +12,7 @@ django-filter==2.2.0
 django-rosetta==0.9.3
 
 # Celery
-celery[redis]==4.4.0
+celery[redis]==5.0.2
 django-celery-beat==2.0.0
 
 # Redis
