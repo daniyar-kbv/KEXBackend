@@ -6,3 +6,7 @@ class ServiceUnavailable(Exception):
 
 class ServiceNotFound(Exception):
     ...
+
+
+class InterfaceError(Exception):
+    ...

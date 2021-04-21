@@ -1,36 +1,42 @@
 import time
 from copy import deepcopy
+from abc import ABC, abstractmethod
 from typing import Optional, Type, Tuple, Dict, Union
 
-from celery import Task
 from requests import Session
 from requests.models import Response
-from requests.exceptions import HTTPError, ConnectionError, Timeout
 
 from apps.pipeline import ServiceStatuses
 from apps.common.models import ServiceHistoryModel
-from apps.pipeline.exceptions import ServiceUnavailable
+from apps.pipeline.exceptions import (
+    ServiceUnavailable,
+    ServiceNotFound,
+    InterfaceError,
+)
 
 
-class BaseService(Task):
+class ServiceInterface(ABC):
+    @abstractmethod
+    def run_service(self) -> Any:
+        """
+        This method should be overload
+        """
+        ...
+
+
+class BaseService(ServiceInterface):
     save_serializer: Optional[Type] = None
 
-    autoretry_for: Tuple[Exception] = (Timeout, HTTPError, ConnectionError)  # noqa
-    retry_kwargs: Dict = {"max_retries": 5}
-    default_retry_delay: int = 1
-
-    _session: Optional[Session] = None
     url: str
     method: str = 'POST'
+    _session: Optional[Session] = None
+
     auth: Optional[Tuple[str, str]] = None
     cert: Optional[Tuple[str, str]] = None
     host_verify: bool = True
     timeout = 45
 
-    history_url: str
-    history_method: str = 'POST'
     status: ServiceStatuses
-    data: Dict
     last_request: Union[bytes, str, None] = ''
     last_response: Union[bytes, str, None] = ''
     runtime: float = 0
@@ -39,6 +45,7 @@ class BaseService(Task):
         self.instance = instance
         self.kwargs = kwargs
         self.status = ServiceStatuses.NO_REQUEST
+        self.last_request, self.last_response = "", ""
 
     @property
     def session(self) -> Session:
@@ -54,10 +61,6 @@ class BaseService(Task):
 
     def fetch(self, params=None, data=None, json=None, files=None, **kwargs):
         _start = time.perf_counter()
-
-        self.history_url = self.url
-        self.history_method = self.method
-        self.last_request = ""
 
         response_raw = self.session.request(
             method=self.method,
@@ -86,7 +89,7 @@ class BaseService(Task):
         return response.json()
 
     def handle_404(self, response: Response): # noqa
-        return response.text
+        raise ServiceNotFound
 
     def handle_500(self, response: Response):
         raise ServiceUnavailable
@@ -96,10 +99,6 @@ class BaseService(Task):
 
     def get_instance(self):
         return self.instance
-
-    def run_service(self):
-        # run_service should implement self.fetch method
-        raise NotImplementedError
 
     def run(self):
         response_data = None

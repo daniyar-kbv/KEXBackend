@@ -17,6 +17,10 @@ class Address(models.Model):
 
 
 class Country(AbstractNameModel):
+    class Meta:
+        verbose_name = _("Страна")
+        verbose_name_plural = _("Страны")
+
     country_code = models.CharField(
         _("Код страны"),
         max_length=32,
@@ -25,6 +29,10 @@ class Country(AbstractNameModel):
 
 
 class City(AbstractNameModel):
+    class Meta:
+        verbose_name = _("Город")
+        verbose_name_plural = _("Города")
+
     country = models.ForeignKey(
         "location.Country",
         on_delete=models.SET_NULL,
@@ -35,7 +43,7 @@ class City(AbstractNameModel):
 
     @property
     def country_name(self):
-        if self.country is None:
+        if self.country is not None:
             return self.country.name
 
     def __str__(self):

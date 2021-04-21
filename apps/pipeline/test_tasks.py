@@ -51,7 +51,6 @@ class TestPropertyTask(Task):
         return self.number
 
     def run(self, *args, **kwargs):
-        raise ConnectionError("lolkek")
         try:
             print("sending get request")
             res = get("https://adil.kek.mek")
@@ -63,9 +62,7 @@ class TestPropertyTask(Task):
         except ConnectionError:
             print("connection error handler is called")
             raise ConnectionError
-
-        # finally:
-        #     print("finally block is called")
-        #     print("heeyya")
+        finally:
+            print("finally block is called", self.request.retries)
 
 test_property_task = celery_app.register_task(TestPropertyTask())

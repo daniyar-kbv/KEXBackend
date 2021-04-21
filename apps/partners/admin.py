@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Brand, BrandAPILogin, Organization
+
+
+admin.site.register(Brand)
+admin.site.register(BrandAPILogin)
