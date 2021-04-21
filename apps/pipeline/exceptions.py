@@ -2,3 +2,7 @@
 
 class ServiceUnavailable(Exception):
     ...
+
+
+class ServiceNotFound(Exception):
+    ...

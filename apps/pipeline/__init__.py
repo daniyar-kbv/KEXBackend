@@ -1,6 +1,8 @@
 from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
 
+from .test_tasks import test_task
+
 default_app_config = 'apps.pipeline.apps.PipelineConfig'
 
 
