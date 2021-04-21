@@ -13,7 +13,8 @@ class ServiceHistory(TimestampModel):
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    service = models.CharField(_("Сервис"), max_length=255)
+    service = models.CharField(_("Класс"), max_length=255)
+    service_pretty = models.CharField(_("Сервис"), max_length=255)
     data = models.JSONField(_("Данные"), null=True, blank=True)
     status = models.CharField(
         _("Статус"),

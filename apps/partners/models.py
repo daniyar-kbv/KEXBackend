@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.common.models import AbstractNameModel
+from apps.common.models import AbstractNameModel, ServiceHistoryModel
 
 
 class Brand(AbstractNameModel):
@@ -10,7 +10,7 @@ class Brand(AbstractNameModel):
         verbose_name_plural = _("Брэнды")
 
 
-class BrandAPILogin(models.Model):
+class BrandAPILogin(ServiceHistoryModel):
     class Meta:
         unique_together = "brand", "city"
         verbose_name = _("API-логин")
