@@ -38,6 +38,9 @@ class BrandAPILogin(ServiceHistoryModel):
     def cache_mask(self):
         return f"{self.brand.name}_{self.api_login}".replace(" ", "_").upper()
 
+    def __str__(self):
+        return f"{self.brand}. {self.city}"
+
 
 class Organization(AbstractNameModel):
     class Meta:

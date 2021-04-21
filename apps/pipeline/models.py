@@ -43,6 +43,9 @@ class ServiceHistory(TimestampModel):
             **kwargs
         )
 
+    def __str__(self):
+        return f"{self.service_pretty} - {self.content_object}"
+
 
 class ServiceResponse(models.Model):
     history = models.OneToOneField(
