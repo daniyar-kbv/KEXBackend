@@ -1,9 +1,11 @@
+from constance import config
+from django.core.cache import cache
+
 from apps.pipeline.services import BaseService
 
 
 class BaseIIKOService(BaseService):  # noqa
-    host = "https://api-ru.iiko.services"
-    host_verify = False
+    host = config.IIKO_SERVICE_HOST
 
 
 class GetAuthToken(BaseIIKOService):
@@ -11,11 +13,23 @@ class GetAuthToken(BaseIIKOService):
     endpoint = "/api/1/access_token"
 
     def run_service(self):
+        cached_token = cache.get(self.instance.cache_mask)
+
+        if cached_token is not None:
+            return {"token": cached_token}
+
         data = {
             "apiLogin": self.instance.api_login
         }
 
         return self.fetch(json=data)
 
+    def prepare_to_save(self, data):
+        return data.get("token")
+
     def save(self, prepared_data):
-        print("prepared_data is", prepared_data)
+        token = self.prepare_to_save(prepared_data)
+        cache.set(
+            self.instance.cache_mask, token,
+            timeout=config.IIKO_AUTH_TOKEN_LIFETIME,
+        )

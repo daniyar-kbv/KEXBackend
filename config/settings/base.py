@@ -3,7 +3,7 @@ import os
 from datetime import timedelta
 from urllib.parse import urljoin
 
-from .application_variables import *
+from config.constants import CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)

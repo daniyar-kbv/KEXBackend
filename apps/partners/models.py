@@ -34,6 +34,10 @@ class BrandAPILogin(ServiceHistoryModel):
         max_length=255,
     )
 
+    @property
+    def cache_mask(self):
+        return f"{self.brand.name}_{self.api_login}".replace(" ", "_").upper()
+
 
 class Organization(AbstractNameModel):
     class Meta:

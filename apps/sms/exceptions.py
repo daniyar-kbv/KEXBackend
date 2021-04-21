@@ -1,6 +1,6 @@
 from rest_framework.exceptions import APIException
 
-from config.settings.error_codes import INVALID_OTP
+from config.constants import INVALID_OTP
 
 
 class InvalidOTP(APIException):

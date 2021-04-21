@@ -1,5 +1,3 @@
-import os
-
 from django.db.models import TextChoices
 
 from .error_codes import *
@@ -13,7 +11,7 @@ class Languages(TextChoices):
 
 DEFAULT_LANGUAGE = Languages.RUSSIAN
 
-CONSTANCE_CONFIG = {
+ERROR_MESSAGES = {
     f"{NO_ACTIVE_ACCOUNT}_{Languages.RUSSIAN}": ("Вы ввели неверные данные для входа в систему", ""),
     f"{NO_ACTIVE_ACCOUNT}_{Languages.KAZAKH}": ("kiretin dannilar duris emes, brat", ""),
     f"{NO_ACTIVE_ACCOUNT}_{Languages.ENGLISH}": ("invalid auth credentials to sign in", ""),

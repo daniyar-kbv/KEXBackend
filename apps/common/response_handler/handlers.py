@@ -5,7 +5,7 @@ from constance import config
 from django.conf import settings
 from rest_framework.exceptions import ErrorDetail
 
-from config.settings import error_codes
+from config.constants import error_codes
 
 from .dataclasses import CustomError
 
