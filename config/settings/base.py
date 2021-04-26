@@ -5,6 +5,8 @@ from urllib.parse import urljoin
 
 from config.constants import CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
 
+from . import Languages
+
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
@@ -125,6 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
+DEFAULT_LANGUAGE = Languages.RUSSIAN
 LANGUAGE_CODE = "ru"
 TIME_ZONE = "Asia/Almaty"
 USE_I18N = True

@@ -1,15 +1,6 @@
-from django.db.models import TextChoices
-
 from .error_codes import *
+from config.settings import Languages
 
-
-class Languages(TextChoices):
-    KAZAKH = "kk", "Казахский"
-    RUSSIAN = "ru", "Русский"
-    ENGLISH = "en", "Английский"
-
-
-DEFAULT_LANGUAGE = Languages.RUSSIAN
 
 ERROR_MESSAGES = {
     f"{NO_ACTIVE_ACCOUNT}_{Languages.RUSSIAN}": ("Вы ввели неверные данные для входа в систему", ""),
