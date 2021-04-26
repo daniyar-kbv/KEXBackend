@@ -1,11 +1,7 @@
 from constance import config
 from django.core.cache import cache
 
-from apps.pipeline.services import BaseService
-
-
-class BaseIIKOService(BaseService):  # noqa
-    host = config.IIKO_SERVICE_HOST
+from .base import BaseIIKOService
 
 
 class GetAuthToken(BaseIIKOService):
