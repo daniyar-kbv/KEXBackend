@@ -15,6 +15,9 @@ class Address(models.Model):
     flat = models.CharField(_("Квартира"), max_length=50, null=True, blank=True)
     postal_code = models.CharField(_("Почтовый индекс"), max_length=7, null=True, blank=True)
 
+    longitude = models.DecimalField(_("Долгота"), max_digits=9, decimal_places=6, null=True)
+    latitude = models.DecimalField(_("Широта"), max_digits=9, decimal_places=6, null=True)
+
 
 class Country(AbstractNameModel):
     class Meta:
