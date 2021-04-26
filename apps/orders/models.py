@@ -15,6 +15,25 @@ class Lead(UUIDModel):
         verbose_name = _("Лид")
         verbose_name_plural = _("Лиды")
 
+    organization = models.ForeignKey(
+        "partners.Organization",
+        verbose_name=_("Организация"),
+        on_delete=models.PROTECT,
+        null=True,
+    )
+    brand_api_login = models.ForeignKey(
+        "partners.BrandAPILogin",
+        verbose_name=_("Бренд"),
+        on_delete=models.PROTECT,
+        null=True,
+    )
+    address = models.ForeignKey(
+        "location.Address",
+        verbose_name=_("Адресс"),
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
 
 class Order(OrganizationRelationMixin, TimestampModel):
     class Meta:
