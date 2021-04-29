@@ -1,11 +1,13 @@
 from constance import config
 from django.core.cache import cache
+from requests.models import Response
 
-from .base import BaseIIKOService
+from apps.pipeline.services import BaseService
 
 
-class GetAuthToken(BaseIIKOService):
+class GetAuthToken(BaseService):
     """Получение токена брэнда"""
+    host = config.IIKO_SERVICE_HOST
     endpoint = "/api/1/access_token"
 
     def run_service(self):
@@ -22,6 +24,9 @@ class GetAuthToken(BaseIIKOService):
 
     def prepare_to_save(self, data):
         return data.get("token")
+
+    def finalize_response(self, response):
+        return response.get("token")
 
     def save(self, prepared_data):
         token = self.prepare_to_save(prepared_data)

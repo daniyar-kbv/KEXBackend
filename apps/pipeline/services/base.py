@@ -102,6 +102,9 @@ class BaseService(ABC):
     def get_instance(self):
         return self.instance
 
+    def finalize_response(self, response):  # noqa
+        return response
+
     @abstractmethod
     def run_service(self) -> Any:
         """
@@ -130,7 +133,7 @@ class BaseService(ABC):
         finally:
             self.log_save()
 
-        return response_data
+        return self.finalize_response(response_data)
 
     def log_save(self, instance=None):
         if not instance:
