@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.partners.models import BrandAPILogin, Organization
+from apps.partners.models import IIKOBrand, Organization
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -12,7 +12,7 @@ class UpdateBrandSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = BrandAPILogin
+        model = IIKOBrand
         fields = (
             ""
         )

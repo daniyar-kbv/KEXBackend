@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import Brand, BrandAPILogin, Organization
+from .models import Brand, IIKOBrand, Organization
 
 
 admin.site.register(Brand)
-admin.site.register(BrandAPILogin)
+admin.site.register(IIKOBrand)

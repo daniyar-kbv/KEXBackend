@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Brand, BrandAPILogin
+from .models import Brand, IIKOBrand
 
 
 class BrandImagesSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class BrandAPILoginSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source="brand.name")
 
     class Meta:
-        model = BrandAPILogin
+        model = IIKOBrand
         fields = (
             "id",
             "name",
