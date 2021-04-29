@@ -21,7 +21,7 @@ class Lead(UUIDModel):
         on_delete=models.PROTECT,
         null=True,
     )
-    brand_api_login = models.ForeignKey(
+    iiko_brand = models.ForeignKey(
         "partners.IIKOBrand",
         verbose_name=_("Бренд"),
         on_delete=models.PROTECT,
