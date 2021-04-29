@@ -10,17 +10,22 @@ class Brand(AbstractNameModel):
         verbose_name_plural = _("Брэнды")
 
 
-class BrandAPILogin(ServiceHistoryModel):
+class IIKOBrand(ServiceHistoryModel):
     class Meta:
         unique_together = "brand", "city"
-        verbose_name = _("API-логин")
-        verbose_name_plural = _("API-логин")
+        verbose_name = _("IIKO Брэнд")
+        verbose_name_plural = _("IIKO Брэнды")
 
     brand = models.ForeignKey(
         "partners.Brand",
         on_delete=models.CASCADE,
         related_name="api_logins",
         verbose_name=_("Брэнд"),
+    )
+    full_name = models.CharField(
+        _("Полное название"),
+        max_length=256,
+        null=True,
     )
     city = models.ForeignKey(
         "location.City",
@@ -47,16 +52,23 @@ class Organization(AbstractNameModel):
         verbose_name = _("Организация")
         verbose_name_plural = _("Организации")
 
-    brand = models.ForeignKey(
-        "partners.Brand",
+    iiko_brand = models.ForeignKey(  # noqa
+        "partners.IIKOBrand",
         on_delete=models.PROTECT,
         related_name="merchants",
+        null=True,
     )
     address = models.ForeignKey(
         "location.Address",
         on_delete=models.PROTECT,
         null=True, blank=True,
         verbose_name=_("Юр. адрес"),
+    )
+    outer_id = models.UUIDField(
+        _("UUID в системе IIKO"), null=True,  # noqa
+    )
+    is_active = models.BooleanField(
+        _("Активна"), default=False
     )
 
 
