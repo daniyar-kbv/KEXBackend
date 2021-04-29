@@ -1,0 +1,74 @@
+version: '3'
+
+volumes:
+  postgres:
+
+services:
+  rest_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+      - RABBIT_HOST=rabbitmq
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - postgres
+      - celery-worker
+      - celery-beat
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+      - RABBIT_HOST=rabbitmq
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - CONTAINER_TYPE=FLOWER
+    depends_on:
+      - rabbitmq
+      - celery-worker
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+      - RABBIT_HOST=rabbitmq
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - CONTAINER_TYPE=CELERY
+    depends_on:
+      - rabbitmq
+
+  postgres:
+    image: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=kexdb
+      - POSTGRES_PASSWORD=kexdb
+    ports:
+      - "5432:5432"
+    depends_on:
+      - redis
+
+  rabbitmq:
+    image: rabbitmq
+    depends_on:
+      - redis
+  redis:
+    image: redis

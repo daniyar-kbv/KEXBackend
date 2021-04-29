@@ -1,67 +1,53 @@
 from uuid import uuid4
 
 import pyotp
-from phonenumber_field.modelfields import PhoneNumberField
 from phonenumbers import PhoneNumber
-
+from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
 from django.db import models, transaction
+from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.test_app.models import TimestampModel, CharIDModel
+from apps.common.models import TimestampModel
+
+from .import SMSType
 from .manager import OTPQueryset
 
 
 class SMSMessage(TimestampModel):
-    uuid = models.UUIDField("Идентификатор", default=uuid4, unique=True, editable=False)
-    recipients = models.CharField("Получатели", max_length=255, editable=False)
-    content = models.TextField("Содержимое", editable=False)
-    error_code = models.IntegerField("Код ошибки", null=True, editable=False)
+    uuid = models.UUIDField(_("Идентификатор"), default=uuid4, unique=True, editable=False)
+    recipients = models.CharField(_("Получатели"), max_length=255, editable=False)
+    content = models.TextField(_("Содержимое"), editable=False)
+    error_code = models.IntegerField(_("Код ошибки"), null=True, editable=False)
     error_description = models.CharField(
-        "Описание ошибки", max_length=255, null=True, editable=False
+        _("Описание ошибки"), max_length=255, null=True, editable=False
     )
 
     class Meta:
-        verbose_name = "SMS сообщение"
-        verbose_name_plural = "SMS сообщения"
-
-
-class SMSType(CharIDModel):
-    name = models.CharField(
-        "Наименование", max_length=255
-    )
-
-    class Meta:
-        verbose_name = "Тип смс"
-        verbose_name_plural = "Типы смс"
-
-    def __str__(self):
-        return f"{self.id}({self.name})"
+        verbose_name = _("SMS сообщение")
+        verbose_name_plural = _("SMS сообщения")
 
 
 class SMSTemplate(models.Model):
-    name = models.ForeignKey(
-        SMSType,
-        on_delete=models.CASCADE,
+    name = models.CharField(
+        _("Наименование"), max_length=32, choices=SMSType.choices, unique=True
     )
-    content = models.TextField("Содержимое", help_text="""
-    Используется django.template, {{otp}}
-    """)
+    content = models.TextField(_("Содержимое"))
 
     class Meta:
-        verbose_name = "Шаблон СМС"
-        verbose_name_plural = "Шаблоны СМС"
+        verbose_name = _("Шаблон СМС")
+        verbose_name_plural = _("Шаблоны СМС")
 
 
 class OTP(TimestampModel):
-    code = models.CharField("OTP", max_length=12, db_index=True, editable=False)
-    verified = models.BooleanField("Подтверждён", default=False, editable=False)
-    mobile_phone = PhoneNumberField("Мобильный телефон", editable=False)
+    code = models.CharField(_("OTP"), max_length=12, db_index=True, editable=False)
+    verified = models.BooleanField(_("Подтверждён"), default=False, editable=False)
+    mobile_phone = PhoneNumberField(_("Мобильный телефон"), editable=False)
 
     objects = OTPQueryset.as_manager()
 
     class Meta:
-        verbose_name = "Одноразовый пароль"
-        verbose_name_plural = "Одноразовые пароли"
+        verbose_name = _("Одноразовый пароль")
+        verbose_name_plural = _("Одноразовые пароли")
         unique_together = ("code", "mobile_phone")
 
     @classmethod

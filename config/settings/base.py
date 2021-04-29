@@ -3,16 +3,23 @@ import os
 from datetime import timedelta
 from urllib.parse import urljoin
 
+from config.constants import CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
+
+from . import Languages
+
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 SECRET_KEY = '8e@ww05^%&0n^9x1vi#&3_a0%nfvd72#=yn@=hbkc6fdsw$t0c'
+
+# OTP settings
 HOTP_KEY = base64.b32encode(SECRET_KEY.encode("utf-8"))
+OTP_LENGTH = 4
+OTP_VALIDITY_PERIOD = 5  # in minutes
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -36,9 +43,14 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "apps.users.apps.UsersConfig",
-    "apps.test_app.apps.TestAppConfig",
-    "apps.sms.apps.SmsConfig",
+    'apps.sms.apps.SmsConfig',
+    'apps.users.apps.UsersConfig',
+    'apps.common.apps.CommonConfig',
+    'apps.orders.apps.OrdersConfig',
+    'apps.partners.apps.PartnersConfig',
+    'apps.location.apps.LocationConfig',
+    'apps.pipeline.apps.PipelineConfig',
+    'apps.nomenclature.apps.NomenclatureConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -49,12 +61,13 @@ AUTH_USER_MODEL = "users.User"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'apps.common.middleware.HandleAPIResponsesMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -62,7 +75,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -114,6 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
+DEFAULT_LANGUAGE = Languages.RUSSIAN
 LANGUAGE_CODE = "ru"
 TIME_ZONE = "Asia/Almaty"
 USE_I18N = True
@@ -142,19 +156,19 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
 }
 
-# SIMPLE_JWT = {
-#     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
-#     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-#     "ROTATE_REFRESH_TOKENS": True,
-#     "BLACKLIST_AFTER_ROTATION": True,
-#     "ALGORITHM": "HS256",
-#     "SIGNING_KEY": SECRET_KEY,
-#     "VERIFYING_KEY": None,
-#     "AUTH_HEADER_TYPES": ("JWT",),
-#     "USER_ID_FIELD": "id",
-#     "USER_ID_CLAIM": "user_id",
-#     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-# }
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
 
 SWAGGER_SETTINGS = {
     "USE_SESSION_AUTH": False,
@@ -167,9 +181,39 @@ SWAGGER_SETTINGS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": f"redis://{os.getenv('REDIS_HOST', 'localhost')}:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
+
+CONSTANCE_REDIS_CONNECTION = {
+    'host': os.getenv("REDIS_HOST", "localhost"),
+    'port': 6379,
+    'db': 0,
+}
+
+# Celery settings
+CELERY_BROKER_URL = "{protocol}://{user}:{pwd}@{host}:{port}/{vhost}".format(
+    protocol=os.getenv("RABBIT_PROTOCOL", "pyamqp"),
+    user=os.getenv("RABBIT_USER", "guest"),
+    pwd=os.getenv("RABBIT_PASSWORD", "guest"),
+    host=os.getenv("RABBIT_HOST", "localhost"),
+    port=os.getenv("RABBIT_PORT", "5672"),
+    vhost=os.getenv("RABBIT_VHOST", "/"),
+)
+CELERY_RESULT_BACKEND = "redis://{host}:{port}/{db_index}".format(
+    host=os.getenv("CELERY_REDIS_HOST", "localhost"),
+    port=os.getenv("CELERY_REDIS_PORT", "6379"),
+    db_index=os.getenv("CELERY_REDIS_DB_INDEX", "0"),
+)
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+
+CELERY_RESULT_EXTENDED = False
+CELERY_RESULT_EXPIRES = 3600
+CELERY_ALWAYS_EAGER = False
+CELERY_ACKS_LATE = True
+CELERY_TASK_PUBLISH_RETRY = True
+CELERY_DISABLE_RATE_LIMITS = False
+CELERY_TASK_TRACK_STARTED = True

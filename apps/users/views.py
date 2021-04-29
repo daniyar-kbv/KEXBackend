@@ -1,7 +1,8 @@
-from django_filters.rest_framework import DjangoFilterBackend
+# from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
 
+from apps.common.mixins import JSONRendererMixin
 
 from .models import User
 from .serializers import (
@@ -10,9 +11,9 @@ from .serializers import (
 )
 
 
-class UserViewSet(FilterByPartnerMixin, ModelViewSet):
+class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
-    filter_backends = [DjangoFilterBackend]
+    # filter_backends = [DjangoFilterBackend]
     filter_fields = ["is_active"]
 
     def get_serializer_class(self):
@@ -23,6 +24,7 @@ class UserViewSet(FilterByPartnerMixin, ModelViewSet):
 
 
 from .serializers import TestSerializer
-class Test(ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = TestSerializer
+from django.views.generic import TemplateView
+
+class Test(TemplateView):
+    template_name = "test.html"
