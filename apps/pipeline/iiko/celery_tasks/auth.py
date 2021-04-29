@@ -1,7 +1,7 @@
 from config import celery_app
 
 from apps.partners.models import IIKOBrand
-from apps.pipeline.integrations.iiko_integrations.auth import GetAuthToken
+from apps.pipeline.iiko.integrations.auth import GetAuthToken
 
 
 @celery_app.task

@@ -1,7 +1,8 @@
 from constance import config
 
 from apps.pipeline.services import BaseService
-from apps.pipeline.celery_tasks.auth import fetch_auth_token
+
+from ..celery_tasks.auth import fetch_auth_token
 
 
 class BaseIIKOService(BaseService):  # noqa
