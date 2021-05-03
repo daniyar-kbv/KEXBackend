@@ -38,6 +38,9 @@ class IIKOBrand(ServiceHistoryModel):
         unique=True,
         max_length=255,
     )
+    is_active = models.BooleanField(
+        _("Активна"), default=False
+    )
 
     @property
     def cache_mask(self):
