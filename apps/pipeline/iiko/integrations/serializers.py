@@ -23,7 +23,7 @@ class UpdateBrandSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         for organization_data in validated_data.pop("organizations"):
-            Organization.objects.get_or_create(
+            Organization.objects.update_or_create(
                 outer_id=organization_data["outer_id"],
                 defaults={
                     "is_active": True,
