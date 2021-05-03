@@ -3,6 +3,8 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, ServiceHistoryModel
 
+from .managers import IIKOBrandManager
+
 
 class Brand(AbstractNameModel):
     class Meta:
@@ -42,6 +44,13 @@ class IIKOBrand(ServiceHistoryModel):
         _("Активна"), default=False
     )
 
+    objects = IIKOBrandManager()
+
+    def deactivate_organizations(self):  # noqa
+        for organization in self.organizations.all():  # noqa
+            organization.is_active = False
+            organization.save(update_fields=["is_active"])
+
     @property
     def cache_mask(self):
         return f"{self.brand.name}_{self.api_login}".replace(" ", "_").upper()
@@ -58,7 +67,7 @@ class Organization(AbstractNameModel):
     iiko_brand = models.ForeignKey(  # noqa
         "partners.IIKOBrand",
         on_delete=models.PROTECT,
-        related_name="merchants",
+        related_name="organizations",
         null=True,
     )
     address = models.ForeignKey(
