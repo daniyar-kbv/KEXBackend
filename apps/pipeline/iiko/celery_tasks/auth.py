@@ -4,7 +4,7 @@ from apps.partners.models import IIKOBrand
 from apps.pipeline.iiko.integrations.auth import GetAuthToken
 
 
-@celery_app.task
+@celery_app.task(name="iiko.fetch_auth_token")
 def fetch_auth_token(iiko_brand_pk: int):
     iiko_brand = IIKOBrand.objects.get(
         pk=iiko_brand_pk
