@@ -9,8 +9,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 class UpdateBrandSerializer(serializers.ModelSerializer):
-
-
     class Meta:
         model = IIKOBrand
         fields = (

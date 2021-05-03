@@ -5,9 +5,9 @@ from apps.pipeline.iiko.integrations.auth import GetAuthToken
 
 
 @celery_app.task
-def fetch_auth_token(brand_api_login_pk: int):
-    brand_api_login = IIKOBrand.objects.get(
-        pk=brand_api_login_pk
+def fetch_auth_token(iiko_brand_pk: int):
+    iiko_brand = IIKOBrand.objects.get(
+        pk=iiko_brand_pk
     )
 
-    return GetAuthToken(instance=brand_api_login).run()
+    return GetAuthToken(instance=iiko_brand).run()

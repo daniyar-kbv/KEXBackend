@@ -29,40 +29,22 @@ class TestTask(Task):
 
 test_task = celery_app.register_task(TestTask())
 
-from requests import get
+from requests import post
 
 
 class TestPropertyTask(Task):
-    number = 2
-    timeout = 10
-    autoretry_for: Tuple[Exception] = (Timeout, HTTPError, ConnectionError)
-    retry_kwargs = {"max_retries": 5}
-    default_retry_delay: int = 3
+    count = 0
 
-    @property
-    def get_number(self):
-        self.number = 4
-        time.sleep(5)
-        return self.number
+    def run(self, count=0):
+        print(count)
+        url="http://192.168.1.194:8000/apply-ticket-insurance/schedule"
+        data = {
+            "principal": 250000,
+            "period": 6,
+            "product": "AVIATA",
+        }
+        res = post(url, json=data)
+        print("res:", res)
 
-    @property
-    def refresh_number(self):
-        self.number = 2
-        return self.number
-
-    def run(self, *args, **kwargs):
-        try:
-            print("sending get request")
-            res = get("https://adil.kek.mek")
-            print("response:", res)
-        except TimeoutError:
-            print("timeout error handler is called")
-        except HTTPError:
-            print("http error handler")
-        except ConnectionError:
-            print("connection error handler is called")
-            raise ConnectionError
-        finally:
-            print("finally block is called", self.request.retries)
 
 test_property_task = celery_app.register_task(TestPropertyTask())

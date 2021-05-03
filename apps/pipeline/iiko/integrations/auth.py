@@ -1,12 +1,18 @@
+from typing import TYPE_CHECKING
+
 from constance import config
 from django.core.cache import cache
-from requests.models import Response
 
 from apps.pipeline.services import BaseService
+
+if TYPE_CHECKING:
+    from apps.partners.models import IIKOBrand
 
 
 class GetAuthToken(BaseService):
     """Получение токена брэнда"""
+    instance: 'IIKOBrand' = None
+
     host = config.IIKO_SERVICE_HOST
     endpoint = "/api/1/access_token"
 

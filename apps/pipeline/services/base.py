@@ -1,7 +1,7 @@
 import time
 from copy import deepcopy
 from abc import ABC, abstractmethod
-from typing import Optional, Type, Tuple, Dict, Union, Any
+from typing import Optional, Type, Tuple, Union, Any
 
 from requests import Session
 from urllib.parse import urljoin
@@ -16,8 +16,10 @@ from apps.pipeline.exceptions import (
 
 
 class BaseService(ABC):
+    instance = None
     save_serializer: Optional[Type] = None
 
+    headers: dict = None
     url: str = None
     host: str = None
     endpoint: str = None
@@ -57,16 +59,23 @@ class BaseService(ABC):
     def get_url(self) -> str:
         return urljoin(self.host, self.endpoint)
 
+    def get_headers(self) -> dict:
+        return self.headers
+
     def fetch(self, params=None, data=None, json=None, files=None, **kwargs):
         _start = time.perf_counter()
 
         if self.url is None:
             self.url = self.get_url()
 
+        if self.headers is None:
+            self.headers = self.get_headers()
+
         response_raw = self.session.request(
             method=self.method,
             url=self.url,
             auth=self.auth,
+            headers=self.headers,
             params=params,
             data=data,
             json=json,
