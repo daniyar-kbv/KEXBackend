@@ -1,3 +1,5 @@
+from datetime import time
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
@@ -82,6 +84,9 @@ class Organization(AbstractNameModel):
     is_active = models.BooleanField(
         _("Активна"), default=False
     )
+
+    start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
+    end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
 
 
 class OrganizationRelationMixin(models.Model):
