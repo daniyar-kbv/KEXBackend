@@ -20,6 +20,10 @@ ERROR_MESSAGES = {
     f"{INVALID_OTP}_{Languages.ENGLISH}": ("invalid otp", ""),
 
     f"{OBJECT_NOT_FOUND}_{Languages.RUSSIAN}": ("not found ru", ""),
-    f"{OBJECT_NOT_FOUND}_{Languages.KAZAKH}": ("not found kz", ""),
-    f"{OBJECT_NOT_FOUND}_{Languages.ENGLISH}": ("not found kz", ""),
+    f"{OBJECT_NOT_FOUND}_{Languages.KAZAKH}": ("not found kk", ""),
+    f"{OBJECT_NOT_FOUND}_{Languages.ENGLISH}": ("not found end", ""),
+
+    f"{TERMINAL_NOT_FOUND}_{Languages.RUSSIAN}": ("terminal_not_found_ru", ""),
+    f"{TERMINAL_NOT_FOUND}_{Languages.KAZAKH}": ("terminal_not_found_kk", ""),
+    f"{TERMINAL_NOT_FOUND}_{Languages.ENGLISH}": ("terminal_not_found_eng", ""),
 }
