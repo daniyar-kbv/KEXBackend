@@ -10,7 +10,11 @@ from . import OrderStatuses
 from .managers import OrdersManager
 
 
-class Lead(ServiceHistoryModel, UUIDModel):
+class Lead(
+    TimestampModel,
+    ServiceHistoryModel,
+    UUIDModel
+):
     class Meta:
         verbose_name = _("Лид")
         verbose_name_plural = _("Лиды")

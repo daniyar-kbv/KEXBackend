@@ -1,3 +1,12 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.common.admin import HistoryInline
+
+from .models import Lead
+
+
+class LeadAdmin(admin.ModelAdmin):
+    inlines = (HistoryInline,)
+
+
+admin.site.register(Lead, LeadAdmin)
