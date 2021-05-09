@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
+from apps.orders.models import Lead
 from apps.location.models import Address
-from apps.partners.models import IIKOBrand, Organization
+from apps.partners.models import Organization
 
 
 class IIKOAddressSerializer(serializers.ModelSerializer):
@@ -40,3 +41,23 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
         address_serializer.save()
 
         return instance
+
+
+class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
+    organization_outer_id = serializers.CharField(required=True)
+
+    class Meta:
+        model = Lead
+        fields = (
+            "order_zone",
+            "estimated_duration",
+            "organization_outer_id",
+        )
+
+    def update(self, instance, validated_data):
+        validated_data["organization"] = Organization.objects.get(  # noqa
+            outer_id=validated_data.pop("organization_outer_id")
+        )
+
+        return super().update(instance, validated_data)
+
