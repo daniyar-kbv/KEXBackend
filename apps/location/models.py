@@ -35,6 +35,7 @@ class City(AbstractNameModel):
     class Meta:
         verbose_name = _("Город")
         verbose_name_plural = _("Города")
+        unique_together = ("country", "name")
 
     country = models.ForeignKey(
         "location.Country",
