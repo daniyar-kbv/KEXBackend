@@ -3,14 +3,14 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-from apps.common.models import TimestampModel, UUIDModel
+from apps.common.models import TimestampModel, UUIDModel, ServiceHistoryModel
 from apps.partners.models import OrganizationRelationMixin
 
 from . import OrderStatuses
 from .managers import OrdersManager
 
 
-class Lead(UUIDModel):
+class Lead(ServiceHistoryModel, UUIDModel):
     class Meta:
         verbose_name = _("Лид")
         verbose_name_plural = _("Лиды")
@@ -45,7 +45,11 @@ class Lead(UUIDModel):
     )
 
 
-class Order(OrganizationRelationMixin, TimestampModel):
+class Order(
+    TimestampModel,
+    ServiceHistoryModel,
+    OrganizationRelationMixin,
+):
     class Meta:
         verbose_name = _("Заказ")
         verbose_name_plural = _("Заказы")
