@@ -34,6 +34,16 @@ class Lead(UUIDModel):
         null=True,
     )
 
+    order_zone = models.CharField(
+        _("Зона"),
+        max_length=256,
+        null=True,
+    )
+    estimated_duration = models.PositiveSmallIntegerField(
+        _("Примерное время доставки"),
+        null=True,
+    )
+
 
 class Order(OrganizationRelationMixin, TimestampModel):
     class Meta:
