@@ -1,5 +1,5 @@
 """
-Only use for beat (cron) tasks
+Only for cron, not for import
 """
 
 from config import celery_app

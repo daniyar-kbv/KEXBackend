@@ -18,7 +18,7 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         model = Lead
         fields = (
             "address",
-            "brand_api_login",
+            "iiko_brand",
         )
 
     def create(self, validated_data):
