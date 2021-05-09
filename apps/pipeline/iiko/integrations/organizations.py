@@ -65,6 +65,7 @@ class GetOrganizations(BaseIIKOService):
 
 
 class FindOrganization(BaseIIKOService):
+    """Поиск наиболее подходящего терминала"""
     endpoint = "api/1/delivery_restrictions/allowed"
     save_serializer = IIKOLeadOrganizationSerializer
     instance: 'Lead' = None
