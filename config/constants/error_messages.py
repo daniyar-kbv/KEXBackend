@@ -16,6 +16,10 @@ ERROR_MESSAGES = {
     f"{INVALID_INPUT_DATA}_{Languages.ENGLISH}": ("invalid input data", ""),
 
     f"{INVALID_OTP}_{Languages.RUSSIAN}": ("Не правильный otp", ""),
-    f"{INVALID_OTP}_{Languages.KAZAKH}": ("kate otp"),
-    f"{INVALID_OTP}_{Languages.ENGLISH}": ("invalid otp"),
+    f"{INVALID_OTP}_{Languages.KAZAKH}": ("kate otp", ""),
+    f"{INVALID_OTP}_{Languages.ENGLISH}": ("invalid otp", ""),
+
+    f"{OBJECT_NOT_FOUND}_{Languages.RUSSIAN}": ("not found ru", ""),
+    f"{OBJECT_NOT_FOUND}_{Languages.KAZAKH}": ("not found kz", ""),
+    f"{OBJECT_NOT_FOUND}_{Languages.ENGLISH}": ("not found kz", ""),
 }
