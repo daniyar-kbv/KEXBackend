@@ -45,6 +45,10 @@ class IIKOBrand(ServiceHistoryModel):
     is_active = models.BooleanField(
         _("Активна"), default=False
     )
+    priority = models.PositiveSmallIntegerField(
+        _("Приоритетность"),
+        default=1,
+    )
 
     objects = IIKOBrandManager()
 
