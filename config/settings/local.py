@@ -17,4 +17,4 @@ LOGGING = {
     "loggers": {"django.db.backends": {"handlers": ["console"], "level": "INFO"}},
 }
 
-CONSTANCE_REDIS_CONNECTION["host"] = "localhost"  # noqa
+CONSTANCE_REDIS_CONNECTION["host"] = os.getenv("REDIS_HOST", "localhost")  # noqa
