@@ -37,7 +37,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
 }
 
 CONSTANCE_REDIS_CONNECTION = {
-    'host': 'redis',
+    'host': os.getenv("REDIS_HOST", "localhost"),
     'port': 6379,
     'db': 0,
 }
