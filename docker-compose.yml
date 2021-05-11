@@ -34,7 +34,7 @@ services:
       - RABBIT_HOST=rabbitmq
       - DB_HOST=postgres
       - REDIS_HOST=redis
-      - CONTAINER_TYPE=FLOWER
+      - CONTAINER_TYPE=BEAT
     depends_on:
       - rabbitmq
       - celery-worker
