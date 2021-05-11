@@ -27,13 +27,11 @@ class AbstractHandler(ABC):
         if isinstance(self.raw_data.get("detail"), ErrorDetail):
             _error_code = self.raw_data.get("detail").code
 
-        print("self.language in handler", self.language)
         _config_error_code = f"{_error_code}_{self.language}"
 
-        print("_config_error_code", _config_error_code)
         if hasattr(config, _config_error_code):
             _error_message = getattr(config, _config_error_code)
-        print("_error_message", _error_message)
+
         return _error_code, _error_message
 
     @abstractmethod
