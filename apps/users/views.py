@@ -21,10 +21,3 @@ class UserViewSet(ModelViewSet):
             return UserCreateUpdateSerializer
 
         return UserViewSerializer
-
-
-from .serializers import TestSerializer
-from django.views.generic import TemplateView
-
-class Test(TemplateView):
-    template_name = "test.html"

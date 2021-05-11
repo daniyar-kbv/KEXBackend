@@ -18,7 +18,7 @@ class GetOrganizations(BaseIIKOService):
 
     def run_service(self) -> Any:
         return self.fetch(json={
-                "returnAdditionalInfo": True,
+            "returnAdditionalInfo": True,
         })
 
     @staticmethod
@@ -93,8 +93,6 @@ class FindOrganization(BaseIIKOService):
         allowed_items = data.get("allowedItems")[0]
 
         if not data.get("isAllowed") or allowed_items is None:
-            print('1', not data.get("isAllowed"))
-            print('2', allowed_items is None)
             return {}
 
         return {

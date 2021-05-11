@@ -12,6 +12,9 @@ from .managers import UserManager
 
 class User(PermissionsMixin, AbstractBaseUser):
     mobile_phone = PhoneNumberField(_("Моб. телефон"), unique=True)
+    name = models.CharField(_("Имя"), max_length=256, null=True)
+    email = models.EmailField(null=True)
+
     is_active = models.BooleanField(_("Активный"), default=True)
     is_staff = models.BooleanField(_("Сотрудник"), default=False)
 
