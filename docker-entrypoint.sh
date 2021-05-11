@@ -8,6 +8,7 @@ elif [ $container_type = "BEAT" ]; then
 elif [ $container_type = "FLOWER" ]; then
   celery flower -A config.celery_app --persistent=True
 else
+  python manage.py collectstatic --noinput --clear
   python manage.py migrate --noinput
   uwsgi --ini /app/config/server/uwsgi.ini
 fi;
