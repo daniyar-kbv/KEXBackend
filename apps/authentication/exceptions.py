@@ -1,6 +1,6 @@
 from rest_framework.exceptions import APIException
 
-from config.constants import USER_NOT_FOUND
+from config.constants.error_codes import USER_NOT_FOUND
 
 
 class UserNotFound(APIException):

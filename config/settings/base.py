@@ -2,7 +2,7 @@ import base64
 import os
 from datetime import timedelta
 
-from config.constants import CONSTANCE_REDIS_CONNECTION, CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
+from config.constants.dynamic_constance_configs import CONSTANCE_REDIS_CONNECTION, CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
 
 from . import Languages
 

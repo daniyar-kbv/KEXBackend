@@ -3,7 +3,7 @@ import os
 from .error_messages import ERROR_MESSAGES
 
 CONSTANCE_REDIS_CONNECTION = {
-    'host': os.getenv("REDIS_HOST", "localhost"),
+    'host': 'redis',
     'port': 6379,
     'db': 0,
 }

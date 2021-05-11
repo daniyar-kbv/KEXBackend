@@ -1,6 +1,6 @@
 from rest_framework.exceptions import APIException
 
-from config.constants import INVALID_OTP, OTP_RESEND_TIME_LIMIT
+from config.constants.error_codes import INVALID_OTP, OTP_RESEND_TIME_LIMIT
 
 
 class InvalidOTP(APIException):
