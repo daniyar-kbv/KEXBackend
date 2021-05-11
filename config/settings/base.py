@@ -1,9 +1,6 @@
 import base64
 import os
 from datetime import timedelta
-from urllib.parse import urljoin
-
-from config.constants import CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
 
 from . import Languages
 
@@ -193,6 +190,9 @@ CONSTANCE_REDIS_CONNECTION = {
     'port': 6379,
     'db': 0,
 }
+
+from config.constants import CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
+
 
 # Celery settings
 CELERY_BROKER_URL = "{protocol}://{user}:{pwd}@{host}:{port}/{vhost}".format(
