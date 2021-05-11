@@ -1,5 +1,12 @@
+import os
+
 from .error_messages import ERROR_MESSAGES
 
+CONSTANCE_REDIS_CONNECTION = {
+    'host': os.getenv("REDIS_HOST", "localhost"),
+    'port': 6379,
+    'db': 0,
+}
 
 CONSTANCE_CONFIG = {
     "IIKO_SERVICE_HOST": ("https://api-ru.iiko.services", "IIKO service host"),

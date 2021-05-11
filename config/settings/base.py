@@ -2,7 +2,10 @@ import base64
 import os
 from datetime import timedelta
 
+from config.constants import CONSTANCE_REDIS_CONNECTION, CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
+
 from . import Languages
+
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -184,14 +187,6 @@ CACHES = {
         }
     }
 }
-
-CONSTANCE_REDIS_CONNECTION = {
-    'host': os.getenv("REDIS_HOST", "localhost"),
-    'port': 6379,
-    'db': 0,
-}
-
-from config.constants import CONSTANCE_CONFIG, CONSTANCE_CONFIG_FIELDSETS
 
 
 # Celery settings
