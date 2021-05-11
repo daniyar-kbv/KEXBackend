@@ -204,8 +204,8 @@ CELERY_BROKER_URL = "{protocol}://{user}:{pwd}@{host}:{port}/{vhost}".format(
     vhost=os.getenv("RABBIT_VHOST", "/"),
 )
 CELERY_RESULT_BACKEND = "redis://{host}:{port}/{db_index}".format(
-    host=os.getenv("CELERY_REDIS_HOST", "localhost"),
-    port=os.getenv("CELERY_REDIS_PORT", "6379"),
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=os.getenv("REDIS_PORT", "6379"),
     db_index=os.getenv("CELERY_REDIS_DB_INDEX", "0"),
 )
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
