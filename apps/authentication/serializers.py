@@ -6,6 +6,7 @@ from rest_framework_simplejwt.serializers import (
 )
 
 from apps.sms.exceptions import OTPResendTimeLimit
+from apps.sms.models import OTP
 
 from .exceptions import UserNotFound
 
@@ -53,5 +54,7 @@ class OTPResendSerializer(serializers.Serializer):  # noqa
             raise UserNotFound
 
         # todo check otp time limit
+        if OTP.objects.active().filter(mobile_phone=attrs["mobile_phone"]).exists():
+            raise OTPResendTimeLimit
 
         return attrs

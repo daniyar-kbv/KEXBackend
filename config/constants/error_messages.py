@@ -27,7 +27,7 @@ ERROR_MESSAGES = {
     f"{TERMINAL_NOT_FOUND}_{Languages.KAZAKH}": ("terminal_not_found_kk", ""),
     f"{TERMINAL_NOT_FOUND}_{Languages.ENGLISH}": ("terminal_not_found_eng", ""),
 
-    f"{OTP_RESEND_TIME_LIMIT}_{Languages.RUSSIAN}": ("Лимит времени для повторной отправки кода 2 мин", ""),
+    f"{OTP_RESEND_TIME_LIMIT}_{Languages.RUSSIAN}": ("Лимит времени для повторной отправки кода", ""),
     f"{OTP_RESEND_TIME_LIMIT}_{Languages.KAZAKH}": ("uakyt ali otpedy goi, brat", ""),
     f"{OTP_RESEND_TIME_LIMIT}_{Languages.ENGLISH}": ("time limit for otp resending", ""),
 

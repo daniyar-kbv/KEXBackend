@@ -6,13 +6,19 @@ from .models import Country, City
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = "name", "country_code"
+        fields = "id", "name", "country_code"
 
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = "name",
+        fields = "id", "name",
+
+
+class CityRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = "name", "country"
 
 
 class CountryRetrieveSerializer(serializers.ModelSerializer):

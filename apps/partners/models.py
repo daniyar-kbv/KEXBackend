@@ -13,6 +13,11 @@ class Brand(AbstractNameModel):
         verbose_name = _("Брэнд")
         verbose_name_plural = _("Брэнды")
 
+    image_square = models.ImageField(_("Картинка квадрат"), null=True, blank=True)
+    image_short = models.ImageField(_("Картинка короткая"), null=True, blank=True)
+    image_tall = models.ImageField(_("Картинка высокая"), null=True, blank=True)
+    image_long = models.ImageField(_("Картинка длинная"), null=True, blank=True)
+
 
 class IIKOBrand(ServiceHistoryModel):
     class Meta:
