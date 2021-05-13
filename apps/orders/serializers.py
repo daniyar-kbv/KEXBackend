@@ -18,16 +18,16 @@ class LeadAddressSerializer(serializers.ModelSerializer):
 
 class ApplyLeadSerializer(serializers.ModelSerializer):
     address = LeadAddressSerializer(write_only=True)
-    city_pk = serializers.CharField(required=True, write_only=True)
-    brand_pk = serializers.CharField(required=True, write_only=True)
+    city_id = serializers.CharField(required=True, write_only=True)
+    brand_id = serializers.CharField(required=True, write_only=True)
 
     class Meta:
         model = Lead
         fields = (
             "uuid",
-            "city_pk",
+            "brand_id",
+            "city_id",
             "address",
-            "brand_pk",
         )
         extra_kwargs = {
             "uuid": {"read_only": True}
@@ -35,12 +35,12 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        city_pk, brand_pk = attrs.pop("city_pk"), attrs.pop("brand_pk")
+        city_id, brand_id = attrs.pop("city_id"), attrs.pop("brand_id")
 
-        if not IIKOBrand.objects.filter(brand_id=brand_pk, city_id=city_pk).exists():
+        if not IIKOBrand.objects.filter(brand_id=brand_id, city_id=city_id).exists():
             raise BrandNotFound
 
-        attrs["iiko_brand"] = IIKOBrand.objects.get(brand_id=brand_pk, city_id=city_pk)
+        attrs["iiko_brand"] = IIKOBrand.objects.get(brand_id=brand_id, city_id=brand_id)
 
         return attrs
 

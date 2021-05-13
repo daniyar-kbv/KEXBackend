@@ -18,6 +18,11 @@ class Address(models.Model):
     longitude = models.DecimalField(_("Долгота"), max_digits=12, decimal_places=8, null=True)
     latitude = models.DecimalField(_("Широта"), max_digits=12, decimal_places=8, null=True)
 
+    def __str__(self):
+        if self.street:
+            return f"{str(self.street)} {str(self.building or '')}"
+        return f"Address #{self.id}"
+
 
 class Country(AbstractNameModel):
     class Meta:
