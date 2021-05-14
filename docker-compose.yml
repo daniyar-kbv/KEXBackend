@@ -11,6 +11,7 @@ services:
     volumes:
       - .:/app
     environment:
+      - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - RABBIT_HOST=rabbitmq
       - DB_HOST=postgres
@@ -46,6 +47,7 @@ services:
     volumes:
       - .:/app
     environment:
+      - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - RABBIT_HOST=rabbitmq
       - DB_HOST=postgres
