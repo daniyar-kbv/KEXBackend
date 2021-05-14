@@ -53,7 +53,6 @@ class OTPResendSerializer(serializers.Serializer):  # noqa
         if not User.objects.filter(mobile_phone=attrs["mobile_phone"]).exists():
             raise UserNotFound
 
-        # todo check otp time limit
         if OTP.objects.active().filter(mobile_phone=attrs["mobile_phone"]).exists():
             raise OTPResendTimeLimit
 
