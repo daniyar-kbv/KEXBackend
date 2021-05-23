@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel
-from apps.partners.models import OrganizationRelationMixin
 
 
 class Category(AbstractNameModel):

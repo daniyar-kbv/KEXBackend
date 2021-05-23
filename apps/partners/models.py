@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, ServiceHistoryModel
 
-from .managers import IIKOBrandManager
+from .managers import IIKOBrandManager, OrganizationsQuerySet
 
 
 class Brand(AbstractNameModel):
@@ -96,6 +96,8 @@ class Organization(AbstractNameModel):
 
     start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
+
+    objects = OrganizationsQuerySet.as_manager()
 
 
 class OrganizationRelationMixin(models.Model):
