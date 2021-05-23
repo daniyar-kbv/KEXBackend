@@ -36,16 +36,3 @@ class Position(OrganizationRelationMixin, AbstractNameModel):
 
     def __str__(self):
         return self.name
-
-
-class Combo(OrganizationRelationMixin, AbstractNameModel):
-    class Meta:
-        verbose_name = _("Комбо")
-        verbose_name_plural = _("Комбо")
-
-    price = models.DecimalField(
-        _("Цена"),
-        decimal_places=2,
-        max_digits=12
-    )
-    positions = models.ManyToManyField("nomenclature.Position",)
