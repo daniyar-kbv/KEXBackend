@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.location.models import Address
 from apps.partners.models import IIKOBrand
 from apps.partners.exceptions import BrandNotFound
+from apps.nomenclature.models import Category, PositionInfoByOrganization
 
 from .models import Lead
 
@@ -51,3 +52,43 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         )
 
         return super().create(validated_data)
+
+
+class NomenclatureCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = (
+            "name",
+            "uuid"
+        )
+
+
+class NomenclaturePositionSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="position.iiko_name")
+    description = serializers.CharField(source="position.iiko_description")
+    category = serializers.CharField(source="position.category_id")
+
+    class Meta:
+        model = PositionInfoByOrganization
+        fields = (
+            "name",
+            "description",
+            "price",
+            "category",
+        )
+
+
+class LeadNomenclatureSerializer(serializers.ModelSerializer):
+    categories = NomenclatureCategorySerializer(source="brand.categories", many=True, read_only=True)
+    positions = NomenclaturePositionSerializer(source="organization.positions", many=True, read_only=True)
+
+    class Meta:
+        model = Lead
+        fields = (
+            "uuid",
+            "categories",
+            "positions",
+        )
+        extra_kwargs = {
+            "uuid": {"read_only": True}
+        }

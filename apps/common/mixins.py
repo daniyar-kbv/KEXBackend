@@ -9,3 +9,7 @@ class JSONRendererMixin:
 
 class PublicAPIMixin:
     permission_classes = [AllowAny]
+
+
+class JSONPublicAPIMixin(JSONRendererMixin, PublicAPIMixin):
+    ...
