@@ -18,12 +18,23 @@ class Category(AbstractNameModel):
     )
 
 
-class Position(OrganizationRelationMixin, AbstractNameModel):
+class Position(models.Model):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
 
-    description = models.TextField(_("Описание"))
+    organizations = models.ManyToManyField(
+        "partners.Organization",
+        related_name="positions",
+        null=True
+    )
+    iiko_name = models.CharField(
+        _("Название в системе IIKO"),
+        max_length=256, null=True, blank=True,
+    )
+    iiko_description = models.TextField(
+        _("Описание в системе IIKO"), null=True, blank=True,
+    )
     price = models.DecimalField(
         _("Цена"),
         decimal_places=2,
@@ -36,10 +47,13 @@ class Position(OrganizationRelationMixin, AbstractNameModel):
         related_name="positions",
         verbose_name=_("Категория"),
     )
+    outer_id = models.UUIDField(
+        _("UUID в системе IIKO"), null=True,  # noqa
+    )
     is_additional = models.BooleanField(
         _("Дополнительная позиция"),
         default=False,
     )
 
     def __str__(self):
-        return self.name
+        return self.iiko_name

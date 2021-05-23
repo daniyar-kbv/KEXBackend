@@ -103,6 +103,7 @@ class OrganizationRelationMixin(models.Model):
         "partners.Organization",
         on_delete=models.PROTECT,
         null=True,
+        # related_name="positions",
     )
 
     class Meta:
