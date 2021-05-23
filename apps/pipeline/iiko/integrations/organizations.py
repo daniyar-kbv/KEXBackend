@@ -90,6 +90,9 @@ class FindOrganization(BaseIIKOService):
         })
 
     def prepare_to_save(self, data: dict) -> dict:
+        if not data.get("allowedItems"):
+            return {}
+
         allowed_items = data.get("allowedItems")[0]
 
         if not data.get("isAllowed") or allowed_items is None:
