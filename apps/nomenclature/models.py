@@ -22,13 +22,13 @@ class Position(OrganizationRelationMixin, AbstractNameModel):
         decimal_places=2,
         max_digits=12
     )
-    category = models.ForeignKey(
-        "nomenclature.Category",
-        on_delete=models.PROTECT,
-        null=True, blank=True,
-        related_name="positions",
-        verbose_name=_("Категория"),
-    )
+    # category = models.ForeignKey(
+    #     "nomenclature.Category",
+    #     on_delete=models.PROTECT,
+    #     null=True, blank=True,
+    #     related_name="positions",
+    #     verbose_name=_("Категория"),
+    # )
     is_additional = models.BooleanField(
         _("Дополнительная позиция"),
         default=False,
