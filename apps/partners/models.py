@@ -99,7 +99,7 @@ class Organization(AbstractNameModel):
 
 
 class OrganizationRelationMixin(models.Model):
-    merchant = models.ForeignKey(
+    organization = models.ForeignKey(
         "partners.Organization",
         on_delete=models.PROTECT,
         null=True,

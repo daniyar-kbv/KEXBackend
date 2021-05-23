@@ -5,10 +5,17 @@ from apps.common.models import AbstractNameModel
 from apps.partners.models import OrganizationRelationMixin
 
 
-class Category(OrganizationRelationMixin, AbstractNameModel):
+class Category(AbstractNameModel):
     class Meta:
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории позиции")
+
+    iiko_brand = models.ForeignKey(  # noqa
+        "partners.IIKOBrand",
+        verbose_name=_("Бренд"),
+        on_delete=models.PROTECT,
+        null=True,
+    )
 
 
 class Position(OrganizationRelationMixin, AbstractNameModel):
@@ -22,13 +29,13 @@ class Position(OrganizationRelationMixin, AbstractNameModel):
         decimal_places=2,
         max_digits=12
     )
-    # category = models.ForeignKey(
-    #     "nomenclature.Category",
-    #     on_delete=models.PROTECT,
-    #     null=True, blank=True,
-    #     related_name="positions",
-    #     verbose_name=_("Категория"),
-    # )
+    category = models.ForeignKey(
+        "nomenclature.Category",
+        on_delete=models.PROTECT,
+        null=True, blank=True,
+        related_name="positions",
+        verbose_name=_("Категория"),
+    )
     is_additional = models.BooleanField(
         _("Дополнительная позиция"),
         default=False,
