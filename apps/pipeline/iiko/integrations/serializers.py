@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import TYPE_CHECKING, List, Optional
 
 from rest_framework import serializers
@@ -5,7 +6,7 @@ from rest_framework import serializers
 from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.partners.models import Organization
-from apps.nomenclature.models import Position
+from apps.nomenclature.models import Position, PositionInfoByOrganization
 
 if TYPE_CHECKING:
     from ..python_entities.positions import (
@@ -40,7 +41,6 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
                 **validated_data,
             }
         )
-        print("instance", instance)
 
         address_serializer = IIKOAddressSerializer(
             instance=instance.address,
@@ -72,6 +72,8 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
 
 
 class IIKONomenclatureSerializer(serializers.ModelSerializer):
+    price = serializers.DecimalField(max_digits=12, decimal_places=2, required=True)
+
     class Meta:
         model = Position
         fields = "__all__"
@@ -79,6 +81,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print(validated_data)
         modifiers: List['PythonModifier'] = validated_data.pop('modifiers', None)
+        price: Decimal = validated_data.pop("price", Decimal(0))
 
         position, created = Position.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),
@@ -86,6 +89,13 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
                 **validated_data
             }
         )
-        position.organizations.add(self.context["organization"])
+
+        PositionInfoByOrganization.objects.get_or_create(
+            organization=self.context["organization"],
+            position=position,
+            defaults={
+                "price": price,
+            }
+        )
 
         return position

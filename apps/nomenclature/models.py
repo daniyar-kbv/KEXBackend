@@ -23,10 +23,10 @@ class Position(models.Model):
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
 
-    organizations = models.ManyToManyField(
-        "partners.Organization",
+    iiko_brand = models.ForeignKey(
+        "partners.IIKOBrand",
+        on_delete=models.PROTECT,
         related_name="positions",
-        null=True
     )
     iiko_name = models.CharField(
         _("Название в системе IIKO"),
@@ -34,11 +34,6 @@ class Position(models.Model):
     )
     iiko_description = models.TextField(
         _("Описание в системе IIKO"), null=True, blank=True,
-    )
-    price = models.DecimalField(
-        _("Цена"),
-        decimal_places=2,
-        max_digits=12
     )
     category = models.ForeignKey(
         "nomenclature.Category",
@@ -57,3 +52,25 @@ class Position(models.Model):
 
     def __str__(self):
         return self.iiko_name
+
+
+class PositionInfoByOrganization(models.Model):
+    class Meta:
+        unique_together = ("position", "organization")
+
+    position = models.ForeignKey(
+        "nomenclature.Position",
+        on_delete=models.CASCADE,
+        related_name="positions_by_org",
+    )
+    organization = models.ForeignKey(
+        "partners.Organization",
+        on_delete=models.CASCADE,
+        related_name="positions",
+    )
+
+    price = models.DecimalField(
+        _("Цена"),
+        decimal_places=2,
+        max_digits=12
+    )
