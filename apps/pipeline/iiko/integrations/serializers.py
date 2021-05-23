@@ -1,8 +1,17 @@
+from typing import TYPE_CHECKING, List, Optional
+
 from rest_framework import serializers
 
 from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.partners.models import Organization
+from apps.nomenclature.models import Position
+
+if TYPE_CHECKING:
+    from ..python_entities.positions import (
+            Modifier as PythonModifier,
+            Position as PythonPosition,
+    )
 
 
 class IIKOAddressSerializer(serializers.ModelSerializer):
@@ -61,3 +70,22 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
 
         return super().update(instance, validated_data)
 
+
+class IIKONomenclatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = "__all__"
+
+    def create(self, validated_data):
+        print(validated_data)
+        modifiers: List['PythonModifier'] = validated_data.pop('modifiers', None)
+
+        position, created = Position.objects.update_or_create(
+            outer_id=validated_data.pop("outer_id"),
+            defaults={
+                **validated_data
+            }
+        )
+        position.organizations.add(self.context["organization"])
+
+        return position
