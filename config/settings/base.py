@@ -59,6 +59,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "phonenumber_field",
     "constance",
+    "django_celery_beat",
 ]
 
 LOCAL_APPS = [
