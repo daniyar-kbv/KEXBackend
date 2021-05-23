@@ -1,14 +1,16 @@
 from django.contrib import admin
 
+from apps.nomenclature.admin import CategoryInline
+
 from .models import Brand, IIKOBrand, Organization
 
 
 admin.site.register(Brand)
-# admin.site.register(Organization)
 
 
 @admin.register(IIKOBrand)
 class IIKOBrandAdmin(admin.ModelAdmin):
+    inlines = CategoryInline,
     list_filter = ('city',)
     fields = (
         'brand',
@@ -21,8 +23,7 @@ class IIKOBrandAdmin(admin.ModelAdmin):
 
 
 @admin.register(Organization)
-class IIKOBrandAdmin(admin.ModelAdmin):
-
+class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('iiko_brand',)
     fields = (
         'name',

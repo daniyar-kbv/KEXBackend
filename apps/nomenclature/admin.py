@@ -13,14 +13,14 @@ class PositionInfoByOrganizationInline(admin.StackedInline):
     extra = 0
 
 
+@admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
     model = Position
-    inlines = [PositionInfoByOrganizationInline]
-    list_filter = [
+    list_filter = (
         "iiko_brand",
         "category",
-    ]
+    )
+    inlines = [PositionInfoByOrganizationInline]
 
 
 admin.site.register(Category)
-admin.site.register(Position, PositionAdmin)
