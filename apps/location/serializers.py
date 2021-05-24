@@ -1,15 +1,16 @@
 from rest_framework import serializers
 
 from .models import Country, City
+from ..common.serializers import AbstractNameSerializer
 
 
-class CountrySerializer(serializers.ModelSerializer):
+class CountrySerializer(AbstractNameSerializer):
     class Meta:
         model = Country
         fields = "id", "name", "country_code"
 
 
-class CitySerializer(serializers.ModelSerializer):
+class CitySerializer(AbstractNameSerializer):
     class Meta:
         model = City
         fields = "id", "name",
@@ -21,7 +22,7 @@ class CityRetrieveSerializer(serializers.ModelSerializer):
         fields = "name", "country"
 
 
-class CountryRetrieveSerializer(serializers.ModelSerializer):
+class CountryRetrieveSerializer(AbstractNameSerializer):
     cities = CitySerializer(many=True, required=False)
 
     class Meta:

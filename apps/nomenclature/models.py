@@ -10,11 +10,19 @@ class Category(OrganizationRelationMixin, AbstractNameModel):
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории позиции")
 
+    def __init__(self, *args, **kwargs):
+        super(Category, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "category_names"
+
 
 class Position(OrganizationRelationMixin, AbstractNameModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
+
+    def __init__(self, *args, **kwargs):
+        super(Position, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "position_names"
 
     description = models.TextField(_("Описание"))
     price = models.DecimalField(
@@ -42,6 +50,10 @@ class Combo(OrganizationRelationMixin, AbstractNameModel):
     class Meta:
         verbose_name = _("Комбо")
         verbose_name_plural = _("Комбо")
+
+    def __init__(self, *args, **kwargs):
+        super(Combo, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "combo_names"
 
     price = models.DecimalField(
         _("Цена"),

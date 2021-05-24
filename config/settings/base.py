@@ -70,6 +70,7 @@ LOCAL_APPS = [
     'apps.location.apps.LocationConfig',
     'apps.pipeline.apps.PipelineConfig',
     'apps.nomenclature.apps.NomenclatureConfig',
+    'apps.translations.apps.TranslationsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -78,6 +79,7 @@ AUTH_USER_MODEL = "users.User"
 
 
 MIDDLEWARE = [
+    'apps.translations.middleware.LanguageHeaderMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -143,7 +145,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+# LOGGING = {
+#     'version': 1,
+#     'filters': {
+#         'require_debug_true': {
+#             '()': 'django.utils.log.RequireDebugTrue',
+#         }
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'filters': ['require_debug_true'],
+#             'class': 'logging.StreamHandler',
+#         }
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'level': 'DEBUG',
+#             'handlers': ['console'],
+#         }
+#     }
+# }
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 DEFAULT_LANGUAGE = Languages.RUSSIAN
@@ -158,7 +180,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = os.getenv("STATIC_URL", "/static/")
-STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
+# STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, "static"))
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [STATIC_DIR]
 
 MEDIA_URL = os.getenv("MEDIA_URL", "/media/")
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))

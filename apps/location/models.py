@@ -29,6 +29,10 @@ class Country(AbstractNameModel):
         verbose_name = _("Страна")
         verbose_name_plural = _("Страны")
 
+    def __init__(self, *args, **kwargs):
+        super(Country, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "country_names"
+
     country_code = models.CharField(
         _("Код страны"),
         max_length=32,
@@ -42,8 +46,13 @@ class City(AbstractNameModel):
         verbose_name_plural = _("Города")
         unique_together = ("country", "name")
 
+    def __init__(self, *args, **kwargs):
+        super(City, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "city_names"
+        # self.name.related_name = "city_names"
+
     country = models.ForeignKey(
-        "location.Country",
+        Country,
         on_delete=models.SET_NULL,
         null=True,
         related_name="cities",
