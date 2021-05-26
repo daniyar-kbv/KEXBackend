@@ -71,6 +71,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PositionInfoByOrganization
         fields = (
+            "id",
             "name",
             "description",
             "price",
@@ -92,3 +93,34 @@ class LeadNomenclatureSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "uuid": {"read_only": True}
         }
+
+from apps.orders.models import Cart, CartPosition
+
+
+class UpdatePositionSerializer(serializers.ModelSerializer):
+    position_uuid = serializers.UUIDField(required=True)
+
+    class Meta:
+        model = CartPosition
+        fields = (
+            "position_uuid",
+            "count",
+            "comment",
+        )
+
+
+class UpdateCartSerializer(serializers.ModelSerializer):
+    cart_positions = UpdatePositionSerializer(many=True, required=True)
+
+    class Meta:
+        model = Cart
+        fields = "cart_positions",
+
+    def update(self, instance, validated_data):
+        for cart_position in validated_data["cart_positions"]:
+            instance.cart_positions.update_or_create(
+                organization_position_id=cart_position.pop("position_uuid"),
+                defaults={**cart_position}
+            )
+
+        return instance

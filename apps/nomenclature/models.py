@@ -55,7 +55,7 @@ class Position(models.Model):
         return self.iiko_name
 
 
-class PositionInfoByOrganization(models.Model):
+class PositionInfoByOrganization(UUIDModel):
     class Meta:
         unique_together = ("position", "organization")
 

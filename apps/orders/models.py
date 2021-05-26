@@ -1,12 +1,56 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
 
 from apps.common.models import TimestampModel, UUIDModel, ServiceHistoryModel
 
 from . import OrderStatuses
 from .managers import OrdersManager
+
+
+class Cart(UUIDModel, TimestampModel):
+    class Meta:
+        verbose_name = _("Корзина")
+        verbose_name_plural = _("Корзины")
+
+    # @property
+    # def total_price(self):
+    #     return self.annotate()
+
+
+class CartPosition(TimestampModel):
+    class Meta:
+        verbose_name = _("Товар корзины")
+        verbose_name_plural = _("Товары корзины")
+
+    cart = models.ForeignKey(
+        "orders.Cart",
+        on_delete=models.CASCADE,
+        related_name="cart_positions",
+    )
+    organization_position = models.ForeignKey(
+        "nomenclature.PositionInfoByOrganization",
+        on_delete=models.CASCADE,
+        related_name="carts",
+        to_field="uuid",
+    )
+    count = models.PositiveSmallIntegerField(
+        _("Количество"), default=1,
+    )
+    comment = models.TextField(
+        _("Комментарий к заказу"),
+        null=True, blank=True,
+    )
+
+    def increment_count(self):
+        self.count += 1
+        self.save(update_fields=["count"])
+
+    def decrement_count(self):
+        self.count -= 1
+        if self.count < 0:
+            self.count = 0
+
+        self.save(update_fields=["count"])
 
 
 class Lead(
@@ -23,12 +67,14 @@ class Lead(
         verbose_name=_("Организация"),
         on_delete=models.PROTECT,
         null=True,
+        related_name="leads",
     )
     iiko_brand = models.ForeignKey(
         "partners.IIKOBrand",
         verbose_name=_("Бренд"),
         on_delete=models.PROTECT,
         null=True,
+        related_name="leads",
     )
     address = models.ForeignKey(
         "location.Address",
@@ -36,7 +82,6 @@ class Lead(
         on_delete=models.SET_NULL,
         null=True,
     )
-
     order_zone = models.CharField(
         _("Зона"),
         max_length=256,
@@ -45,6 +90,13 @@ class Lead(
     estimated_duration = models.PositiveSmallIntegerField(
         _("Примерное время доставки"),
         null=True,
+    )
+
+    cart = models.ForeignKey(
+        "orders.Cart",
+        on_delete=models.PROTECT,
+        related_name="leads",
+        null=True, blank=True,
     )
 
 
@@ -67,6 +119,7 @@ class Order(
     user = models.ForeignKey(
         "users.User",
         on_delete=models.PROTECT,
+        null=True, blank=True,
         related_name="orders",
         verbose_name=_("Клиент"),
     )
@@ -81,23 +134,6 @@ class Order(
     )
 
     objects = OrdersManager()
-
-
-class Cart(TimestampModel):
-    class Meta:
-        verbose_name = _("Корзина")
-        verbose_name_plural = _("Корзины")
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField(null=True)
-    content_object = GenericForeignKey('content_type', 'object_id')
-
-    order = models.ForeignKey(
-        "orders.Order",
-        on_delete=models.CASCADE,
-        related_name="cart",
-        verbose_name=_("Заказ"),
-    )
 
 
 class OrderStatusTransition(TimestampModel):
