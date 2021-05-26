@@ -13,6 +13,10 @@ class Brand(AbstractNameModel):
         verbose_name = _("Брэнд")
         verbose_name_plural = _("Брэнды")
 
+    def __init__(self, *args, **kwargs):
+        super(Brand, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "brand_names"
+
     image_square = models.ImageField(_("Картинка квадрат"), null=True, blank=True)
     image_short = models.ImageField(_("Картинка короткая"), null=True, blank=True)
     image_tall = models.ImageField(_("Картинка высокая"), null=True, blank=True)
@@ -74,6 +78,10 @@ class Organization(AbstractNameModel):
     class Meta:
         verbose_name = _("Организация")
         verbose_name_plural = _("Организации")
+
+    def __init__(self, *args, **kwargs):
+        super(Organization, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "organization_names"
 
     iiko_brand = models.ForeignKey(  # noqa
         "partners.IIKOBrand",

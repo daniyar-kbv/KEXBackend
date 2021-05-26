@@ -1,0 +1,395 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script src="{% url 'admin:jsi18n' %}"></script>
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">
+    <style>
+    .img-wrapper{
+        position: relative;
+        width: 400px;
+    }
+      .img-content{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        color: white;
+      }
+      .img-title{
+        width: 300px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .img-text{
+        text-align: center;
+      }
+      .preview-wrapper{
+        width: 400px;
+      }
+      .preview-img{
+        overflow: hidden;
+        border-radius: 20px;
+      }
+      .preview-content{
+        margin-top: 10px;
+      }
+      .preview-title{
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .preview-text{
+        font-size: 18px;
+        margin-top: 10px;
+        height: 45px;
+        overflow: hidden;
+      }
+      .lds-ring {
+          display: inline-block;
+          position: relative;
+          width: 50px;
+          height: 50px;
+      }
+    .lds-ring div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        margin: 8px;
+        border: 6px solid #fff;
+        border-radius: 50%;
+        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: #2196F3 transparent transparent transparent;
+    }
+    .lds-ring div:nth-child(1) {
+        animation-delay: -0.45s;
+    }
+    .lds-ring div:nth-child(2) {
+      animation-delay: -0.3s;
+    }
+    .lds-ring div:nth-child(3) {
+      animation-delay: -0.15s;
+    }
+    @keyframes lds-ring {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .progress{
+        margin-top: -10px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: flex-end;
+        height: 50px;
+    }
+    #percentage{
+        display: inline-block;
+        font-size: 21px;
+        text-align: center;
+        line-height: 50px;
+    }
+    .generate-code{
+        background: transparent;
+        border: none;
+    }
+    .fa-sync-alt{
+        font-size: 20px;
+    }
+    input[name="code"]{
+        text-transform: uppercase;
+    }
+    .language-switch{
+        display: flex;
+        margin: 15px 0;
+        color: white;
+        border-bottom: 1px solid black;
+    }
+    .tab{
+        padding: 10px 15px;
+        background: #6ca9d8;
+        transition: background 0.2s ease;
+    }
+    .tab:hover{
+        background: #2A78B9;
+    }
+    .current{
+        background: #2196F3;
+    }
+    .current:hover{
+        background: #2196F3;
+    }
+    #content {
+        padding: 15px !important;
+    }
+    </style>
+{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<!--<div class="breadcrumbs">-->
+<!--<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>-->
+<!--&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>-->
+<!--&rsaquo; {% if has_view_permission %}<a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}-->
+<!--&rsaquo; {% if add %}{% blocktranslate with name=opts.verbose_name %}Add {{ name }}{% endblocktranslate %}{% else %}{{ original|truncatewords:"18" }}{% endif %}-->
+<!--</div>-->
+{% endblock %}
+{% endif %}
+
+{% block content %}<div id="content-main">
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+    <ul class="object-tools" style="margin-top: 0;">
+    {% block object-tools-items %}
+      {% change_form_object_tools %}
+    {% endblock %}
+    </ul>
+{% endif %}{% endif %}
+{% endblock %}
+<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}{% if form_url %}action="{{ form_url }}" {% endif %}method="post" id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}
+<div>
+{% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}
+{% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">{% endif %}
+{% if save_on_top %}{% block submit_buttons_top %}{% submit_row %}{% endblock %}{% endif %}
+{% if errors %}
+    <p class="errornote">
+    {% if errors|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+    </p>
+    {{ adminform.form.non_field_errors }}
+{% endif %}
+
+{% block field_sets %}
+{% for fieldset in adminform %}
+  {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+{% endblock %}
+
+{% block after_field_sets %}{% endblock %}
+
+{% block inline_field_sets %}
+{% for inline_admin_formset in inline_admin_formsets %}
+    {% include inline_admin_formset.opts.template %}
+{% endfor %}
+    <div class="progress">
+        <div id="percentage"></div>
+        <div class="lds-ring" style="display: none;"><div></div><div></div><div></div><div></div></div>
+    </div>
+{% endblock %}
+
+{% block after_related_objects %}{% endblock %}
+
+{% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+
+{% block admin_change_form_document_ready %}
+    <script defer src="{% static 'admin/js/jquery.forms.js' %}"></script>
+    <script id="django-admin-form-add-constants"
+            src="{% static 'admin/js/change_form.js' %}"
+            {% if adminform and add %}
+                data-model-name="{{ opts.model_name }}"
+            {% endif %}
+            async>
+    </script>
+    <script type="text/javascript">
+        // ======= Calculating network speed =======
+        var userImageLink="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20200714180638/CIP_Launch-banner.png";
+        var time_start, end_time;
+        var bps;
+        var msecs;
+
+        // The size in bytes
+        var downloadSize = 5616998;
+        var downloadImgSrc = new Image();
+
+        downloadImgSrc.onload = function () {
+            end_time = new Date().getTime();
+            var timeDuration = (end_time - time_start) / 1000;
+            var loadedBits = downloadSize * 8;
+            bps = loadedBits / timeDuration;
+            var speedInKbps = bps / 1024;
+            var speedInMbps = speedInKbps / 1024;
+            console.log(bps);
+            //displaySpeed();
+        };
+        time_start = new Date().getTime();
+        downloadImgSrc.src = userImageLink;
+
+        function displaySpeed() {
+            var timeDuration = (end_time - time_start) / 1000;
+            var loadedBits = downloadSize * 8;
+
+            /* Converts a number into string
+               using toFixed(2) rounding to 2 */
+            var bps = (loadedBits / timeDuration).toFixed(2);
+            var speedInKbps = (bps / 1024).toFixed(2);
+            var speedInMbps = (speedInKbps / 1024).toFixed(2);
+            alert("Your internet connection speed is: \n"
+                  + bps + " bps\n" + speedInKbps
+                  + " kbps\n" + speedInMbps + " Mbps\n");
+        }
+        // ==============
+        for (el of document.location.href.split("/")){
+            if (el == "push"){
+                $("[name=_save]").val("Опубликовать");
+            }
+        }
+        // ======= Showing Progress Percentage =======
+        var total_files_size = 0;
+        var percent = 0;
+        var showingProgress;
+        var speed;
+        $('.submit-row input').on('click', function() {
+            console.log("clicked");
+            $('.progress .lds-ring').show();
+           file_inputs = $('input[type=file]');
+            for (f of file_inputs){
+                if (f){
+                    if (f.files.length > 0){
+                        //uploadForm();
+                        //break;
+                        total_files_size += f.files[0].size;
+                    }
+                }
+            }
+            if (total_files_size > 0) {
+                console.log("bps "+bps);
+                console.log("network speed "+navigator.connection.downlink);
+                speed = navigator.connection.downlink*1024*1024/8;
+                var secs = total_files_size / speed;
+                msecs = (secs*1000)/100;  // converts to millisecs and divides into 100 parts
+                console.log("mSecs");
+                console.log(msecs);
+                console.log("total_files_size "+total_files_size);
+                showingProgress = setTimeout(showProgress, msecs);
+            }
+        });
+        function showProgress(){
+             if (percent < 100) {
+                var percentVal = percent + '%';
+                 $('#percentage').html(percentVal);
+                 percent += 1;
+                 showingProgress = setTimeout(showProgress, msecs);
+             }
+        }
+        // ==============
+        function uploadForm(){
+            var percent = $('#percentage');
+            $('form').ajaxSubmit({
+                beforeSubmit: function(xhr) {
+                    var percentVal = '0%';
+                    percent.html(percentVal);
+                },
+                uploadProgress: function(event, position, total, percentComplete) {
+                    var percentVal = percentComplete + '%';
+                    $('#percentage').html(percentVal);
+                },
+                complete: function(xhr) {
+                    console.log("Uploaded successfully!");
+                    var message_list = xhr.responseText.match(/<ul class="messagelist"[^>]*>[\s\S]*<\/ul>/gi);
+                    window.sessionStorage.setItem("message_list", message_list);
+                    redirect_url = document.location.href.split('/');
+                    redirect_url.pop();  // deleting empty element because of last slash
+                    operation = redirect_url.pop();
+                    if (operation == "change") {
+                        redirect_url.pop();
+                    }
+                    redirect_url = redirect_url.join("/");
+                    console.log(redirect_url);
+                    window.location.replace(redirect_url);
+                }
+            });
+        }
+        function live_changes(el_class, value){
+            if (preview_aff){
+                if ($('.img-'+el_class).length){
+                    document.querySelector('.img-'+el_class).innerHTML = value;
+                }
+            } else {
+                if ($('.preview-'+el_class).length){
+                    document.querySelector('.preview-'+el_class).innerHTML = value;
+                }
+            }
+        }
+        var langs = ["ru", "kk", "en"];
+        if ($('[id$=_kk]').length){
+            console.log("language switcher is shown");
+        } else {
+            console.log("language switcher is hidden");
+            $('.language-switch').css({"display": "none"});
+        }
+        preview_aff = document.querySelector('.img-title');
+        live_changes('title', $('[name=name_ru]').val());
+        live_changes('text', $('[name=description_ru]').val());
+
+
+        $('[name=name_ru], [name=name_kk], [name=name_en]').on('input', function() {
+            live_changes('title', this.value);
+        });
+        $('[name=description_ru], [name=description_kk], [name=description_en]').on('input', function() {
+            live_changes('text', this.value);
+        });
+
+        $('.tab').on('click', function() {
+            console.log(this.id);
+            var index;
+            for (i = 0; i < langs.length; i++) {
+                if (langs[i] == this.id) {
+                    $('.' + langs[i]).css({"display": "block"});
+                    $('.tab-' + langs[i]).addClass("current");
+                    live_changes('title', $('[name=name_' + langs[i] + ']').val());
+                    live_changes('text', $('[name=description_' + langs[i] + ']').val());
+                } else {
+                    $('.'+langs[i]).css({"display": "none"});
+                    $('.tab-'+langs[i]).removeClass("current");
+                }
+            }
+            console.log("language is chosen!");
+        });
+
+        $('select[name=push_type]').on('change', function() {
+            value = this.value;
+            push_hiddens = [
+                '.field-meditation_fk',
+                '.field-affirmation_fk',
+                '.field-challenge_fk',
+                '.field-collection_fk',
+                '.field-push_link'
+            ];
+            if (value){
+                $('.push-hidden_field').css({"display": "none"});
+                $(push_hiddens[value-1]).parent().css({"display": "block"});
+            }
+        });
+
+        if ($('.field-push_type').length){
+            // $('.field-push_type').css({"display": "none"});
+            // $('select[name=push_set-0-push_type]').val( )
+            // document.location.pathname.slice(1, -1).split('/')
+        }
+    </script>
+{% endblock %}
+
+{# JavaScript for prepopulated fields #}
+{% prepopulated_fields_js %}
+
+</div>
+</form></div>
+{% endblock %}

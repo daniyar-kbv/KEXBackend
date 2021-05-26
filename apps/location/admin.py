@@ -3,6 +3,7 @@ from django.contrib import admin
 from apps.partners.models import IIKOBrand
 
 from .models import Country, City
+from ..common.admin import AbstractNameModelForm
 
 
 class IIKOBrandInline(admin.TabularInline):
@@ -23,10 +24,41 @@ class IIKOBrandInline(admin.TabularInline):
         return False
 
 
+class CountryForm(AbstractNameModelForm):
+    class Meta(AbstractNameModelForm.Meta):
+        model = Country
+
+
+class CityForm(AbstractNameModelForm):
+    class Meta(AbstractNameModelForm.Meta):
+        model = City
+
+
+@admin.register(Country)
+class CountryAdmin(admin.ModelAdmin):
+    readonly_fields = ('id',)
+    list_display = ('name',)
+    search_fields = ('name__text_ru',)
+    form = CountryForm
+    fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': (
+                'id',
+                'name_ru',
+                'name_kk',
+                'name_en',
+                'country_code',
+            )
+        }),
+    )
+
+
+@admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     model = City
     inlines = IIKOBrandInline,
+    form = CityForm
+    list_display = ('name',)
+    search_fields = ('name__text_ru',)
 
-
-admin.site.register(Country)
-admin.site.register(City, CityAdmin)

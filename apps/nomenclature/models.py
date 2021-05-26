@@ -16,12 +16,20 @@ class Category(UUIDModel, AbstractNameModel):
         null=True,
         related_name="categories",
     )
+    def __init__(self, *args, **kwargs):
+        super(Category, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "category_names"
+
 
 
 class Position(models.Model):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
+
+    def __init__(self, *args, **kwargs):
+        super(Position, self).__init__(*args, **kwargs)
+        self._meta.get_field('name').related_name = "position_names"
 
     iiko_brand = models.ForeignKey(
         "partners.IIKOBrand",
@@ -69,6 +77,7 @@ class PositionInfoByOrganization(models.Model):
         on_delete=models.CASCADE,
         related_name="positions",
     )
+
 
     price = models.DecimalField(
         _("Цена"),
