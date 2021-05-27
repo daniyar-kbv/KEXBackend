@@ -104,7 +104,6 @@ class AbstractNameModelForm(forms.ModelForm):
     name_en = forms.CharField(label="Название (англ)", required=False, max_length=256)
 
     class Meta:
-        # abstract = True
         fields = ('name_ru', 'name_kk', 'name_en',)
 
     def __init__(self, *args, **kwargs):

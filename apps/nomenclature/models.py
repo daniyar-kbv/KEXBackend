@@ -18,7 +18,7 @@ class Category(UUIDModel, AbstractNameModel):
     )
 
 
-class Position(models.Model):
+class Position(AbstractNameModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")

@@ -12,10 +12,6 @@ class Cart(UUIDModel, TimestampModel):
         verbose_name = _("Корзина")
         verbose_name_plural = _("Корзины")
 
-    # @property
-    # def total_price(self):
-    #     return self.annotate()
-
 
 class CartPosition(TimestampModel):
     class Meta:
