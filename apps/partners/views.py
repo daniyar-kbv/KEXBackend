@@ -11,7 +11,6 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
     serializer_class = BrandAPILoginSerializer
 
     def get_serializer_context(self):
-        print('city_id: ', self.kwargs.get("city_id", None))
         return {
             'request': self.request,
             'format': self.format_kwarg,
@@ -20,8 +19,8 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
         }
 
     def get_queryset(self):
-        print(self.kwargs)
         city = self.kwargs.get("city_id")
         if city:
             return self.queryset.filter(city=city)
+
         return self.queryset.distinct("brand")

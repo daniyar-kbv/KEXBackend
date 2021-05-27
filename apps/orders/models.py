@@ -4,7 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 from apps.common.models import TimestampModel, UUIDModel, ServiceHistoryModel
-from apps.partners.models import OrganizationRelationMixin
 
 from . import OrderStatuses
 from .managers import OrdersManager
@@ -52,7 +51,6 @@ class Lead(
 class Order(
     TimestampModel,
     ServiceHistoryModel,
-    OrganizationRelationMixin,
 ):
     class Meta:
         verbose_name = _("Заказ")

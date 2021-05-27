@@ -35,4 +35,5 @@ class BrandAPILoginSerializer(serializers.ModelSerializer):
             print('obj: ', obj)
             if Organization.objects.filter(iiko_brand__brand=obj.brand, iiko_brand__city__id=city, is_active=True).exists():
                 return True
+
         return False

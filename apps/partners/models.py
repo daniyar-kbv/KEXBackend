@@ -106,15 +106,3 @@ class Organization(AbstractNameModel):
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
 
     objects = OrganizationsQuerySet.as_manager()
-
-
-class OrganizationRelationMixin(models.Model):
-    organization = models.ForeignKey(
-        "partners.Organization",
-        on_delete=models.PROTECT,
-        null=True,
-        # related_name="positions",
-    )
-
-    class Meta:
-        abstract = True
