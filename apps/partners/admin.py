@@ -5,32 +5,23 @@ from apps.nomenclature.admin import CategoryInline
 from .models import Brand, IIKOBrand, Organization
 
 
-admin.site.register(Brand)
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_foreignkey(db_field, request, **kwargs)
+        print(formfield)
+        formfield.widget.can_delete_related = False
+        formfield.widget.can_add_related = False
+        formfield.widget.can_view_related = False
+        return formfield
 
 
 @admin.register(IIKOBrand)
 class IIKOBrandAdmin(admin.ModelAdmin):
     inlines = CategoryInline,
     list_filter = ('city',)
-    fields = (
-        'brand',
-        'city',
-        'full_name',
-        'api_login',
-        'is_active',
-        'priority',
-    )
 
 
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
     list_filter = ('iiko_brand',)
-    fields = (
-        'name',
-        'outer_id',
-        'iiko_brand',
-        'address',
-        'is_active',
-        'start_time',
-        'end_time',
-    )
