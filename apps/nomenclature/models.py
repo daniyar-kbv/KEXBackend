@@ -31,18 +31,18 @@ class LocalCategory(UUIDModel, AbstractNameModel):
         null=True,
         verbose_name=_("Локальный бренд"),
     )
-    # category = models.ForeignKey(
-    #     Category,
-    #     on_delete=models.PROTECT,
-    #     null=True,
-    #     verbose_name=_("Категория")
-    # )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.PROTECT,
+        null=True,
+        verbose_name=_("Категория")
+    )
     is_active = models.BooleanField(
         default=True,
     )
 
 
-class BranchCategory(AbstractNameModel):
+class BranchCategory(UUIDModel, AbstractNameModel):
     class Meta:
         verbose_name = _("Категория филиала")
         verbose_name_plural = _("Категории филиалов")
@@ -53,12 +53,12 @@ class BranchCategory(AbstractNameModel):
         null=True,
         verbose_name=_("Филиал"),
     )
-    # local_category = models.ForeignKey(
-    #     LocalCategory,
-    #     on_delete=models.PROTECT,
-    #     null=True,
-    #     verbose_name=_("Локальная категория"),
-    # )
+    local_category = models.ForeignKey(
+        LocalCategory,
+        on_delete=models.PROTECT,
+        null=True,
+        verbose_name=_("Локальная категория"),
+    )
     is_active = models.BooleanField(
         default=True
     )
