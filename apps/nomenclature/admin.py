@@ -15,6 +15,16 @@ class LocalCategoryInline(admin.StackedInline):
         "name",
         "category",
     )
+
+
+class BranchCategoryInline(admin.StackedInline):
+    model = BranchCategory
+    extra = 0
+    readonly_fields = (
+        "name",
+        "category",
+    )
+
 #
 #
 # class PositionInfoByBranchInline(admin.StackedInline):
