@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from apps.orders.models import Lead
 
 
-class GetOrganizations(BaseIIKOService):
+class GetBranches(BaseIIKOService):
     """Получение списка организации"""
     endpoint = "api/1/organizations"
     save_serializer = IIKOOrganizationSerializer

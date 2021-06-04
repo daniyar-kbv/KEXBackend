@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, ServiceHistoryModel
 
-from .managers import LocalBrandManager, OrganizationsQuerySet
+from .managers import LocalBrandManager, BranchesQuerySet
 
 
 class Brand(AbstractNameModel):
@@ -97,4 +97,4 @@ class Branch(AbstractNameModel):
     start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
 
-    objects = OrganizationsQuerySet.as_manager()
+    objects = BranchesQuerySet.as_manager()

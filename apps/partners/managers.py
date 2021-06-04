@@ -12,6 +12,6 @@ class LocalBrandManager(BaseManager.from_queryset(LocalBrandQuerySet)):
     ...
 
 
-class OrganizationsQuerySet(QuerySet):
+class BranchesQuerySet(QuerySet):
     def active(self):
         return self.filter(is_active=True)

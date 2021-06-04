@@ -6,7 +6,7 @@ from config import celery_app
 from django.db.transaction import atomic
 
 from apps.partners.models import LocalBrand, Branch
-from ..integrations.branches import GetOrganizations
+from ..integrations.branches import GetBranches
 from ..integrations.nomenclature import GetOrganizationNomenclature
 
 
@@ -20,7 +20,7 @@ def update_brand_organizations() -> None:
     for brand in LocalBrand.objects.active():
         with atomic():
             brand.deactivate_organizations()
-            GetOrganizations(instance=brand).run()
+            GetBranches(instance=brand).run()
 
 
 @celery_app.task(name="iiko.update_brand_nomenclatures") # noqa
