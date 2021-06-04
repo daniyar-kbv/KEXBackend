@@ -58,15 +58,15 @@ class Lead(
         verbose_name = _("Лид")
         verbose_name_plural = _("Лиды")
 
-    organization = models.ForeignKey(
-        "partners.Organization",
+    branch = models.ForeignKey(
+        "partners.Branch",
         verbose_name=_("Организация"),
         on_delete=models.PROTECT,
         null=True,
         related_name="leads",
     )
     iiko_brand = models.ForeignKey(
-        "partners.IIKOBrand",
+        "partners.LocalBrand",
         verbose_name=_("Бренд"),
         on_delete=models.PROTECT,
         null=True,

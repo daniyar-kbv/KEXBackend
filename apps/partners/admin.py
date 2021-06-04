@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from apps.nomenclature.admin import CategoryInline
+# from apps.nomenclature.admin import CategoryInline
 
-from .models import Brand, IIKOBrand, Organization
+from .models import Brand, LocalBrand, Branch
 
 
 @admin.register(Brand)
@@ -16,12 +16,12 @@ class BrandAdmin(admin.ModelAdmin):
         return formfield
 
 
-@admin.register(IIKOBrand)
-class IIKOBrandAdmin(admin.ModelAdmin):
-    inlines = CategoryInline,
+@admin.register(LocalBrand)
+class LocalBrandAdmin(admin.ModelAdmin):
+    # inlines = CategoryInline,
     list_filter = ('city',)
 
 
-@admin.register(Organization)
-class OrganizationAdmin(admin.ModelAdmin):
+@admin.register(Branch)
+class BranchAdmin(admin.ModelAdmin):
     list_filter = ('iiko_brand',)

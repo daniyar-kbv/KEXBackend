@@ -10,13 +10,13 @@ from .serializers import IIKONomenclatureSerializer
 from .base import BaseIIKOService
 
 if TYPE_CHECKING:
-    from apps.partners.models import Organization
+    from apps.partners.models import Branch
 
 
 class GetOrganizationNomenclature(BaseIIKOService):
     """Получение меню организации"""
     endpoint = "/api/1/nomenclature"
-    instance: 'Organization' = None
+    instance: 'Branch' = None
     save_serializer = IIKONomenclatureSerializer
 
     def get_iiko_brand_pk(self):
@@ -76,7 +76,7 @@ class GetOrganizationNomenclature(BaseIIKOService):
         print("prepared_data", self.prepare_to_save(prepared_data))
         serializer = self.save_serializer(
             data=self.prepare_to_save(prepared_data), many=True,
-            context={"organization": self.instance}
+            context={"branch": self.instance}
         )
 
         serializer.is_valid(raise_exception=True)

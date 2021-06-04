@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, ServiceHistoryModel
 
-from .managers import IIKOBrandManager, OrganizationsQuerySet
+from .managers import LocalBrandManager, OrganizationsQuerySet
 
 
 class Brand(AbstractNameModel):
@@ -19,7 +19,7 @@ class Brand(AbstractNameModel):
     image_long = models.ImageField(_("Картинка длинная"), null=True, blank=True)
 
 
-class IIKOBrand(ServiceHistoryModel):
+class LocalBrand(ServiceHistoryModel):
     class Meta:
         unique_together = "brand", "city"
         verbose_name = _("IIKO Брэнд")
@@ -55,12 +55,12 @@ class IIKOBrand(ServiceHistoryModel):
         default=1,
     )
 
-    objects = IIKOBrandManager()
+    objects = LocalBrandManager()
 
     def deactivate_organizations(self):  # noqa
-        for organization in self.organizations.all():  # noqa
-            organization.is_active = False
-            organization.save(update_fields=["is_active"])
+        for branch in self.organizations.all():  # noqa
+            branch.is_active = False
+            branch.save(update_fields=["is_active"])
 
     @property
     def cache_mask(self):
@@ -70,13 +70,13 @@ class IIKOBrand(ServiceHistoryModel):
         return f"{self.brand}. {self.city}"
 
 
-class Organization(AbstractNameModel):
+class Branch(AbstractNameModel):
     class Meta:
         verbose_name = _("Организация")
         verbose_name_plural = _("Организации")
 
     iiko_brand = models.ForeignKey(  # noqa
-        "partners.IIKOBrand",
+        "partners.LocalBrand",
         on_delete=models.PROTECT,
         related_name="organizations",
         null=True,

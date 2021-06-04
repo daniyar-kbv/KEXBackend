@@ -1,13 +1,13 @@
 from django.contrib import admin
 
-from apps.partners.models import IIKOBrand
+from apps.partners.models import LocalBrand
 
 from .models import Country, City
 from ..common.admin import AbstractNameModelForm
 
 
-class IIKOBrandInline(admin.TabularInline):
-    model = IIKOBrand
+class LocalBrandInline(admin.TabularInline):
+    model = LocalBrand
     readonly_fields = "brand_name",
     fields = (
         "brand_name",
@@ -57,7 +57,7 @@ class CountryAdmin(admin.ModelAdmin):
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     model = City
-    inlines = IIKOBrandInline,
+    inlines = LocalBrandInline,
     form = CityForm
     list_display = ('name',)
     search_fields = ('name__text_ru',)

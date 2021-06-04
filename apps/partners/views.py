@@ -2,12 +2,12 @@ from rest_framework.generics import ListAPIView
 
 from apps.common.mixins import JSONRendererMixin, PublicAPIMixin
 
-from .models import IIKOBrand
+from .models import LocalBrand
 from .serializers import BrandAPILoginSerializer
 
 
 class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
-    queryset = IIKOBrand.objects.all()
+    queryset = LocalBrand.objects.all()
     serializer_class = BrandAPILoginSerializer
 
     def get_serializer_context(self):

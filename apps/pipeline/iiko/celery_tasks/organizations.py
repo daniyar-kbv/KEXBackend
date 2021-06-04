@@ -18,8 +18,8 @@ def find_lead_organization(lead_pk: int):
     lead.refresh_from_db()
 
     """
-    adding an organization to cache 
+    adding an branch to cache 
     for frequent updating of "stop list"
     p.s. expires in 2 hours
     """
-    cache.set(str(lead.organization.outer_id), True, 2 * 60 * 60)
+    cache.set(str(lead.branch.outer_id), True, 2 * 60 * 60)

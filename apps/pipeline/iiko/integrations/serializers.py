@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from apps.orders.models import Lead
 from apps.location.models import Address
-from apps.partners.models import Organization
+from apps.partners.models import Branch
 from apps.nomenclature.models import Position, PositionInfoByOrganization
 
 if TYPE_CHECKING:
@@ -28,13 +28,13 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
     address = IIKOAddressSerializer(required=False)
 
     class Meta:
-        model = Organization
+        model = Branch
         fields = "__all__"
 
     def create(self, validated_data):
         address = validated_data.pop("address", None)
 
-        instance, created = Organization.objects.update_or_create(
+        instance, created = Branch.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),
             defaults={
                 "is_active": True,
@@ -64,7 +64,7 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        validated_data["organization"] = Organization.objects.get(  # noqa
+        validated_data["branch"] = Branch.objects.get(  # noqa
             outer_id=validated_data.pop("organization_outer_id")
         )
 
@@ -91,7 +91,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         )
 
         PositionInfoByOrganization.objects.get_or_create(
-            organization=self.context["organization"],
+            branch=self.context["branch"],
             position=position,
             defaults={
                 "price": price,

@@ -5,7 +5,7 @@ Only for cron, not for import
 from config import celery_app
 from django.db.transaction import atomic
 
-from apps.partners.models import IIKOBrand, Organization
+from apps.partners.models import LocalBrand, Branch
 from ..integrations.organizations import GetOrganizations
 from ..integrations.nomenclature import GetOrganizationNomenclature
 
@@ -17,7 +17,7 @@ def update_brand_organizations() -> None:
     :return:
     """
 
-    for brand in IIKOBrand.objects.active():
+    for brand in LocalBrand.objects.active():
         with atomic():
             brand.deactivate_organizations()
             GetOrganizations(instance=brand).run()
@@ -30,5 +30,5 @@ def update_brand_nomenclatures():
     :return:
     """
 
-    for organization in Organization.objects.active():
-        GetOrganizationNomenclature(instance=organization).run()
+    for branch in Branch.objects.active():
+        GetOrganizationNomenclature(instance=branch).run()

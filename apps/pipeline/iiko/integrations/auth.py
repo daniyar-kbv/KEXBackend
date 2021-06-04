@@ -6,12 +6,12 @@ from django.core.cache import cache
 from apps.pipeline.services import BaseService
 
 if TYPE_CHECKING:
-    from apps.partners.models import IIKOBrand
+    from apps.partners.models import LocalBrand
 
 
 class GetAuthToken(BaseService):
     """Получение токена брэнда"""
-    instance: 'IIKOBrand' = None
+    instance: 'LocalBrand' = None
 
     host = config.IIKO_SERVICE_HOST
     endpoint = "/api/1/access_token"

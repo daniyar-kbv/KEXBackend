@@ -7,12 +7,12 @@ from apps.pipeline.services import BaseService
 from ..celery_tasks.auth import fetch_auth_token
 
 if TYPE_CHECKING:
-    from apps.partners.models import IIKOBrand
+    from apps.partners.models import LocalBrand
 
 
 class BaseIIKOService(BaseService):  # noqa
     auth_token: str = None
-    instance: 'IIKOBrand' = None
+    instance: 'LocalBrand' = None
     host = config.IIKO_SERVICE_HOST
 
     def get_iiko_brand_pk(self):  # noqa

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from apps.location.models import Address
-from apps.partners.models import IIKOBrand
+from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
 from apps.nomenclature.models import Category, PositionInfoByOrganization
 
@@ -38,10 +38,10 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         attrs = super().validate(attrs)
         city_id, brand_id = attrs.pop("city_id"), attrs.pop("brand_id")
 
-        if not IIKOBrand.objects.filter(brand_id=brand_id, city_id=city_id).exists():
+        if not LocalBrand.objects.filter(brand_id=brand_id, city_id=city_id).exists():
             raise BrandNotFound
 
-        attrs["iiko_brand"] = IIKOBrand.objects.get(brand_id=brand_id, city_id=brand_id)
+        attrs["iiko_brand"] = LocalBrand.objects.get(brand_id=brand_id, city_id=brand_id)
 
         return attrs
 
@@ -81,7 +81,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
 
 class LeadNomenclatureSerializer(serializers.ModelSerializer):
     categories = NomenclatureCategorySerializer(source="brand.categories", many=True, read_only=True)
-    positions = NomenclaturePositionSerializer(source="organization.positions", many=True, read_only=True)
+    positions = NomenclaturePositionSerializer(source="branch.positions", many=True, read_only=True)
 
     class Meta:
         model = Lead

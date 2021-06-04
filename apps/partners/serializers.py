@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Brand, IIKOBrand, Organization
+from .models import Brand, LocalBrand, Branch
 
 
 class BrandImagesSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class BrandAPILoginSerializer(serializers.ModelSerializer):
     is_available = serializers.SerializerMethodField()
 
     class Meta:
-        model = IIKOBrand
+        model = LocalBrand
         fields = (
             "id",
             "name",
@@ -33,7 +33,7 @@ class BrandAPILoginSerializer(serializers.ModelSerializer):
         city = self.context['city_id']
         if city:
             print('obj: ', obj)
-            if Organization.objects.filter(iiko_brand__brand=obj.brand, iiko_brand__city__id=city, is_active=True).exists():
+            if Branch.objects.filter(iiko_brand__brand=obj.brand, iiko_brand__city__id=city, is_active=True).exists():
                 return True
 
         return False
