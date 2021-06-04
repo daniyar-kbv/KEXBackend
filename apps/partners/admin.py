@@ -1,24 +1,18 @@
 from django.contrib import admin
 
-# from apps.nomenclature.admin import CategoryInline
+from apps.nomenclature.admin import CategoryInline, LocalCategoryInline
 
 from .models import Brand, LocalBrand, Branch
 
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        formfield = super().formfield_for_foreignkey(db_field, request, **kwargs)
-        print(formfield)
-        formfield.widget.can_delete_related = False
-        formfield.widget.can_add_related = False
-        formfield.widget.can_view_related = False
-        return formfield
+    inlines = [CategoryInline]
 
 
 @admin.register(LocalBrand)
 class LocalBrandAdmin(admin.ModelAdmin):
-    # inlines = CategoryInline,
+    inlines = [LocalCategoryInline]
     list_filter = ('city',)
 
 

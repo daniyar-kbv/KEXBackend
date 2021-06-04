@@ -28,7 +28,7 @@ class LocalBrand(ServiceHistoryModel):
     brand = models.ForeignKey(
         "partners.Brand",
         on_delete=models.CASCADE,
-        related_name="api_logins",
+        related_name="local_brands",
         verbose_name=_("Брэнд"),
     )
     full_name = models.CharField(

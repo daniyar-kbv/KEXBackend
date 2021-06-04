@@ -14,6 +14,7 @@ class Category(UUIDModel, AbstractNameModel):
         verbose_name=_("Бренд"),
         on_delete=models.PROTECT,
         null=True,
+        related_name="categories",
     )
     is_active = models.BooleanField(
         default=False
@@ -29,6 +30,7 @@ class LocalCategory(UUIDModel, AbstractNameModel):
         "partners.LocalBrand",
         on_delete=models.PROTECT,
         null=True,
+        related_name="categories",
         verbose_name=_("Локальный бренд"),
     )
     category = models.ForeignKey(
@@ -51,6 +53,7 @@ class BranchCategory(UUIDModel, AbstractNameModel):
         "partners.Branch",
         on_delete=models.PROTECT,
         null=True,
+        related_name="categories",
         verbose_name=_("Филиал"),
     )
     local_category = models.ForeignKey(
