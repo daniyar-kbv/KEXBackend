@@ -11,7 +11,7 @@ from ..integrations.nomenclature import GetOrganizationNomenclature
 
 
 @celery_app.task(name="iiko.update_brand_organizations")  # noqa
-def update_brand_organizations() -> None:
+def update_brand_branches() -> None:
     """
     Update branches of all brands
     :return:
@@ -19,7 +19,7 @@ def update_brand_organizations() -> None:
 
     for brand in LocalBrand.objects.active():
         with atomic():
-            brand.deactivate_organizations()
+            brand.deactivate_branches()
             GetBranches(instance=brand).run()
 
 

@@ -41,7 +41,7 @@ class GetBranches(BaseIIKOService):
         for org in data["organizations"]:
             prepared_data.append({
                 "local_brand": self.instance.pk,  # noqa
-                "name": org.get("name"),
+                "iiko_name": org.get("name"),
                 "outer_id": org.get("id"),
                 "address": {
                     "country": org.get("country"),

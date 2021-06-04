@@ -5,6 +5,11 @@ from apps.nomenclature.admin import CategoryInline, LocalCategoryInline
 from .models import Brand, LocalBrand, Branch
 
 
+class BranchInline(admin.StackedInline):
+    model = Branch
+    extra = 0
+
+
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     inlines = [CategoryInline]
@@ -12,7 +17,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(LocalBrand)
 class LocalBrandAdmin(admin.ModelAdmin):
-    inlines = [LocalCategoryInline]
+    inlines = [LocalCategoryInline, BranchInline]
     list_filter = ('city',)
 
 

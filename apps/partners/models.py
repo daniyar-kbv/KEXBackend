@@ -57,7 +57,7 @@ class LocalBrand(ServiceHistoryModel):
 
     objects = LocalBrandManager()
 
-    def deactivate_organizations(self):  # noqa
+    def deactivate_branches(self):  # noqa
         for branch in self.branches.all():  # noqa
             branch.is_active = False
             branch.save(update_fields=["is_active"])
@@ -81,6 +81,10 @@ class Branch(AbstractNameModel):
         related_name="branches",
         null=True,
     )
+    iiko_name = models.CharField(
+        max_length=512,
+        null=True
+    )
     address = models.ForeignKey(
         "location.Address",
         on_delete=models.PROTECT,
@@ -98,3 +102,9 @@ class Branch(AbstractNameModel):
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
 
     objects = BranchesQuerySet.as_manager()
+
+    def __str__(self):
+        if self.name is not None:
+            return self.name
+
+        return self.iiko_name
