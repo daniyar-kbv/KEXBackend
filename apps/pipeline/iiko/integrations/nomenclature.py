@@ -60,7 +60,7 @@ class GetOrganizationNomenclature(BaseIIKOService):
         for position in data.get("products", list()):
             positions.append(PythonPosition(
                 outer_id=position.get('id'),
-                iiko_brand=self.instance.iiko_brand_id,  # noqa
+                local_brand=self.instance.iiko_brand_id,  # noqa
                 iiko_name=position.get("name") or None,
                 iiko_description=position.get("description") or None,
                 price=self._fetch_price(position),

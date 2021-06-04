@@ -65,7 +65,7 @@ class Lead(
         null=True,
         related_name="leads",
     )
-    iiko_brand = models.ForeignKey(
+    local_brand = models.ForeignKey(
         "partners.LocalBrand",
         verbose_name=_("Бренд"),
         on_delete=models.PROTECT,

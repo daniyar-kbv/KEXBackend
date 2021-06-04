@@ -69,7 +69,7 @@ class Position(models.Model):
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
 
-    iiko_brand = models.ForeignKey(
+    local_brand = models.ForeignKey(
         "partners.LocalBrand",
         on_delete=models.PROTECT,
         related_name="positions",

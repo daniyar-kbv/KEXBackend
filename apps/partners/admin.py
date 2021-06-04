@@ -24,4 +24,4 @@ class LocalBrandAdmin(admin.ModelAdmin):
 
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
-    list_filter = ('iiko_brand',)
+    list_filter = ('local_brand',)

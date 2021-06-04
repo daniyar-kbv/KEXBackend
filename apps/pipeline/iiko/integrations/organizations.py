@@ -40,7 +40,7 @@ class GetOrganizations(BaseIIKOService):
         prepared_data = list()
         for org in data["organizations"]:
             prepared_data.append({
-                "iiko_brand": self.instance.pk,  # noqa
+                "local_brand": self.instance.pk,  # noqa
                 "name": org.get("name"),
                 "outer_id": org.get("id"),
                 "address": {
@@ -72,7 +72,7 @@ class FindOrganization(BaseIIKOService):
 
     def __init__(self, instance=None, **kwargs):
         super().__init__(instance, **kwargs)
-        branch = self.instance.iiko_brand.organizations.first()
+        branch = self.instance.local_brand.organizations.first()
         self.random_organization_id = str(branch.outer_id if branch else "")
         self.longitude = str(self.instance.address.longitude)
         self.latitude = str(self.instance.address.latitude)

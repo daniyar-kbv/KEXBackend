@@ -24,7 +24,7 @@
 # class PositionAdmin(admin.ModelAdmin):
 #     model = Position
 #     list_filter = (
-#         "iiko_brand",
+#         "local_brand",
 #         "category",
 #     )
 #     inlines = [PositionInfoByBranchInline]
@@ -34,7 +34,7 @@
 #         "name_kk",
 #         "name_ru",
 #         "name_en",
-#         "iiko_brand",
+#         "local_brand",
 #         "iiko_name",
 #         "iiko_description",
 #         "category",

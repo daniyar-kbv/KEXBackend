@@ -75,7 +75,7 @@ class Branch(AbstractNameModel):
         verbose_name = _("Организация")
         verbose_name_plural = _("Организации")
 
-    iiko_brand = models.ForeignKey(  # noqa
+    local_brand = models.ForeignKey(  # noqa
         "partners.LocalBrand",
         on_delete=models.PROTECT,
         related_name="organizations",
