@@ -15,7 +15,7 @@ class BaseIIKOService(BaseService):  # noqa
     instance: 'LocalBrand' = None
     host = config.IIKO_SERVICE_HOST
 
-    def get_iiko_brand_pk(self):  # noqa
+    def get_local_brand_pk(self):  # noqa
         return self.instance.pk
 
     def get_headers(self):
@@ -25,4 +25,4 @@ class BaseIIKOService(BaseService):  # noqa
 
     def __init__(self, instance=None, **kwargs):
         super().__init__(instance, **kwargs)
-        self.auth_token = fetch_auth_token(self.get_iiko_brand_pk())
+        self.auth_token = fetch_auth_token(self.get_local_brand_pk())

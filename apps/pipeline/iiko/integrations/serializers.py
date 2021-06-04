@@ -6,7 +6,7 @@ from rest_framework import serializers
 from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.partners.models import Branch
-from apps.nomenclature.models import Position, PositionInfoByOrganization
+from apps.nomenclature.models import Position, BranchPosition
 
 if TYPE_CHECKING:
     from ..python_entities.positions import (
@@ -90,7 +90,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             }
         )
 
-        PositionInfoByOrganization.objects.get_or_create(
+        BranchPosition.objects.get_or_create(
             branch=self.context["branch"],
             position=position,
             defaults={

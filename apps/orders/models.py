@@ -24,7 +24,7 @@ class CartPosition(TimestampModel):
         related_name="cart_positions",
     )
     organization_position = models.ForeignKey(
-        "nomenclature.PositionInfoByOrganization",
+        "nomenclature.BranchPosition",
         on_delete=models.CASCADE,
         related_name="carts",
         to_field="uuid",

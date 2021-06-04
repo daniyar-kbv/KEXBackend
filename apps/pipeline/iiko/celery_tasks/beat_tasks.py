@@ -7,7 +7,7 @@ from django.db.transaction import atomic
 
 from apps.partners.models import LocalBrand, Branch
 from ..integrations.branches import GetBranches
-from ..integrations.nomenclature import GetOrganizationNomenclature
+from ..integrations.nomenclature import GetBranchNomenclature
 
 
 @celery_app.task(name="iiko.update_brand_organizations")  # noqa
@@ -31,4 +31,4 @@ def update_brand_nomenclatures():
     """
 
     for branch in Branch.objects.active():
-        GetOrganizationNomenclature(instance=branch).run()
+        GetBranchNomenclature(instance=branch).run()

@@ -77,8 +77,8 @@ class FindOrganization(BaseIIKOService):
         self.longitude = str(self.instance.address.longitude)
         self.latitude = str(self.instance.address.latitude)
 
-    def get_iiko_brand_pk(self):
-        return self.instance.iiko_brand_id  # noqa
+    def get_local_brand_pk(self):
+        return self.instance.local_brand_id  # noqa
 
     def run_service(self) -> Any:
         return self.fetch(json={

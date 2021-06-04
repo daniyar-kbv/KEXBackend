@@ -13,14 +13,14 @@ if TYPE_CHECKING:
     from apps.partners.models import Branch
 
 
-class GetOrganizationNomenclature(BaseIIKOService):
+class GetBranchNomenclature(BaseIIKOService):
     """Получение меню организации"""
     endpoint = "/api/1/nomenclature"
     instance: 'Branch' = None
     save_serializer = IIKONomenclatureSerializer
 
-    def get_iiko_brand_pk(self):
-        return self.instance.iiko_brand_id  # noqa
+    def get_local_brand_pk(self):
+        return self.instance.local_brand_id  # noqa
 
     def run_service(self):
         return self.fetch(json={
@@ -60,7 +60,7 @@ class GetOrganizationNomenclature(BaseIIKOService):
         for position in data.get("products", list()):
             positions.append(PythonPosition(
                 outer_id=position.get('id'),
-                local_brand=self.instance.iiko_brand_id,  # noqa
+                local_brand=self.instance.local_brand_id,  # noqa
                 iiko_name=position.get("name") or None,
                 iiko_description=position.get("description") or None,
                 price=self._fetch_price(position),

@@ -67,7 +67,7 @@ class BranchCategory(UUIDModel, AbstractNameModel):
     )
 
 
-class Position(models.Model):
+class Position(UUIDModel, AbstractNameModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
@@ -77,6 +77,9 @@ class Position(models.Model):
         on_delete=models.PROTECT,
         related_name="positions",
     )
+    image = models.ImageField(
+        null=True, blank=True
+    )
     iiko_name = models.CharField(
         _("Название в системе IIKO"),
         max_length=256, null=True, blank=True,
@@ -84,13 +87,13 @@ class Position(models.Model):
     iiko_description = models.TextField(
         _("Описание в системе IIKO"), null=True, blank=True,
     )
-    category = models.ForeignKey(
-        "nomenclature.Category",
-        on_delete=models.PROTECT,
-        null=True, blank=True,
-        related_name="positions",
-        verbose_name=_("Категория"),
-    )
+    # category = models.ForeignKey(
+    #     "nomenclature.Category",
+    #     on_delete=models.PROTECT,
+    #     null=True, blank=True,
+    #     related_name="positions",
+    #     verbose_name=_("Категория"),
+    # )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
     )
@@ -103,7 +106,7 @@ class Position(models.Model):
         return self.iiko_name
 
 
-class PositionInfoByOrganization(UUIDModel):
+class BranchPosition(UUIDModel):
     class Meta:
         unique_together = ("position", "branch")
 

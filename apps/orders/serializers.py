@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.location.models import Address
 from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
-from apps.nomenclature.models import Category, PositionInfoByOrganization
+from apps.nomenclature.models import Category, BranchPosition
 
 from .models import Lead
 
@@ -69,7 +69,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source="position.category_id")
 
     class Meta:
-        model = PositionInfoByOrganization
+        model = BranchPosition
         fields = (
             "id",
             "name",
