@@ -7,7 +7,7 @@ from rest_framework.generics import (
 )
 
 from apps.common.mixins import JSONPublicAPIMixin
-from apps.pipeline.iiko.celery_tasks.organizations import find_lead_organization
+from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 
 from .serializers import ApplyLeadSerializer, LeadNomenclatureSerializer
 from .models import Lead

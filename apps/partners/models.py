@@ -58,7 +58,7 @@ class LocalBrand(ServiceHistoryModel):
     objects = LocalBrandManager()
 
     def deactivate_organizations(self):  # noqa
-        for branch in self.organizations.all():  # noqa
+        for branch in self.branches.all():  # noqa
             branch.is_active = False
             branch.save(update_fields=["is_active"])
 
@@ -78,7 +78,7 @@ class Branch(AbstractNameModel):
     local_brand = models.ForeignKey(  # noqa
         "partners.LocalBrand",
         on_delete=models.PROTECT,
-        related_name="organizations",
+        related_name="branches",
         null=True,
     )
     address = models.ForeignKey(

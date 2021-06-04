@@ -72,7 +72,7 @@ class FindOrganization(BaseIIKOService):
 
     def __init__(self, instance=None, **kwargs):
         super().__init__(instance, **kwargs)
-        branch = self.instance.local_brand.organizations.first()
+        branch = self.instance.local_brand.branches.first()
         self.random_organization_id = str(branch.outer_id if branch else "")
         self.longitude = str(self.instance.address.longitude)
         self.latitude = str(self.instance.address.latitude)

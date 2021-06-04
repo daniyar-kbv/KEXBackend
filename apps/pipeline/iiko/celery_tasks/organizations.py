@@ -2,7 +2,7 @@ from config import celery_app
 from django.core.cache import cache
 
 from apps.orders.models import Lead
-from apps.pipeline.iiko.integrations.organizations import FindOrganization
+from apps.pipeline.iiko.integrations.branches import FindOrganization
 from apps.partners.exceptions import TerminalNotFound
 
 
