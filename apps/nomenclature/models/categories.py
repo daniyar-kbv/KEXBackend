@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from apps.common.models import AbstractNameModel, UUIDModel
 
 
-class Category(UUIDModel, AbstractNameModel):
+class Category(AbstractNameModel):
     class Meta:
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории")
@@ -23,7 +23,7 @@ class Category(UUIDModel, AbstractNameModel):
     )
 
 
-class LocalCategory(UUIDModel, AbstractNameModel):
+class LocalCategory(AbstractNameModel):
     class Meta:
         verbose_name = _("Локальная категория")
         verbose_name_plural = _("Локальные категории")
