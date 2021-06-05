@@ -28,6 +28,12 @@ class LeadNomenclatureView(JSONPublicAPIMixin, RetrieveAPIView):
     lookup_field = "uuid"
     lookup_url_kwarg = "lead_uuid"
 
+    def get_serializer_context(self):
+        return {
+            "request": self.request,
+            "language": self.request.META["HTTP_LANGUAGE"],
+        }
+
 
 from .models import CartPosition
 from .serializers import UpdateCartSerializer

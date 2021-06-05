@@ -48,12 +48,14 @@ class LocalPositionInline(ReadChangeOnlyTabularInline):
     extra = 0
     classes = ("collapse",)
     fields = (
-         "name",
-         "image",
-         "get_iiko_name",
-         "local_category",
+        "id",
+        "name",
+        "image",
+        "get_iiko_name",
+        "local_category",
     )
     readonly_fields = (
+        "id",
         "get_iiko_name",
     )
 

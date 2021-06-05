@@ -68,7 +68,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
     # description = serializers.CharField(source="position.iiko_description")
     # category = serializers.CharField(source="position.category_id")
     # outer_id = serializers.CharField(source="local_position.outer_id")
-    image = serializers.ImageField(source="local_position.image", required=False)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = BranchPosition
@@ -80,6 +80,13 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
             "price",
             "branch_category",
         )
+
+    def get_image(self, obj):
+        if not obj.local_position.image:
+            return
+
+        request = self.context["request"]
+        return request.build_absolute_uri(obj.local_position.image.url)
 
 
 class LeadNomenclatureSerializer(serializers.ModelSerializer):
@@ -98,20 +105,21 @@ class LeadNomenclatureSerializer(serializers.ModelSerializer):
         }
 
     def to_representation(self, instance):
+        # todo: add select relates
         data = super().to_representation(instance)
         data["categories"] = NomenclatureCategorySerializer(
             instance=instance.branch.branch_categories.filter(
                 name__isnull=False,
                 is_active=True,
             ),
-            many=True,
+            many=True, context=self.context,
         ).data
         data["positions"] = NomenclaturePositionSerializer(
             instance=instance.branch.branch_positions.filter(
                 branch_category__isnull=False,
                 name__isnull=False,
             ),
-            many=True,
+            many=True, context=self.context,
         ).data
 
         return data
