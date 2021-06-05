@@ -2,13 +2,19 @@ from django.urls import reverse
 from django.contrib import admin
 from django.utils.html import format_html
 
-from apps.common.admin import ReadOnlyMixin, ReadChangeOnlyTabularInline
+from apps.common.admin import ReadChangeOnlyTabularInline
 from apps.nomenclature.admin import (
     CategoryInline, LocalCategoryInline, BranchCategoryInline,
     LocalPositionInline, BranchPositionInline,
 )
 
-from .models import Brand, LocalBrand, Branch
+from .models import Brand, BrandImage, LocalBrand, Branch
+
+
+class BrandImageInline(admin.StackedInline):
+    model = BrandImage
+    extra = 0
+    classes = ("collapse",)
 
 
 class BranchInline(ReadChangeOnlyTabularInline):
@@ -67,7 +73,7 @@ class LocalBrandInline(LocalBrandInlineBase):
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    inlines = [CategoryInline, LocalBrandInline]
+    inlines = [BrandImageInline, CategoryInline, LocalBrandInline]
 
 
 @admin.register(LocalBrand)
