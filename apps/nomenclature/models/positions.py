@@ -21,7 +21,7 @@ class LocalPosition(UUIDModel, AbstractNameModel):
     local_brand = models.ForeignKey(
         "partners.LocalBrand",
         on_delete=models.PROTECT,
-        related_name="positions",
+        related_name="local_positions",
     )
     image = models.ImageField(
         null=True, blank=True
@@ -31,13 +31,6 @@ class LocalPosition(UUIDModel, AbstractNameModel):
         max_digits=12,
         decimal_places=2,
         default=Decimal(0),
-    )
-    iiko_name = models.CharField(
-        _("Название в системе IIKO"),
-        max_length=256, null=True, blank=True,
-    )
-    iiko_description = models.TextField(
-        _("Описание в системе IIKO"), null=True, blank=True,
     )
     local_category = models.ForeignKey(
         "nomenclature.LocalCategory",
@@ -54,17 +47,24 @@ class LocalPosition(UUIDModel, AbstractNameModel):
     )
 
     def __str__(self):
-        return self.iiko_name
+        return self.name or "Не задано название"
 
 
-class BranchPosition(UUIDModel):
+class BranchPosition(UUIDModel, AbstractNameModel):
     class Meta:
         unique_together = ("local_position", "branch")
 
     local_position = models.ForeignKey(
         "nomenclature.LocalPosition",
         on_delete=models.CASCADE,
-        related_name="positions_by_org",
+        related_name="branch_positions",
+    )
+    iiko_name = models.CharField(
+        _("Название в системе IIKO"),
+        max_length=256, null=True, blank=True,
+    )
+    iiko_description = models.TextField(
+        _("Описание в системе IIKO"), null=True, blank=True,
     )
     branch_category = models.ForeignKey(
         "nomenclature.BranchCategory",
@@ -82,3 +82,6 @@ class BranchPosition(UUIDModel):
         decimal_places=2,
         max_digits=12
     )
+
+    def __str__(self):
+        return self.name or "Не задано название"

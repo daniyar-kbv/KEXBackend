@@ -32,7 +32,7 @@ class LocalCategory(UUIDModel, AbstractNameModel):
         "partners.LocalBrand",
         on_delete=models.PROTECT,
         null=True,
-        related_name="categories",
+        related_name="local_categories",
         verbose_name=_("Локальный бренд"),
     )
     category = models.ForeignKey(
@@ -55,7 +55,7 @@ class BranchCategory(UUIDModel, AbstractNameModel):
         "partners.Branch",
         on_delete=models.PROTECT,
         null=True,
-        related_name="categories",
+        related_name="branch_categories",
         verbose_name=_("Филиал"),
     )
     local_category = models.ForeignKey(

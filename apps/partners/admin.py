@@ -5,6 +5,7 @@ from django.utils.html import format_html
 from apps.common.admin import ReadOnlyMixin, ReadChangeOnlyTabularInline
 from apps.nomenclature.admin import (
     CategoryInline, LocalCategoryInline, BranchCategoryInline,
+    LocalPositionInline, BranchPositionInline,
 )
 
 from .models import Brand, LocalBrand, Branch
@@ -71,11 +72,27 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(LocalBrand)
 class LocalBrandAdmin(admin.ModelAdmin):
-    inlines = [LocalCategoryInline, BranchInline]
+    inlines = [
+        LocalCategoryInline,
+        LocalPositionInline,
+        BranchInline,
+    ]
+    list_select_related = (
+        "local_categories",
+        "local_positions",
+        "branches",
+    )
     list_filter = ('city',)
 
 
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
     list_filter = ('local_brand',)
-    inlines = [BranchCategoryInline]
+    list_select_related = (
+        "branch_positions",
+        "branch_categories",
+    )
+    inlines = [
+        BranchCategoryInline,
+        BranchPositionInline,
+    ]

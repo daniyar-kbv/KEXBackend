@@ -2,7 +2,10 @@ from django.contrib import admin
 
 from apps.common.admin import ReadChangeOnlyTabularInline
 
-from .models import Category, LocalCategory, BranchCategory
+from .models import (
+    Category, LocalCategory, BranchCategory,
+    LocalPosition, BranchPosition,
+)
 
 
 class CategoryInline(admin.TabularInline):
@@ -39,37 +42,38 @@ class BranchCategoryInline(ReadChangeOnlyTabularInline):
         "name",
     )
 
-#
-#
-# class LocalPositionInfoByBranchInline(admin.StackedInline):
-#     model = LocalPositionInfoByBranch
-#     extra = 0
-#
-#
-# class LocalPositionForm(AbstractNameModelForm):
-#     class Meta(AbstractNameModelForm.Meta):
-#         model = LocalPosition
-#
-#
-# @admin.register(LocalPosition)
-# class LocalPositionAdmin(admin.ModelAdmin):
-#     model = LocalPosition
-#     list_filter = (
-#         "local_brand",
-#         "category",
-#     )
-#     inlines = [LocalPositionInfoByBranchInline]
-#     form = LocalPositionForm
-#
-#     fields = (
-#         "name_kk",
-#         "name_ru",
-#         "name_en",
-#         "local_brand",
-#         "iiko_name",
-#         "iiko_description",
-#         "category",
-#         "outer_id",
-#     )
-#
-# admin.site.register(Category)
+
+class LocalPositionInline(ReadChangeOnlyTabularInline):
+    model = LocalPosition
+    extra = 0
+    classes = ("collapse",)
+    fields = (
+         "name",
+         "get_iiko_name",
+         "local_category",
+    )
+    readonly_fields = (
+        "get_iiko_name",
+    )
+
+    def get_iiko_name(self, obj):
+        return obj.branch_positions.filter(
+            iiko_name__isnull=False
+        ).first().iiko_name
+    get_iiko_name.short_description = "Название в системе IIKO"
+
+
+class BranchPositionInline(ReadChangeOnlyTabularInline):
+    model = BranchPosition
+    extra = 0
+    classes = ("collapse",)
+    fields = (
+        "name",
+        "iiko_name",
+        "branch_category",
+    )
+    readonly_fields = (
+        "name",
+        "iiko_name",
+        "branch_category",
+    )
