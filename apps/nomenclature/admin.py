@@ -5,12 +5,14 @@ from .models import Category, LocalCategory, BranchCategory
 
 class CategoryInline(admin.TabularInline):
     model = Category
+    classes = ("collapse",)
     extra = 0
 
 
 class LocalCategoryInline(admin.TabularInline):
     model = LocalCategory
     extra = 0
+    classes = ("collapse",)
     readonly_fields = (
         "name",
         "category",
@@ -20,6 +22,7 @@ class LocalCategoryInline(admin.TabularInline):
 class BranchCategoryInline(admin.TabularInline):
     model = BranchCategory
     extra = 0
+    classes = ("collapse",)
     readonly_fields = (
         "name",
         "category",

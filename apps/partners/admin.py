@@ -11,6 +11,7 @@ from .models import Brand, LocalBrand, Branch
 class BranchInline(admin.TabularInline):
     model = Branch
     extra = 0
+    classes = ("collapse",)
     fields = (
         "get_branch_link",
         "is_active",
@@ -30,6 +31,7 @@ class BranchInline(admin.TabularInline):
 class LocalBrandInline(admin.TabularInline):
     model = LocalBrand
     extra = 0
+    classes = ("collapse",)
     fields = (
         "get_local_brand_link",
         "city",
