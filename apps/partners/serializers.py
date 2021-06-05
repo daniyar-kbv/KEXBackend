@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.common.serializers import AbstractNameSerializer
+
 from .models import Brand, LocalBrand, Branch
 
 
@@ -12,6 +14,20 @@ class BrandImagesSerializer(serializers.ModelSerializer):
             "image_short",
             "image_tall",
             "image_long",
+        )
+
+
+class BrandSerializer(AbstractNameSerializer):
+    image = serializers.CharField(required=False)
+    is_available = serializers.BooleanField(required=False)
+
+    class Meta:
+        model = Brand
+        fields = (
+            "id",
+            "name",
+            "image",
+            "is_available"
         )
 
 

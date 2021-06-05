@@ -13,12 +13,11 @@ class AbstractNameSerializer(serializers.ModelSerializer):
         return getattr(obj.name, self.context['request'].headers.get('language'))
 
 
-# class TestCountrySerializer(AbstractNameSerializer):
-#     extra = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = TestCountry
-#         fields = ("id", "name", "extra")
-#
-#     def get_extra(self, obj):
-#         return obj.extra.text(self.context['request'].headers.get('language'))
+class AbstractDescriptionSerializer(serializers.ModelSerializer):
+    description = serializers.SerializerMethodField()
+
+    class Meta:
+        abstract = True
+
+    def get_description(self, obj):
+        return getattr(obj.name, self.context['request'].headers.get('language'))
