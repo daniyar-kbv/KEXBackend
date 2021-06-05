@@ -68,10 +68,6 @@ class LocalBrandInline(LocalBrandInlineBase):
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     inlines = [CategoryInline, LocalBrandInline]
-    list_select_related = (
-        "categories",
-        "local_brands"
-    )
 
 
 @admin.register(LocalBrand)
@@ -81,21 +77,12 @@ class LocalBrandAdmin(admin.ModelAdmin):
         LocalPositionInline,
         BranchInline,
     ]
-    list_select_related = (
-        "local_categories",
-        "local_positions",
-        "branches",
-    )
     list_filter = ('city',)
 
 
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
     list_filter = ('local_brand',)
-    list_select_related = (
-        "branch_positions",
-        "branch_categories",
-    )
     inlines = [
         BranchCategoryInline,
         BranchPositionInline,
