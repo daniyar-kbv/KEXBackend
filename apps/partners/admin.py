@@ -68,6 +68,10 @@ class LocalBrandInline(LocalBrandInlineBase):
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     inlines = [CategoryInline, LocalBrandInline]
+    list_select_related = (
+        "categories",
+        "local_brands"
+    )
 
 
 @admin.register(LocalBrand)
