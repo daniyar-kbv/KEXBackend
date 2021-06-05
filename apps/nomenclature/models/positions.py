@@ -45,6 +45,16 @@ class LocalPosition(UUIDModel, AbstractNameModel):
         _("Дополнительная позиция"),
         default=False,
     )
+    is_active = models.BooleanField(
+        _("Временно отключен"),
+        default=True,
+        help_text=_("Если отключен, то продукт не отобразится в приложении")
+    )
+    is_available = models.BooleanField(
+        _("В данный момент не доступен"),
+        default=True,
+        help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
+    )
 
     def __str__(self):
         return self.name or "Не задано название"
@@ -81,6 +91,11 @@ class BranchPosition(UUIDModel, AbstractNameModel):
         _("Цена"),
         decimal_places=2,
         max_digits=12
+    )
+    is_available = models.BooleanField(
+        _("В данный момент не доступен"),
+        default=True,
+        help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
 
     def __str__(self):
