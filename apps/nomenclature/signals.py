@@ -48,8 +48,8 @@ def update_local_position(sender, instance, created, **kwargs):
             branch_category, _ = BranchCategory.objects.get_or_create(
                 local_category_id=instance.local_category_id,
                 branch_id=branch_position.branch_id,
-
             )
 
+            branch_position.name = instance.name
             branch_position.branch_category = branch_category
-            branch_position.save(update_fields=["branch_category"])
+            branch_position.save(update_fields=["name", "branch_category"])
