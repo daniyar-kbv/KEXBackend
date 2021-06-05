@@ -73,7 +73,7 @@ class GetBranchNomenclature(BaseIIKOService):
         return None
 
     def save(self, prepared_data):
-        print("prepared_data", self.prepare_to_save(prepared_data))
+        # print("prepared_data", self.prepare_to_save(prepared_data))
         serializer = self.save_serializer(
             data=self.prepare_to_save(prepared_data), many=True,
             context={"branch": self.instance}

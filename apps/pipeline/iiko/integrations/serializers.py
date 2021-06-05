@@ -73,15 +73,19 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
 
 class IIKONomenclatureSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(max_digits=12, decimal_places=2, required=True)
+    iiko_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    iiko_description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
     class Meta:
         model = LocalPosition
         fields = "__all__"
 
     def create(self, validated_data):
-        print(validated_data)
+        # print(validated_data)
         modifiers: List['PythonModifier'] = validated_data.pop('modifiers', None)
         price: Decimal = validated_data.pop("price", Decimal(0))
+        iiko_name: str = validated_data.pop("iiko_name", None)
+        iiko_description: str = validated_data.pop("iiko_description", None)
 
         local_position, created = LocalPosition.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),
@@ -90,11 +94,14 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             }
         )
 
-        BranchPosition.objects.get_or_create(
+        BranchPosition.objects.update_or_create(
             branch=self.context["branch"],
             local_position=local_position,
             defaults={
                 "price": price,
+                "iiko_name": iiko_name,
+                "iiko_description": iiko_description,
+                "name": local_position.name,
             }
         )
 
