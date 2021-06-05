@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
@@ -80,6 +82,12 @@ class Position(UUIDModel, AbstractNameModel):
     image = models.ImageField(
         null=True, blank=True
     )
+    price = models.DecimalField(
+        _("Цена"),
+        max_digits=12,
+        decimal_places=2,
+        default=Decimal(0),
+    )
     iiko_name = models.CharField(
         _("Название в системе IIKO"),
         max_length=256, null=True, blank=True,
@@ -120,7 +128,6 @@ class BranchPosition(UUIDModel):
         on_delete=models.CASCADE,
         related_name="positions",
     )
-
     price = models.DecimalField(
         _("Цена"),
         decimal_places=2,
