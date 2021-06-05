@@ -22,8 +22,8 @@ class Brand(AbstractNameModel):
 class LocalBrand(ServiceHistoryModel):
     class Meta:
         unique_together = "brand", "city"
-        verbose_name = _("IIKO Брэнд")
-        verbose_name_plural = _("IIKO Брэнды")
+        verbose_name = _("Локальный Брэнд")
+        verbose_name_plural = _("Локальные Брэнды")
 
     brand = models.ForeignKey(
         "partners.Brand",
@@ -72,8 +72,8 @@ class LocalBrand(ServiceHistoryModel):
 
 class Branch(AbstractNameModel):
     class Meta:
-        verbose_name = _("Организация")
-        verbose_name_plural = _("Организации")
+        verbose_name = _("Ветка (Филиал)")
+        verbose_name_plural = _("Ветки (Филиалы)")
 
     local_brand = models.ForeignKey(  # noqa
         "partners.LocalBrand",

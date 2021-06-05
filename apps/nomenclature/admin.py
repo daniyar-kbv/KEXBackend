@@ -3,12 +3,12 @@ from django.contrib import admin
 from .models import Category, LocalCategory, BranchCategory
 
 
-class CategoryInline(admin.StackedInline):
+class CategoryInline(admin.TabularInline):
     model = Category
     extra = 0
 
 
-class LocalCategoryInline(admin.StackedInline):
+class LocalCategoryInline(admin.TabularInline):
     model = LocalCategory
     extra = 0
     readonly_fields = (
@@ -17,7 +17,7 @@ class LocalCategoryInline(admin.StackedInline):
     )
 
 
-class BranchCategoryInline(admin.StackedInline):
+class BranchCategoryInline(admin.TabularInline):
     model = BranchCategory
     extra = 0
     readonly_fields = (
@@ -27,25 +27,25 @@ class BranchCategoryInline(admin.StackedInline):
 
 #
 #
-# class PositionInfoByBranchInline(admin.StackedInline):
-#     model = PositionInfoByBranch
+# class LocalPositionInfoByBranchInline(admin.StackedInline):
+#     model = LocalPositionInfoByBranch
 #     extra = 0
 #
 #
-# class PositionForm(AbstractNameModelForm):
+# class LocalPositionForm(AbstractNameModelForm):
 #     class Meta(AbstractNameModelForm.Meta):
-#         model = Position
+#         model = LocalPosition
 #
 #
-# @admin.register(Position)
-# class PositionAdmin(admin.ModelAdmin):
-#     model = Position
+# @admin.register(LocalPosition)
+# class LocalPositionAdmin(admin.ModelAdmin):
+#     model = LocalPosition
 #     list_filter = (
 #         "local_brand",
 #         "category",
 #     )
-#     inlines = [PositionInfoByBranchInline]
-#     form = PositionForm
+#     inlines = [LocalPositionInfoByBranchInline]
+#     form = LocalPositionForm
 #
 #     fields = (
 #         "name_kk",

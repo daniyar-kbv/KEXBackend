@@ -69,7 +69,7 @@ class BranchCategory(UUIDModel, AbstractNameModel):
     )
 
 
-class Position(UUIDModel, AbstractNameModel):
+class LocalPosition(UUIDModel, AbstractNameModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
@@ -95,13 +95,12 @@ class Position(UUIDModel, AbstractNameModel):
     iiko_description = models.TextField(
         _("Описание в системе IIKO"), null=True, blank=True,
     )
-    # category = models.ForeignKey(
-    #     "nomenclature.Category",
-    #     on_delete=models.PROTECT,
-    #     null=True, blank=True,
-    #     related_name="positions",
-    #     verbose_name=_("Категория"),
-    # )
+    local_category = models.ForeignKey(
+        LocalCategory,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="local_positions"
+    )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
     )
@@ -116,12 +115,18 @@ class Position(UUIDModel, AbstractNameModel):
 
 class BranchPosition(UUIDModel):
     class Meta:
-        unique_together = ("position", "branch")
+        unique_together = ("local_position", "branch")
 
-    position = models.ForeignKey(
-        "nomenclature.Position",
+    local_position = models.ForeignKey(
+        "nomenclature.LocalPosition",
         on_delete=models.CASCADE,
         related_name="positions_by_org",
+    )
+    branch_category = models.ForeignKey(
+        BranchCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="branch_positions",
     )
     branch = models.ForeignKey(
         "partners.Branch",

@@ -6,7 +6,7 @@ from rest_framework import serializers
 from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.partners.models import Branch
-from apps.nomenclature.models import Position, BranchPosition
+from apps.nomenclature.models import LocalPosition, BranchPosition
 
 if TYPE_CHECKING:
     from ..python_entities.positions import (
@@ -75,7 +75,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(max_digits=12, decimal_places=2, required=True)
 
     class Meta:
-        model = Position
+        model = LocalPosition
         fields = "__all__"
 
     def create(self, validated_data):
@@ -83,7 +83,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         modifiers: List['PythonModifier'] = validated_data.pop('modifiers', None)
         price: Decimal = validated_data.pop("price", Decimal(0))
 
-        position, created = Position.objects.update_or_create(
+        position, created = LocalPosition.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),
             defaults={
                 **validated_data
