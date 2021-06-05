@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.common.admin import ReadChangeOnlyTabularInline
+from apps.common.admin import ReadChangeOnlyTabularInline, ReadChangeOnlyStackedInline
 
 from .models import (
     Category, LocalCategory, BranchCategory,
@@ -43,13 +43,14 @@ class BranchCategoryInline(ReadChangeOnlyTabularInline):
     )
 
 
-class LocalPositionInline(ReadChangeOnlyTabularInline):
+class LocalPositionInline(ReadChangeOnlyStackedInline):
     model = LocalPosition
     extra = 0
     classes = ("collapse",)
     fields = (
         "id",
         "name",
+        "description",
         "image",
         "get_iiko_name",
         "local_category",
@@ -72,11 +73,13 @@ class BranchPositionInline(ReadChangeOnlyTabularInline):
     classes = ("collapse",)
     fields = (
         "name",
+        "description",
         "iiko_name",
         "branch_category",
     )
     readonly_fields = (
         "name",
+        "description",
         "iiko_name",
         "branch_category",
     )

@@ -51,5 +51,10 @@ def update_local_position(sender, instance, created, **kwargs):
             )
 
             branch_position.name = instance.name
+            branch_position.description = instance.description
             branch_position.branch_category = branch_category
-            branch_position.save(update_fields=["name", "branch_category"])
+            branch_position.save(update_fields=[
+                "name",
+                "description",
+                "branch_category",
+            ])

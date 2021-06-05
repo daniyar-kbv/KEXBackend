@@ -28,7 +28,7 @@ class AbstractNameModel(models.Model):
 class AbstractDescriptionModel(models.Model):
     description = models.ForeignKey(
         MultiLanguageText,
-        verbose_name=_("Название"),
+        verbose_name=_("Описание"),
         on_delete=models.CASCADE,
         null=True, blank=True,
     )

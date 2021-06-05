@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.admin import GenericTabularInline, GenericStackedInline
 
-from apps.common.models import MultiLanguageChar
+from apps.common.models import MultiLanguageChar, MultiLanguageText
 from apps.pipeline.models import ServiceHistory
 
 
@@ -24,12 +24,20 @@ class ReadOnlyMixin(ChangeOnlyMixin):
         return False
 
 
-class ReadChangeOnlyTabularInline(admin.TabularInline):
+class ReadChangeOnlyMixin():
     def has_delete_permission(self, request, obj=None):
         return False
 
     def has_add_permission(self, request, obj):
         return False
+
+
+class ReadChangeOnlyTabularInline(ReadChangeOnlyMixin, admin.TabularInline):
+    ...
+
+
+class ReadChangeOnlyStackedInline(ReadChangeOnlyTabularInline, admin.StackedInline):
+    ...
 
 
 class HistoryInline(ReadOnlyMixin, GenericTabularInline):
@@ -46,6 +54,7 @@ class HistoryInline(ReadOnlyMixin, GenericTabularInline):
 
 
 admin.site.register(MultiLanguageChar)
+admin.site.register(MultiLanguageText)
 
 
 class AbstractNameModelForm(forms.ModelForm):
