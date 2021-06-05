@@ -75,6 +75,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "description",
             "image",
             # "description",
             "price",
