@@ -29,10 +29,29 @@ class BranchInline(ReadChangeOnlyTabularInline):
     get_branch_link.short_description = "Ветка (филиал)"
 
 
-class LocalBrandInline(admin.TabularInline):
+class LocalBrandInlineBase(ReadChangeOnlyTabularInline):
+    classes = ("collapse",)
     model = LocalBrand
     extra = 0
-    classes = ("collapse",)
+
+    def get_local_brand_link(self, obj):
+        link = reverse("admin:partners_localbrand_change", args=[obj.pk])
+        return format_html('<a href="{}" target="_blank">{}</a>', link, obj.full_name)
+
+    get_local_brand_link.short_description = "Локальный бренд"
+
+
+class LocalBrandPriorityInline(LocalBrandInlineBase):
+    fields = (
+        "get_local_brand_link",
+        "priority",
+    )
+    readonly_fields = (
+        "get_local_brand_link",
+    )
+
+
+class LocalBrandInline(LocalBrandInlineBase):
     fields = (
         "get_local_brand_link",
         "city",
@@ -43,12 +62,6 @@ class LocalBrandInline(admin.TabularInline):
         "city",
         "get_local_brand_link",
     )
-
-    def get_local_brand_link(self, obj):
-        link = reverse("admin:partners_localbrand_change", args=[obj.pk])
-        return format_html('<a href="{}" target="_blank">{}</a>', link, obj.full_name)
-
-    get_local_brand_link.short_description = "Локальный бренд"
 
 
 @admin.register(Brand)
