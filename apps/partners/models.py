@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, ServiceHistoryModel
 
+from . import BrandImageTypes
 from .managers import LocalBrandManager, BranchesQuerySet
 
 
@@ -13,10 +14,26 @@ class Brand(AbstractNameModel):
         verbose_name = _("Брэнд")
         verbose_name_plural = _("Брэнды")
 
-    image_square = models.ImageField(_("Картинка квадрат"), null=True, blank=True)
-    image_short = models.ImageField(_("Картинка короткая"), null=True, blank=True)
-    image_tall = models.ImageField(_("Картинка высокая"), null=True, blank=True)
-    image_long = models.ImageField(_("Картинка длинная"), null=True, blank=True)
+
+class BrandImage(models.Model):
+    class Meta:
+        verbose_name = _("Brand Image")
+        verbose_name_plural = _("Brand Images")
+        unique_together = ("brand", "image_type")
+
+    brand = models.ForeignKey(
+        "partners.Brand",
+        on_delete=models.CASCADE,
+        related_name="images",
+        verbose_name=_("Брэнд"),
+    )
+    image_type = models.CharField(
+        _("Тип картинки"),
+        max_length=12,
+        choices=BrandImageTypes.choices,
+        null=True
+    )
+    image = models.ImageField(_("Image"), null=True)
 
 
 class LocalBrand(ServiceHistoryModel):
