@@ -83,7 +83,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         modifiers: List['PythonModifier'] = validated_data.pop('modifiers', None)
         price: Decimal = validated_data.pop("price", Decimal(0))
 
-        position, created = LocalPosition.objects.update_or_create(
+        local_position, created = LocalPosition.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),
             defaults={
                 **validated_data
@@ -92,10 +92,10 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
 
         BranchPosition.objects.get_or_create(
             branch=self.context["branch"],
-            position=position,
+            local_position=local_position,
             defaults={
                 "price": price,
             }
         )
 
-        return position
+        return local_position

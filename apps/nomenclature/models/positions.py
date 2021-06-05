@@ -6,6 +6,13 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from apps.common.models import AbstractNameModel, UUIDModel
 
 
+# class Position(UUIDModel, AbstractNameModel):
+#     """
+#     reserved
+#     """
+#     ...
+
+
 class LocalPosition(UUIDModel, AbstractNameModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
