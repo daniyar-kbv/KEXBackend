@@ -24,6 +24,14 @@ class ReadOnlyMixin(ChangeOnlyMixin):
         return False
 
 
+class ReadChangeOnlyTabularInline(admin.TabularInline):
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj):
+        return False
+
+
 class HistoryInline(ReadOnlyMixin, GenericTabularInline):
     model = ServiceHistory
     fields = ["service", "service_pretty", "runtime", "created_at", "show"]

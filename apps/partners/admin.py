@@ -2,13 +2,15 @@ from django.urls import reverse
 from django.contrib import admin
 from django.utils.html import format_html
 
-from apps.common.admin import ReadOnlyMixin
-from apps.nomenclature.admin import CategoryInline, LocalCategoryInline
+from apps.common.admin import ReadOnlyMixin, ReadChangeOnlyTabularInline
+from apps.nomenclature.admin import (
+    CategoryInline, LocalCategoryInline, BranchCategoryInline,
+)
 
 from .models import Brand, LocalBrand, Branch
 
 
-class BranchInline(admin.TabularInline):
+class BranchInline(ReadChangeOnlyTabularInline):
     model = Branch
     extra = 0
     classes = ("collapse",)
@@ -18,7 +20,6 @@ class BranchInline(admin.TabularInline):
     )
     readonly_fields = (
         "get_branch_link",
-        "is_active",
     )
 
     def get_branch_link(self, obj):
@@ -64,3 +65,4 @@ class LocalBrandAdmin(admin.ModelAdmin):
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
     list_filter = ('local_brand',)
+    inlines = [BranchCategoryInline]

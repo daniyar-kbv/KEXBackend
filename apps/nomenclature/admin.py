@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from apps.common.admin import ReadChangeOnlyTabularInline
+
 from .models import Category, LocalCategory, BranchCategory
 
 
@@ -9,23 +11,29 @@ class CategoryInline(admin.TabularInline):
     extra = 0
 
 
-class LocalCategoryInline(admin.TabularInline):
+class LocalCategoryInline(ReadChangeOnlyTabularInline):
     model = LocalCategory
     extra = 0
     classes = ("collapse",)
+    fields = (
+        "name",
+        "is_active",
+    )
     readonly_fields = (
         "name",
-        "category",
     )
 
 
-class BranchCategoryInline(admin.TabularInline):
+class BranchCategoryInline(ReadChangeOnlyTabularInline):
     model = BranchCategory
     extra = 0
     classes = ("collapse",)
+    fields = (
+        "name",
+        "is_active",
+    )
     readonly_fields = (
         "name",
-        "category",
     )
 
 #
