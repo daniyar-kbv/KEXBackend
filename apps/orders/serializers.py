@@ -64,10 +64,8 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
 
 
 class NomenclaturePositionSerializer(serializers.ModelSerializer):
-    # name = serializers.CharField(source="position.iiko_name")
-    # description = serializers.CharField(source="position.iiko_description")
-    # category = serializers.CharField(source="position.category_id")
-    # outer_id = serializers.CharField(source="local_position.outer_id")
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
 
     class Meta:
@@ -77,10 +75,21 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "image",
-            # "description",
             "price",
             "branch_category",
         )
+
+    def get_name(self, obj):
+        if not obj.name:
+            return
+
+        return obj.name.text(lang=self.context["language"])
+
+    def get_description(self, obj):
+        if not obj.description:
+            return
+
+        return obj.description.text(lang=self.context["language"])
 
     def get_image(self, obj):
         if not obj.local_position.image:
