@@ -10,6 +10,9 @@ class CategoryInline(admin.TabularInline):
     classes = ("collapse",)
     extra = 0
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class LocalCategoryInline(ReadChangeOnlyTabularInline):
     model = LocalCategory
