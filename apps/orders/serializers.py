@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
 from apps.location.models import Address
-from apps.partners.models import LocalBrand
+from apps.partners.models import LocalBrand, Branch
 from apps.partners.exceptions import BrandNotFound
-from apps.nomenclature.models import Category, BranchPosition
+from apps.nomenclature.models import BranchCategory, BranchPosition
 
 from .models import Lead
 
@@ -56,7 +56,7 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
 
 class NomenclatureCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = BranchCategory
         fields = (
             "name",
             "uuid"
@@ -64,24 +64,27 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
 
 
 class NomenclaturePositionSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source="position.iiko_name")
-    description = serializers.CharField(source="position.iiko_description")
-    category = serializers.CharField(source="position.category_id")
+    # name = serializers.CharField(source="position.iiko_name")
+    # description = serializers.CharField(source="position.iiko_description")
+    # category = serializers.CharField(source="position.category_id")
+    # outer_id = serializers.CharField(source="local_position.outer_id")
+    image = serializers.ImageField(source="local_position.image", required=False)
 
     class Meta:
         model = BranchPosition
         fields = (
             "id",
             "name",
-            "description",
+            "image",
+            # "description",
             "price",
-            "category",
+            "branch_category",
         )
 
 
 class LeadNomenclatureSerializer(serializers.ModelSerializer):
-    categories = NomenclatureCategorySerializer(source="brand.categories", many=True, read_only=True)
-    positions = NomenclaturePositionSerializer(source="branch.positions", many=True, read_only=True)
+    categories = NomenclatureCategorySerializer(source="branch_categories", many=True, read_only=True)
+    positions = NomenclaturePositionSerializer(source="branch_positions", many=True, read_only=True)
 
     class Meta:
         model = Lead
@@ -93,6 +96,26 @@ class LeadNomenclatureSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "uuid": {"read_only": True}
         }
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["categories"] = NomenclatureCategorySerializer(
+            instance=instance.branch.branch_categories.filter(
+                name__isnull=False,
+                is_active=True,
+            ),
+            many=True,
+        ).data
+        data["positions"] = NomenclaturePositionSerializer(
+            instance=instance.branch.branch_positions.filter(
+                branch_category__isnull=False,
+                name__isnull=False,
+            ),
+            many=True,
+        ).data
+
+        return data
+
 
 from apps.orders.models import Cart, CartPosition
 

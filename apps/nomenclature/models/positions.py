@@ -13,7 +13,7 @@ from apps.common.models import AbstractNameModel, UUIDModel
 #     ...
 
 
-class LocalPosition(UUIDModel, AbstractNameModel):
+class LocalPosition(AbstractNameModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
@@ -76,18 +76,20 @@ class BranchPosition(UUIDModel, AbstractNameModel):
     branch_category = models.ForeignKey(
         "nomenclature.BranchCategory",
         on_delete=models.SET_NULL,
-        null=True,
+        null=True, blank=True,
+        to_field="uuid",
         related_name="branch_positions",
     )
     branch = models.ForeignKey(
         "partners.Branch",
         on_delete=models.CASCADE,
-        related_name="positions",
+        related_name="branch_positions",
     )
     price = models.DecimalField(
         _("Цена"),
         decimal_places=2,
-        max_digits=12
+        max_digits=12,
+        default=Decimal(0),
     )
     is_available = models.BooleanField(
         _("В данный момент не доступен"),

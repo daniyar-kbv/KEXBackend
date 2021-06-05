@@ -28,6 +28,7 @@ class LeadNomenclatureView(JSONPublicAPIMixin, RetrieveAPIView):
     lookup_field = "uuid"
     lookup_url_kwarg = "lead_uuid"
 
+
 from .models import CartPosition
 from .serializers import UpdateCartSerializer
 from rest_framework.response import Response
