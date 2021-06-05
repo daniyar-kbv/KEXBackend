@@ -12,14 +12,17 @@ class AbstractNameModel(models.Model):
         MultiLanguageChar,
         verbose_name=_("Название"),
         on_delete=models.CASCADE,
-        null=True,
+        null=True, blank=True,
     )
 
     class Meta:
         abstract = True
 
     def __str__(self):
-        return self.name.ru
+        if self.name is not None:
+            return self.name.ru
+
+        return "Не задано"
 
 
 class CharIDModel(models.Model):

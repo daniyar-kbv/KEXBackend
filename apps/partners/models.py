@@ -104,7 +104,4 @@ class Branch(AbstractNameModel):
     objects = BranchesQuerySet.as_manager()
 
     def __str__(self):
-        if self.name is not None:
-            return self.name
-
         return self.iiko_name

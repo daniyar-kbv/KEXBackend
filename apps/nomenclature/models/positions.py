@@ -56,9 +56,6 @@ class LocalPosition(UUIDModel, AbstractNameModel):
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
 
-    def __str__(self):
-        return self.name or "Не задано название"
-
 
 class BranchPosition(UUIDModel, AbstractNameModel):
     class Meta:
@@ -97,6 +94,3 @@ class BranchPosition(UUIDModel, AbstractNameModel):
         default=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
-
-    def __str__(self):
-        return self.name or "Не задано название"
