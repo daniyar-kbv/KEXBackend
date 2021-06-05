@@ -3,8 +3,11 @@ from decimal import Decimal
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.common.models import AbstractNameModel, UUIDModel
-
+from apps.common.models import (
+    AbstractDescriptionModel,
+    AbstractNameModel,
+    UUIDModel,
+)
 
 # class Position(UUIDModel, AbstractNameModel):
 #     """
@@ -13,7 +16,7 @@ from apps.common.models import AbstractNameModel, UUIDModel
 #     ...
 
 
-class LocalPosition(AbstractNameModel):
+class LocalPosition(AbstractNameModel, AbstractDescriptionModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
@@ -57,7 +60,7 @@ class LocalPosition(AbstractNameModel):
     )
 
 
-class BranchPosition(UUIDModel, AbstractNameModel):
+class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
     class Meta:
         unique_together = ("local_position", "branch")
 

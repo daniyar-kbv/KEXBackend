@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 
-from apps.translations.models import MultiLanguageChar
+from apps.translations.models import MultiLanguageChar, MultiLanguageText
 
 
 class AbstractNameModel(models.Model):
@@ -21,6 +21,24 @@ class AbstractNameModel(models.Model):
     def __str__(self):
         if self.name is not None:
             return self.name.ru
+
+        return "Не задано"
+
+
+class AbstractDescriptionModel(models.Model):
+    description = models.ForeignKey(
+        MultiLanguageText,
+        verbose_name=_("Название"),
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        if self.description is not None:
+            return self.description.ru
 
         return "Не задано"
 
