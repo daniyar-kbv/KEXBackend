@@ -60,7 +60,6 @@ THIRD_PARTY_APPS = [
     "phonenumber_field",
     "constance",
     "django_celery_beat",
-    "dbbackup",
 ]
 
 LOCAL_APPS = [
@@ -126,12 +125,6 @@ DATABASES = {
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "5432"),
     }
-}
-
-
-DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
-DBBACKUP_STORAGE_OPTIONS = {
-    "location": os.path.join(BASE_DIR, "backups")
 }
 
 # Password validation
