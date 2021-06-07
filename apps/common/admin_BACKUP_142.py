@@ -53,6 +53,72 @@ class HistoryInline(ReadOnlyMixin, GenericTabularInline):
     show.short_description = _("Лог сервиса")
 
 
+<<<<<<< HEAD
+admin.site.register(MultiLanguageChar)
+admin.site.register(MultiLanguageText)
+=======
+# admin.site.register(NameField)
+# admin.site.register(DescriptionField)
+# admin.site.register(TestCountry)
+# admin.site.register(MultiLanguageChar)
+
+
+# class MultiLanguageNameForm(forms.ModelForm):
+#     class Meta:
+#         fields = ['text_ru', 'text_kk', 'text_en']
+#         labels = {
+#             'text_ru': 'Название на рус',
+#             'text_kk': 'Название на каз',
+#             'text_en': 'Название на англ',
+#         }
+#
+#
+# class MultiLanguageDescriptionForm(forms.ModelForm):
+#     class Meta:
+#         fields = ['text_ru', 'text_kk', 'text_en']
+#         labels = {
+#             'text_ru': 'Описание на рус',
+#             'text_kk': 'Описание на каз',
+#             'text_en': 'Описание на англ',
+#         }
+#
+#
+# class MultiLanguageTextInline(GenericStackedInline):
+#     max_num = 1
+#     min_num = 1
+#     can_delete = False
+#
+#
+# class NameInline(MultiLanguageTextInline):
+#     # form = MultiLanguageNameForm
+#     model = NameField
+#     verbose_name_plural = "Название"
+#
+#
+# class DescriptionInline(MultiLanguageTextInline):
+#     # form = MultiLanguageDescriptionForm
+#     model = DescriptionField
+#     verbose_name_plural = "Описание"
+#
+#
+# @admin.register(TestModel)
+# class TestModel(admin.ModelAdmin):
+#     inlines = [NameInline, DescriptionInline]
+#
+#     fields = (
+#         # 'name',
+#         # 'description',
+#         'text_area',
+#         'text_input',
+#         'number',
+#     )
+#
+#     class Meta:
+#         verbose_name = "Test"
+#         verbose_name_plural = "Tests"
+>>>>>>> kex006
+
+
 class AbstractNameModelForm(forms.ModelForm):
     name_ru = forms.CharField(label="Название (рус)", required=True, max_length=256)
     name_kk = forms.CharField(label="Название (каз)", required=False, max_length=256)

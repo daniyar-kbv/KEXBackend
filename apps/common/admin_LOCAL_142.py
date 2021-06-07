@@ -53,6 +53,10 @@ class HistoryInline(ReadOnlyMixin, GenericTabularInline):
     show.short_description = _("Лог сервиса")
 
 
+admin.site.register(MultiLanguageChar)
+admin.site.register(MultiLanguageText)
+
+
 class AbstractNameModelForm(forms.ModelForm):
     name_ru = forms.CharField(label="Название (рус)", required=True, max_length=256)
     name_kk = forms.CharField(label="Название (каз)", required=False, max_length=256)
