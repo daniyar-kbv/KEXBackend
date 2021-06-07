@@ -40,7 +40,7 @@ class HistoryInline(ReadOnlyMixin, GenericTabularInline):
 # admin.site.register(NameField)
 # admin.site.register(DescriptionField)
 # admin.site.register(TestCountry)
-admin.site.register(MultiLanguageChar)
+# admin.site.register(MultiLanguageChar)
 
 
 # class MultiLanguageNameForm(forms.ModelForm):
