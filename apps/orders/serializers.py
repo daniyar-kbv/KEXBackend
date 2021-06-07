@@ -55,12 +55,20 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
 
 
 class NomenclatureCategorySerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = BranchCategory
         fields = (
             "name",
             "uuid"
         )
+
+    def get_name(self, obj):
+        if not obj.name:
+            return
+
+        return obj.name.text(lang=self.context["language"])
 
 
 class NomenclaturePositionSerializer(serializers.ModelSerializer):
