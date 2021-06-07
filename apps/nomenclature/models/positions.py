@@ -99,3 +99,22 @@ class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
         default=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
+
+
+class BranchPositionModifier(models.Model):
+    class Meta:
+        verbose_name = _("Modifier")
+        verbose_name_plural = _("Modifiers")
+        unique_together = ("main_position", "modifier")
+
+    main_position = models.ForeignKey(
+        LocalPosition,
+        on_delete=models.PROTECT,
+        related_name="modifiers",
+    )
+    modifier = models.ForeignKey(
+        LocalPosition,
+        on_delete=models.PROTECT,
+    )
+    min_amount = models.PositiveSmallIntegerField(default=0)
+    max_amount = models.PositiveSmallIntegerField(default=1)
