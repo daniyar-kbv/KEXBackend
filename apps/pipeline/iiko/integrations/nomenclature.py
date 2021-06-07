@@ -42,7 +42,7 @@ class GetBranchNomenclature(BaseIIKOService):
 
     @staticmethod
     def _fetch_modifiers(position: Dict) -> List[Optional[PythonModifier]]:
-        modifiers: List[Optional[PythonModifier]] = list()
+        modifiers: List[Dict] = list()
 
         for modifier in position.get("modifiers", list()):
             modifiers.append(PythonModifier(
@@ -55,7 +55,7 @@ class GetBranchNomenclature(BaseIIKOService):
         return modifiers or None
 
     def prepare_to_save(self, data: dict) -> List:
-        positions: List[PythonPosition] = list()
+        positions: List[Dict] = list()
 
         for position in data.get("products", list()):
             positions.append(PythonPosition(
