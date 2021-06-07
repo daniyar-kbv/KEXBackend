@@ -1,0 +1,4627 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.12
+-- Dumped by pg_dump version 10.12
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+ALTER TABLE ONLY public.users_user_user_permissions DROP CONSTRAINT users_user_user_permissions_user_id_20aca447_fk_users_user_id;
+ALTER TABLE ONLY public.users_user_user_permissions DROP CONSTRAINT users_user_user_perm_permission_id_0b93982e_fk_auth_perm;
+ALTER TABLE ONLY public.users_user_groups DROP CONSTRAINT users_user_groups_user_id_5f6f5a90_fk_users_user_id;
+ALTER TABLE ONLY public.users_user_groups DROP CONSTRAINT users_user_groups_group_id_9afc8d0e_fk_auth_group_id;
+ALTER TABLE ONLY public.token_blacklist_outstandingtoken DROP CONSTRAINT token_blacklist_outs_user_id_83bc629a_fk_users_use;
+ALTER TABLE ONLY public.token_blacklist_blacklistedtoken DROP CONSTRAINT token_blacklist_blac_token_id_3cc7fe56_fk_token_bla;
+ALTER TABLE ONLY public.promotions_promotion DROP CONSTRAINT promotions_promotion_template_id_4dd9e269_fk_translati;
+ALTER TABLE ONLY public.promotions_promotion DROP CONSTRAINT promotions_promotion_image_id_b13ebeaa_fk_translati;
+ALTER TABLE ONLY public.pipeline_serviceresponse DROP CONSTRAINT pipeline_serviceresp_history_id_d66ec7c5_fk_pipeline_;
+ALTER TABLE ONLY public.pipeline_servicehistory DROP CONSTRAINT pipeline_servicehist_content_type_id_e493bd61_fk_django_co;
+ALTER TABLE ONLY public.partners_organization DROP CONSTRAINT partners_organizatio_name_id_a1427b0b_fk_translati;
+ALTER TABLE ONLY public.partners_organization DROP CONSTRAINT partners_organizatio_iiko_brand_id_d6050590_fk_partners_;
+ALTER TABLE ONLY public.partners_organization DROP CONSTRAINT partners_organizatio_address_id_bbf680f0_fk_location_;
+ALTER TABLE ONLY public.partners_brandimage DROP CONSTRAINT partners_brandimage_brand_id_22e5cac4_fk_partners_brand_id;
+ALTER TABLE ONLY public.partners_iikobrand DROP CONSTRAINT partners_brandapilogin_city_id_5e60baa0_fk_location_city_id;
+ALTER TABLE ONLY public.partners_iikobrand DROP CONSTRAINT partners_brandapilogin_brand_id_2ffe6f40_fk_partners_brand_id;
+ALTER TABLE ONLY public.partners_brand DROP CONSTRAINT partners_brand_name_id_f2e2903e_fk_translati;
+ALTER TABLE ONLY public.orders_orderstatustransition DROP CONSTRAINT orders_orderstatustr_order_id_4f1c85ba_fk_orders_or;
+ALTER TABLE ONLY public.orders_order DROP CONSTRAINT orders_order_user_id_e9b59eb1_fk_users_user_id;
+ALTER TABLE ONLY public.orders_order DROP CONSTRAINT orders_order_lead_id_4feed272_fk_orders_lead_uuid;
+ALTER TABLE ONLY public.orders_lead DROP CONSTRAINT orders_lead_organization_id_ebc5f3f3_fk_partners_;
+ALTER TABLE ONLY public.orders_lead DROP CONSTRAINT orders_lead_iiko_brand_id_24455271_fk_partners_iikobrand_id;
+ALTER TABLE ONLY public.orders_lead DROP CONSTRAINT orders_lead_cart_id_9952af4d_fk_orders_cart_id;
+ALTER TABLE ONLY public.orders_lead DROP CONSTRAINT orders_lead_address_id_d9e5e5a2_fk_location_address_id;
+ALTER TABLE ONLY public.orders_cartposition DROP CONSTRAINT orders_cartposition_organization_positio_6365f52b_fk_nomenclat;
+ALTER TABLE ONLY public.orders_cartposition DROP CONSTRAINT orders_cartposition_cart_id_4f666c01_fk_orders_cart_id;
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization DROP CONSTRAINT nomenclature_positio_position_id_0af2d76f_fk_nomenclat;
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization DROP CONSTRAINT nomenclature_positio_organization_id_322453fc_fk_partners_;
+ALTER TABLE ONLY public.nomenclature_position DROP CONSTRAINT nomenclature_positio_name_id_6d73a5fe_fk_translati;
+ALTER TABLE ONLY public.nomenclature_position DROP CONSTRAINT nomenclature_positio_iiko_brand_id_33fa85df_fk_partners_;
+ALTER TABLE ONLY public.nomenclature_position DROP CONSTRAINT nomenclature_positio_category_id_e8d024f1_fk_nomenclat;
+ALTER TABLE ONLY public.nomenclature_category DROP CONSTRAINT nomenclature_categor_name_id_010374cd_fk_translati;
+ALTER TABLE ONLY public.nomenclature_category DROP CONSTRAINT nomenclature_categor_iiko_brand_id_edb83264_fk_partners_;
+ALTER TABLE ONLY public.location_country DROP CONSTRAINT location_country_name_id_d7690037_fk_translati;
+ALTER TABLE ONLY public.location_city DROP CONSTRAINT location_city_name_id_15383c81_fk_translati;
+ALTER TABLE ONLY public.location_city DROP CONSTRAINT location_city_country_id_2bc9d8e9_fk_location_country_id;
+ALTER TABLE ONLY public.django_celery_beat_periodictask DROP CONSTRAINT django_celery_beat_p_solar_id_a87ce72c_fk_django_ce;
+ALTER TABLE ONLY public.django_celery_beat_periodictask DROP CONSTRAINT django_celery_beat_p_interval_id_a8ca27da_fk_django_ce;
+ALTER TABLE ONLY public.django_celery_beat_periodictask DROP CONSTRAINT django_celery_beat_p_crontab_id_d3cba168_fk_django_ce;
+ALTER TABLE ONLY public.django_celery_beat_periodictask DROP CONSTRAINT django_celery_beat_p_clocked_id_47a69f82_fk_django_ce;
+ALTER TABLE ONLY public.django_admin_log DROP CONSTRAINT django_admin_log_user_id_c564eba6_fk_users_user_id;
+ALTER TABLE ONLY public.django_admin_log DROP CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co;
+ALTER TABLE ONLY public.auth_permission DROP CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co;
+ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id;
+ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm;
+DROP INDEX public.users_user_user_permissions_user_id_20aca447;
+DROP INDEX public.users_user_user_permissions_permission_id_0b93982e;
+DROP INDEX public.users_user_mobile_phone_ae325381_like;
+DROP INDEX public.users_user_groups_user_id_5f6f5a90;
+DROP INDEX public.users_user_groups_group_id_9afc8d0e;
+DROP INDEX public.token_blacklist_outstandingtoken_user_id_83bc629a;
+DROP INDEX public.token_blacklist_outstandingtoken_jti_hex_d9bdf6f7_like;
+DROP INDEX public.sms_smstemplate_name_5f066fd1_like;
+DROP INDEX public.sms_smsmessage_updated_at_62abb0e2;
+DROP INDEX public.sms_smsmessage_created_at_70851a7b;
+DROP INDEX public.sms_otp_updated_at_c15f6998;
+DROP INDEX public.sms_otp_created_at_8017c381;
+DROP INDEX public.sms_otp_code_4689ba2e_like;
+DROP INDEX public.sms_otp_code_4689ba2e;
+DROP INDEX public.promotions_promotion_template_id_4dd9e269;
+DROP INDEX public.promotions_promotion_slug_7d42103c_like;
+DROP INDEX public.promotions_promotion_image_id_b13ebeaa;
+DROP INDEX public.pipeline_serviceresponse_created_at_b22c72db;
+DROP INDEX public.pipeline_servicehistory_updated_at_a416941c;
+DROP INDEX public.pipeline_servicehistory_created_at_6a56fddd;
+DROP INDEX public.pipeline_servicehistory_content_type_id_e493bd61;
+DROP INDEX public.partners_organization_name_id_a1427b0b;
+DROP INDEX public.partners_organization_iiko_brand_id_d6050590;
+DROP INDEX public.partners_organization_address_id_bbf680f0;
+DROP INDEX public.partners_brandimage_brand_id_22e5cac4;
+DROP INDEX public.partners_brandapilogin_city_id_5e60baa0;
+DROP INDEX public.partners_brandapilogin_brand_id_2ffe6f40;
+DROP INDEX public.partners_brandapilogin_api_login_6b024b03_like;
+DROP INDEX public.partners_brand_name_id_f2e2903e;
+DROP INDEX public.orders_orderstatustransition_updated_at_add829a9;
+DROP INDEX public.orders_orderstatustransition_order_id_4f1c85ba;
+DROP INDEX public.orders_orderstatustransition_created_at_4bf9ec51;
+DROP INDEX public.orders_order_user_id_e9b59eb1;
+DROP INDEX public.orders_order_updated_at_9fc52512;
+DROP INDEX public.orders_order_created_at_20b8d253;
+DROP INDEX public.orders_lead_updated_at_be0da4bb;
+DROP INDEX public.orders_lead_organization_id_ebc5f3f3;
+DROP INDEX public.orders_lead_created_at_bf2958bf;
+DROP INDEX public.orders_lead_cart_id_9952af4d;
+DROP INDEX public.orders_lead_brand_api_login_id_280e99ff;
+DROP INDEX public.orders_lead_address_id_d9e5e5a2;
+DROP INDEX public.orders_cartposition_updated_at_3f0b4e8f;
+DROP INDEX public.orders_cartposition_organization_position_id_6365f52b;
+DROP INDEX public.orders_cartposition_created_at_dea071d7;
+DROP INDEX public.orders_cartposition_cart_id_4f666c01;
+DROP INDEX public.orders_cart_updated_at_4c1eb0b8;
+DROP INDEX public.orders_cart_created_at_5ba8e3ee;
+DROP INDEX public.nomenclature_positioninfobyorganization_position_id_0af2d76f;
+DROP INDEX public.nomenclature_positioninfob_organization_id_322453fc;
+DROP INDEX public.nomenclature_position_name_id_6d73a5fe;
+DROP INDEX public.nomenclature_position_iiko_brand_id_33fa85df;
+DROP INDEX public.nomenclature_position_category_id_e8d024f1;
+DROP INDEX public.nomenclature_category_name_id_010374cd;
+DROP INDEX public.nomenclature_category_iiko_brand_id_edb83264;
+DROP INDEX public.location_country_name_id_d7690037;
+DROP INDEX public.location_city_name_id_15383c81;
+DROP INDEX public.location_city_country_id_2bc9d8e9;
+DROP INDEX public.django_session_session_key_c0390e0f_like;
+DROP INDEX public.django_session_expire_date_a5c62663;
+DROP INDEX public.django_celery_beat_periodictask_solar_id_a87ce72c;
+DROP INDEX public.django_celery_beat_periodictask_name_265a36b7_like;
+DROP INDEX public.django_celery_beat_periodictask_interval_id_a8ca27da;
+DROP INDEX public.django_celery_beat_periodictask_crontab_id_d3cba168;
+DROP INDEX public.django_celery_beat_periodictask_clocked_id_47a69f82;
+DROP INDEX public.django_admin_log_user_id_c564eba6;
+DROP INDEX public.django_admin_log_content_type_id_c4bce8eb;
+DROP INDEX public.auth_permission_content_type_id_2f476e4b;
+DROP INDEX public.auth_group_permissions_permission_id_84c5c92e;
+DROP INDEX public.auth_group_permissions_group_id_b120cbf9;
+DROP INDEX public.auth_group_name_a6ea08ec_like;
+ALTER TABLE ONLY public.users_user_user_permissions DROP CONSTRAINT users_user_user_permissions_user_id_permission_id_43338c45_uniq;
+ALTER TABLE ONLY public.users_user_user_permissions DROP CONSTRAINT users_user_user_permissions_pkey;
+ALTER TABLE ONLY public.users_user DROP CONSTRAINT users_user_secret_key_key;
+ALTER TABLE ONLY public.users_user DROP CONSTRAINT users_user_pkey;
+ALTER TABLE ONLY public.users_user DROP CONSTRAINT users_user_mobile_phone_key;
+ALTER TABLE ONLY public.users_user_groups DROP CONSTRAINT users_user_groups_user_id_group_id_b88eab82_uniq;
+ALTER TABLE ONLY public.users_user_groups DROP CONSTRAINT users_user_groups_pkey;
+ALTER TABLE ONLY public.translations_multilanguagetext DROP CONSTRAINT translations_multilanguagetext_pkey;
+ALTER TABLE ONLY public.translations_multilanguagefile DROP CONSTRAINT translations_multilanguagefile_pkey;
+ALTER TABLE ONLY public.translations_multilanguagechar DROP CONSTRAINT translations_multilanguagechar_pkey;
+ALTER TABLE ONLY public.token_blacklist_outstandingtoken DROP CONSTRAINT token_blacklist_outstandingtoken_pkey;
+ALTER TABLE ONLY public.token_blacklist_outstandingtoken DROP CONSTRAINT token_blacklist_outstandingtoken_jti_hex_d9bdf6f7_uniq;
+ALTER TABLE ONLY public.token_blacklist_blacklistedtoken DROP CONSTRAINT token_blacklist_blacklistedtoken_token_id_key;
+ALTER TABLE ONLY public.token_blacklist_blacklistedtoken DROP CONSTRAINT token_blacklist_blacklistedtoken_pkey;
+ALTER TABLE ONLY public.sms_smstemplate DROP CONSTRAINT sms_smstemplate_pkey;
+ALTER TABLE ONLY public.sms_smstemplate DROP CONSTRAINT sms_smstemplate_name_5f066fd1_uniq;
+ALTER TABLE ONLY public.sms_smsmessage DROP CONSTRAINT sms_smsmessage_uuid_key;
+ALTER TABLE ONLY public.sms_smsmessage DROP CONSTRAINT sms_smsmessage_pkey;
+ALTER TABLE ONLY public.sms_otp DROP CONSTRAINT sms_otp_pkey;
+ALTER TABLE ONLY public.sms_otp DROP CONSTRAINT sms_otp_code_mobile_phone_df2bd353_uniq;
+ALTER TABLE ONLY public.promotions_promotion DROP CONSTRAINT promotions_promotion_slug_key;
+ALTER TABLE ONLY public.promotions_promotion DROP CONSTRAINT promotions_promotion_pkey;
+ALTER TABLE ONLY public.pipeline_serviceresponse DROP CONSTRAINT pipeline_serviceresponse_pkey;
+ALTER TABLE ONLY public.pipeline_serviceresponse DROP CONSTRAINT pipeline_serviceresponse_history_id_key;
+ALTER TABLE ONLY public.pipeline_servicehistory DROP CONSTRAINT pipeline_servicehistory_pkey;
+ALTER TABLE ONLY public.partners_organization DROP CONSTRAINT partners_organization_pkey1;
+ALTER TABLE ONLY public.partners_brand DROP CONSTRAINT partners_organization_pkey;
+ALTER TABLE ONLY public.partners_brandimage DROP CONSTRAINT partners_brandimage_pkey;
+ALTER TABLE ONLY public.partners_brandimage DROP CONSTRAINT partners_brandimage_brand_id_image_type_ab0163dd_uniq;
+ALTER TABLE ONLY public.partners_iikobrand DROP CONSTRAINT partners_brandapilogin_pkey;
+ALTER TABLE ONLY public.partners_iikobrand DROP CONSTRAINT partners_brandapilogin_brand_id_city_id_00ebb827_uniq;
+ALTER TABLE ONLY public.partners_iikobrand DROP CONSTRAINT partners_brandapilogin_api_login_key;
+ALTER TABLE ONLY public.orders_orderstatustransition DROP CONSTRAINT orders_orderstatustransition_pkey;
+ALTER TABLE ONLY public.orders_order DROP CONSTRAINT orders_order_pkey;
+ALTER TABLE ONLY public.orders_order DROP CONSTRAINT orders_order_lead_id_key;
+ALTER TABLE ONLY public.orders_lead DROP CONSTRAINT orders_lead_uuid_key;
+ALTER TABLE ONLY public.orders_lead DROP CONSTRAINT orders_lead_pkey;
+ALTER TABLE ONLY public.orders_cartposition DROP CONSTRAINT orders_cartposition_pkey;
+ALTER TABLE ONLY public.orders_cart DROP CONSTRAINT orders_cart_uuid_key;
+ALTER TABLE ONLY public.orders_cart DROP CONSTRAINT orders_cart_pkey;
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization DROP CONSTRAINT nomenclature_positioninfobyorganization_uuid_key;
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization DROP CONSTRAINT nomenclature_positioninfobyorganization_pkey;
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization DROP CONSTRAINT nomenclature_positioninf_position_id_organization_cf3a3e63_uniq;
+ALTER TABLE ONLY public.nomenclature_position DROP CONSTRAINT nomenclature_position_pkey;
+ALTER TABLE ONLY public.nomenclature_category DROP CONSTRAINT nomenclature_category_uuid_key;
+ALTER TABLE ONLY public.nomenclature_category DROP CONSTRAINT nomenclature_category_pkey;
+ALTER TABLE ONLY public.location_country DROP CONSTRAINT location_country_pkey;
+ALTER TABLE ONLY public.location_city DROP CONSTRAINT location_city_pkey;
+ALTER TABLE ONLY public.location_city DROP CONSTRAINT location_city_country_id_name_id_ff6b3c2b_uniq;
+ALTER TABLE ONLY public.location_address DROP CONSTRAINT location_address_pkey;
+ALTER TABLE ONLY public.django_session DROP CONSTRAINT django_session_pkey;
+ALTER TABLE ONLY public.django_migrations DROP CONSTRAINT django_migrations_pkey;
+ALTER TABLE ONLY public.django_content_type DROP CONSTRAINT django_content_type_pkey;
+ALTER TABLE ONLY public.django_content_type DROP CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq;
+ALTER TABLE ONLY public.django_celery_beat_solarschedule DROP CONSTRAINT django_celery_beat_solarschedule_pkey;
+ALTER TABLE ONLY public.django_celery_beat_solarschedule DROP CONSTRAINT django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq;
+ALTER TABLE ONLY public.django_celery_beat_periodictasks DROP CONSTRAINT django_celery_beat_periodictasks_pkey;
+ALTER TABLE ONLY public.django_celery_beat_periodictask DROP CONSTRAINT django_celery_beat_periodictask_pkey;
+ALTER TABLE ONLY public.django_celery_beat_periodictask DROP CONSTRAINT django_celery_beat_periodictask_name_key;
+ALTER TABLE ONLY public.django_celery_beat_intervalschedule DROP CONSTRAINT django_celery_beat_intervalschedule_pkey;
+ALTER TABLE ONLY public.django_celery_beat_crontabschedule DROP CONSTRAINT django_celery_beat_crontabschedule_pkey;
+ALTER TABLE ONLY public.django_celery_beat_clockedschedule DROP CONSTRAINT django_celery_beat_clockedschedule_pkey;
+ALTER TABLE ONLY public.django_admin_log DROP CONSTRAINT django_admin_log_pkey;
+ALTER TABLE ONLY public.auth_permission DROP CONSTRAINT auth_permission_pkey;
+ALTER TABLE ONLY public.auth_permission DROP CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq;
+ALTER TABLE ONLY public.auth_group DROP CONSTRAINT auth_group_pkey;
+ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permissions_pkey;
+ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq;
+ALTER TABLE ONLY public.auth_group DROP CONSTRAINT auth_group_name_key;
+ALTER TABLE public.users_user_user_permissions ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.users_user_groups ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.users_user ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.translations_multilanguagetext ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.translations_multilanguagefile ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.translations_multilanguagechar ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.token_blacklist_outstandingtoken ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.token_blacklist_blacklistedtoken ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.sms_smstemplate ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.sms_smsmessage ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.sms_otp ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.promotions_promotion ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.pipeline_serviceresponse ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.pipeline_servicehistory ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.partners_organization ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.partners_iikobrand ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.partners_brandimage ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.partners_brand ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.orders_orderstatustransition ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.orders_order ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.orders_lead ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.orders_cartposition ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.orders_cart ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.nomenclature_positioninfobyorganization ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.nomenclature_position ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.nomenclature_category ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.location_country ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.location_city ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.location_address ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.django_migrations ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.django_content_type ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.django_celery_beat_solarschedule ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.django_celery_beat_periodictask ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.django_celery_beat_intervalschedule ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.django_celery_beat_crontabschedule ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.django_celery_beat_clockedschedule ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.django_admin_log ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.auth_permission ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.auth_group_permissions ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.auth_group ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.users_user_user_permissions_id_seq;
+DROP TABLE public.users_user_user_permissions;
+DROP SEQUENCE public.users_user_id_seq;
+DROP SEQUENCE public.users_user_groups_id_seq;
+DROP TABLE public.users_user_groups;
+DROP TABLE public.users_user;
+DROP SEQUENCE public.translations_multilanguagetext_id_seq;
+DROP TABLE public.translations_multilanguagetext;
+DROP SEQUENCE public.translations_multilanguagefile_id_seq;
+DROP TABLE public.translations_multilanguagefile;
+DROP SEQUENCE public.translations_multilanguagechar_id_seq;
+DROP TABLE public.translations_multilanguagechar;
+DROP SEQUENCE public.token_blacklist_outstandingtoken_id_seq;
+DROP TABLE public.token_blacklist_outstandingtoken;
+DROP SEQUENCE public.token_blacklist_blacklistedtoken_id_seq;
+DROP TABLE public.token_blacklist_blacklistedtoken;
+DROP SEQUENCE public.sms_smstemplate_id_seq;
+DROP TABLE public.sms_smstemplate;
+DROP SEQUENCE public.sms_smsmessage_id_seq;
+DROP TABLE public.sms_smsmessage;
+DROP SEQUENCE public.sms_otp_id_seq;
+DROP TABLE public.sms_otp;
+DROP SEQUENCE public.promotions_promotion_id_seq;
+DROP TABLE public.promotions_promotion;
+DROP SEQUENCE public.pipeline_serviceresponse_id_seq;
+DROP TABLE public.pipeline_serviceresponse;
+DROP SEQUENCE public.pipeline_servicehistory_id_seq;
+DROP TABLE public.pipeline_servicehistory;
+DROP SEQUENCE public.partners_organization_id_seq1;
+DROP SEQUENCE public.partners_organization_id_seq;
+DROP TABLE public.partners_organization;
+DROP SEQUENCE public.partners_brandimage_id_seq;
+DROP TABLE public.partners_brandimage;
+DROP SEQUENCE public.partners_brandapilogin_id_seq;
+DROP TABLE public.partners_iikobrand;
+DROP TABLE public.partners_brand;
+DROP SEQUENCE public.orders_orderstatustransition_id_seq;
+DROP TABLE public.orders_orderstatustransition;
+DROP SEQUENCE public.orders_order_id_seq;
+DROP TABLE public.orders_order;
+DROP SEQUENCE public.orders_lead_id_seq;
+DROP TABLE public.orders_lead;
+DROP SEQUENCE public.orders_cartposition_id_seq;
+DROP TABLE public.orders_cartposition;
+DROP SEQUENCE public.orders_cart_id_seq;
+DROP TABLE public.orders_cart;
+DROP SEQUENCE public.nomenclature_positioninfobyorganization_id_seq;
+DROP TABLE public.nomenclature_positioninfobyorganization;
+DROP SEQUENCE public.nomenclature_position_id_seq;
+DROP TABLE public.nomenclature_position;
+DROP SEQUENCE public.nomenclature_category_id_seq;
+DROP TABLE public.nomenclature_category;
+DROP SEQUENCE public.location_country_id_seq;
+DROP TABLE public.location_country;
+DROP SEQUENCE public.location_city_id_seq;
+DROP TABLE public.location_city;
+DROP SEQUENCE public.location_address_id_seq;
+DROP TABLE public.location_address;
+DROP TABLE public.django_session;
+DROP SEQUENCE public.django_migrations_id_seq;
+DROP TABLE public.django_migrations;
+DROP SEQUENCE public.django_content_type_id_seq;
+DROP TABLE public.django_content_type;
+DROP SEQUENCE public.django_celery_beat_solarschedule_id_seq;
+DROP TABLE public.django_celery_beat_solarschedule;
+DROP TABLE public.django_celery_beat_periodictasks;
+DROP SEQUENCE public.django_celery_beat_periodictask_id_seq;
+DROP TABLE public.django_celery_beat_periodictask;
+DROP SEQUENCE public.django_celery_beat_intervalschedule_id_seq;
+DROP TABLE public.django_celery_beat_intervalschedule;
+DROP SEQUENCE public.django_celery_beat_crontabschedule_id_seq;
+DROP TABLE public.django_celery_beat_crontabschedule;
+DROP SEQUENCE public.django_celery_beat_clockedschedule_id_seq;
+DROP TABLE public.django_celery_beat_clockedschedule;
+DROP SEQUENCE public.django_admin_log_id_seq;
+DROP TABLE public.django_admin_log;
+DROP SEQUENCE public.auth_permission_id_seq;
+DROP TABLE public.auth_permission;
+DROP SEQUENCE public.auth_group_permissions_id_seq;
+DROP TABLE public.auth_group_permissions;
+DROP SEQUENCE public.auth_group_id_seq;
+DROP TABLE public.auth_group;
+DROP EXTENSION plpgsql;
+DROP SCHEMA public;
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO kexdb;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO kexdb;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO kexdb;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO kexdb;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO kexdb;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO kexdb;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO kexdb;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO kexdb;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_celery_beat_clockedschedule; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_celery_beat_clockedschedule (
+    id integer NOT NULL,
+    clocked_time timestamp with time zone NOT NULL,
+    enabled boolean NOT NULL
+);
+
+
+ALTER TABLE public.django_celery_beat_clockedschedule OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_clockedschedule_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.django_celery_beat_clockedschedule_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_celery_beat_clockedschedule_id_seq OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_clockedschedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.django_celery_beat_clockedschedule_id_seq OWNED BY public.django_celery_beat_clockedschedule.id;
+
+
+--
+-- Name: django_celery_beat_crontabschedule; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_celery_beat_crontabschedule (
+    id integer NOT NULL,
+    minute character varying(240) NOT NULL,
+    hour character varying(96) NOT NULL,
+    day_of_week character varying(64) NOT NULL,
+    day_of_month character varying(124) NOT NULL,
+    month_of_year character varying(64) NOT NULL,
+    timezone character varying(63) NOT NULL
+);
+
+
+ALTER TABLE public.django_celery_beat_crontabschedule OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_crontabschedule_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.django_celery_beat_crontabschedule_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_celery_beat_crontabschedule_id_seq OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_crontabschedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.django_celery_beat_crontabschedule_id_seq OWNED BY public.django_celery_beat_crontabschedule.id;
+
+
+--
+-- Name: django_celery_beat_intervalschedule; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_celery_beat_intervalschedule (
+    id integer NOT NULL,
+    every integer NOT NULL,
+    period character varying(24) NOT NULL
+);
+
+
+ALTER TABLE public.django_celery_beat_intervalschedule OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_intervalschedule_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.django_celery_beat_intervalschedule_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_celery_beat_intervalschedule_id_seq OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_intervalschedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.django_celery_beat_intervalschedule_id_seq OWNED BY public.django_celery_beat_intervalschedule.id;
+
+
+--
+-- Name: django_celery_beat_periodictask; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_celery_beat_periodictask (
+    id integer NOT NULL,
+    name character varying(200) NOT NULL,
+    task character varying(200) NOT NULL,
+    args text NOT NULL,
+    kwargs text NOT NULL,
+    queue character varying(200),
+    exchange character varying(200),
+    routing_key character varying(200),
+    expires timestamp with time zone,
+    enabled boolean NOT NULL,
+    last_run_at timestamp with time zone,
+    total_run_count integer NOT NULL,
+    date_changed timestamp with time zone NOT NULL,
+    description text NOT NULL,
+    crontab_id integer,
+    interval_id integer,
+    solar_id integer,
+    one_off boolean NOT NULL,
+    start_time timestamp with time zone,
+    priority integer,
+    headers text NOT NULL,
+    clocked_id integer,
+    expire_seconds integer,
+    CONSTRAINT django_celery_beat_periodictask_expire_seconds_check CHECK ((expire_seconds >= 0)),
+    CONSTRAINT django_celery_beat_periodictask_priority_check CHECK ((priority >= 0)),
+    CONSTRAINT django_celery_beat_periodictask_total_run_count_check CHECK ((total_run_count >= 0))
+);
+
+
+ALTER TABLE public.django_celery_beat_periodictask OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_periodictask_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.django_celery_beat_periodictask_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_celery_beat_periodictask_id_seq OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_periodictask_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.django_celery_beat_periodictask_id_seq OWNED BY public.django_celery_beat_periodictask.id;
+
+
+--
+-- Name: django_celery_beat_periodictasks; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_celery_beat_periodictasks (
+    ident smallint NOT NULL,
+    last_update timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_celery_beat_periodictasks OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_solarschedule; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_celery_beat_solarschedule (
+    id integer NOT NULL,
+    event character varying(24) NOT NULL,
+    latitude numeric(9,6) NOT NULL,
+    longitude numeric(9,6) NOT NULL
+);
+
+
+ALTER TABLE public.django_celery_beat_solarschedule OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_solarschedule_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.django_celery_beat_solarschedule_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_celery_beat_solarschedule_id_seq OWNER TO kexdb;
+
+--
+-- Name: django_celery_beat_solarschedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.django_celery_beat_solarschedule_id_seq OWNED BY public.django_celery_beat_solarschedule.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO kexdb;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO kexdb;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO kexdb;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO kexdb;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO kexdb;
+
+--
+-- Name: location_address; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.location_address (
+    id integer NOT NULL,
+    country character varying(255),
+    region character varying(255),
+    city character varying(255),
+    district character varying(255),
+    street character varying(255),
+    building character varying(100),
+    corpus character varying(100),
+    flat character varying(50),
+    postal_code character varying(7),
+    latitude numeric(12,8),
+    longitude numeric(12,8)
+);
+
+
+ALTER TABLE public.location_address OWNER TO kexdb;
+
+--
+-- Name: location_address_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.location_address_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.location_address_id_seq OWNER TO kexdb;
+
+--
+-- Name: location_address_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.location_address_id_seq OWNED BY public.location_address.id;
+
+
+--
+-- Name: location_city; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.location_city (
+    id integer NOT NULL,
+    country_id integer,
+    name_id integer
+);
+
+
+ALTER TABLE public.location_city OWNER TO kexdb;
+
+--
+-- Name: location_city_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.location_city_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.location_city_id_seq OWNER TO kexdb;
+
+--
+-- Name: location_city_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.location_city_id_seq OWNED BY public.location_city.id;
+
+
+--
+-- Name: location_country; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.location_country (
+    id integer NOT NULL,
+    country_code character varying(32),
+    name_id integer
+);
+
+
+ALTER TABLE public.location_country OWNER TO kexdb;
+
+--
+-- Name: location_country_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.location_country_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.location_country_id_seq OWNER TO kexdb;
+
+--
+-- Name: location_country_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.location_country_id_seq OWNED BY public.location_country.id;
+
+
+--
+-- Name: nomenclature_category; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.nomenclature_category (
+    id integer NOT NULL,
+    name_id integer,
+    iiko_brand_id integer,
+    uuid uuid NOT NULL
+);
+
+
+ALTER TABLE public.nomenclature_category OWNER TO kexdb;
+
+--
+-- Name: nomenclature_category_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.nomenclature_category_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.nomenclature_category_id_seq OWNER TO kexdb;
+
+--
+-- Name: nomenclature_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.nomenclature_category_id_seq OWNED BY public.nomenclature_category.id;
+
+
+--
+-- Name: nomenclature_position; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.nomenclature_position (
+    id integer NOT NULL,
+    is_additional boolean NOT NULL,
+    outer_id uuid,
+    iiko_description text,
+    iiko_name character varying(256),
+    iiko_brand_id integer NOT NULL,
+    category_id uuid,
+    name_id integer
+);
+
+
+ALTER TABLE public.nomenclature_position OWNER TO kexdb;
+
+--
+-- Name: nomenclature_position_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.nomenclature_position_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.nomenclature_position_id_seq OWNER TO kexdb;
+
+--
+-- Name: nomenclature_position_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.nomenclature_position_id_seq OWNED BY public.nomenclature_position.id;
+
+
+--
+-- Name: nomenclature_positioninfobyorganization; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.nomenclature_positioninfobyorganization (
+    id integer NOT NULL,
+    price numeric(12,2) NOT NULL,
+    organization_id integer NOT NULL,
+    position_id integer NOT NULL,
+    uuid uuid NOT NULL
+);
+
+
+ALTER TABLE public.nomenclature_positioninfobyorganization OWNER TO kexdb;
+
+--
+-- Name: nomenclature_positioninfobyorganization_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.nomenclature_positioninfobyorganization_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.nomenclature_positioninfobyorganization_id_seq OWNER TO kexdb;
+
+--
+-- Name: nomenclature_positioninfobyorganization_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.nomenclature_positioninfobyorganization_id_seq OWNED BY public.nomenclature_positioninfobyorganization.id;
+
+
+--
+-- Name: orders_cart; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.orders_cart (
+    id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    uuid uuid NOT NULL
+);
+
+
+ALTER TABLE public.orders_cart OWNER TO kexdb;
+
+--
+-- Name: orders_cart_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.orders_cart_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_cart_id_seq OWNER TO kexdb;
+
+--
+-- Name: orders_cart_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.orders_cart_id_seq OWNED BY public.orders_cart.id;
+
+
+--
+-- Name: orders_cartposition; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.orders_cartposition (
+    id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    count smallint NOT NULL,
+    comment text,
+    cart_id integer NOT NULL,
+    organization_position_id uuid NOT NULL,
+    CONSTRAINT orders_cartposition_count_check CHECK ((count >= 0))
+);
+
+
+ALTER TABLE public.orders_cartposition OWNER TO kexdb;
+
+--
+-- Name: orders_cartposition_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.orders_cartposition_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_cartposition_id_seq OWNER TO kexdb;
+
+--
+-- Name: orders_cartposition_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.orders_cartposition_id_seq OWNED BY public.orders_cartposition.id;
+
+
+--
+-- Name: orders_lead; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.orders_lead (
+    id integer NOT NULL,
+    uuid uuid NOT NULL,
+    address_id integer,
+    iiko_brand_id integer,
+    organization_id integer,
+    estimated_duration smallint,
+    order_zone character varying(256),
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cart_id integer,
+    CONSTRAINT orders_lead_estimated_duration_check CHECK ((estimated_duration >= 0))
+);
+
+
+ALTER TABLE public.orders_lead OWNER TO kexdb;
+
+--
+-- Name: orders_lead_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.orders_lead_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_lead_id_seq OWNER TO kexdb;
+
+--
+-- Name: orders_lead_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.orders_lead_id_seq OWNED BY public.orders_lead.id;
+
+
+--
+-- Name: orders_order; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.orders_order (
+    id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status character varying(32) NOT NULL,
+    status_reason text NOT NULL,
+    user_id integer,
+    lead_id uuid
+);
+
+
+ALTER TABLE public.orders_order OWNER TO kexdb;
+
+--
+-- Name: orders_order_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.orders_order_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_order_id_seq OWNER TO kexdb;
+
+--
+-- Name: orders_order_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.orders_order_id_seq OWNED BY public.orders_order.id;
+
+
+--
+-- Name: orders_orderstatustransition; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.orders_orderstatustransition (
+    id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status character varying(20) NOT NULL,
+    status_reason text NOT NULL,
+    order_id integer
+);
+
+
+ALTER TABLE public.orders_orderstatustransition OWNER TO kexdb;
+
+--
+-- Name: orders_orderstatustransition_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.orders_orderstatustransition_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_orderstatustransition_id_seq OWNER TO kexdb;
+
+--
+-- Name: orders_orderstatustransition_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.orders_orderstatustransition_id_seq OWNED BY public.orders_orderstatustransition.id;
+
+
+--
+-- Name: partners_brand; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.partners_brand (
+    id integer NOT NULL,
+    name_id integer
+);
+
+
+ALTER TABLE public.partners_brand OWNER TO kexdb;
+
+--
+-- Name: partners_iikobrand; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.partners_iikobrand (
+    id integer NOT NULL,
+    api_login character varying(255) NOT NULL,
+    brand_id integer NOT NULL,
+    city_id integer NOT NULL,
+    full_name character varying(256),
+    is_active boolean NOT NULL,
+    priority smallint NOT NULL,
+    CONSTRAINT partners_iikobrand_priority_check CHECK ((priority >= 0))
+);
+
+
+ALTER TABLE public.partners_iikobrand OWNER TO kexdb;
+
+--
+-- Name: partners_brandapilogin_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.partners_brandapilogin_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.partners_brandapilogin_id_seq OWNER TO kexdb;
+
+--
+-- Name: partners_brandapilogin_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.partners_brandapilogin_id_seq OWNED BY public.partners_iikobrand.id;
+
+
+--
+-- Name: partners_brandimage; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.partners_brandimage (
+    id integer NOT NULL,
+    image character varying(100),
+    image_type character varying(12),
+    brand_id integer NOT NULL
+);
+
+
+ALTER TABLE public.partners_brandimage OWNER TO kexdb;
+
+--
+-- Name: partners_brandimage_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.partners_brandimage_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.partners_brandimage_id_seq OWNER TO kexdb;
+
+--
+-- Name: partners_brandimage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.partners_brandimage_id_seq OWNED BY public.partners_brandimage.id;
+
+
+--
+-- Name: partners_organization; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.partners_organization (
+    id integer NOT NULL,
+    address_id integer,
+    is_active boolean NOT NULL,
+    outer_id uuid,
+    iiko_brand_id integer,
+    end_time time without time zone NOT NULL,
+    start_time time without time zone NOT NULL,
+    name_id integer
+);
+
+
+ALTER TABLE public.partners_organization OWNER TO kexdb;
+
+--
+-- Name: partners_organization_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.partners_organization_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.partners_organization_id_seq OWNER TO kexdb;
+
+--
+-- Name: partners_organization_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.partners_organization_id_seq OWNED BY public.partners_brand.id;
+
+
+--
+-- Name: partners_organization_id_seq1; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.partners_organization_id_seq1
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.partners_organization_id_seq1 OWNER TO kexdb;
+
+--
+-- Name: partners_organization_id_seq1; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.partners_organization_id_seq1 OWNED BY public.partners_organization.id;
+
+
+--
+-- Name: pipeline_servicehistory; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.pipeline_servicehistory (
+    id integer NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    object_id integer,
+    service character varying(255) NOT NULL,
+    data jsonb,
+    status character varying(255) NOT NULL,
+    created_at timestamp with time zone,
+    runtime numeric(6,3) NOT NULL,
+    content_type_id integer NOT NULL,
+    service_pretty character varying(255) NOT NULL,
+    CONSTRAINT pipeline_servicehistory_object_id_check CHECK ((object_id >= 0))
+);
+
+
+ALTER TABLE public.pipeline_servicehistory OWNER TO kexdb;
+
+--
+-- Name: pipeline_servicehistory_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.pipeline_servicehistory_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pipeline_servicehistory_id_seq OWNER TO kexdb;
+
+--
+-- Name: pipeline_servicehistory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.pipeline_servicehistory_id_seq OWNED BY public.pipeline_servicehistory.id;
+
+
+--
+-- Name: pipeline_serviceresponse; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.pipeline_serviceresponse (
+    id integer NOT NULL,
+    url character varying(255),
+    method character varying(100),
+    request text,
+    response text,
+    code character varying(5),
+    created_at timestamp with time zone NOT NULL,
+    history_id integer NOT NULL
+);
+
+
+ALTER TABLE public.pipeline_serviceresponse OWNER TO kexdb;
+
+--
+-- Name: pipeline_serviceresponse_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.pipeline_serviceresponse_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pipeline_serviceresponse_id_seq OWNER TO kexdb;
+
+--
+-- Name: pipeline_serviceresponse_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.pipeline_serviceresponse_id_seq OWNED BY public.pipeline_serviceresponse.id;
+
+
+--
+-- Name: promotions_promotion; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.promotions_promotion (
+    id integer NOT NULL,
+    slug character varying(50) NOT NULL,
+    type character varying(20) NOT NULL,
+    image_id integer NOT NULL,
+    template_id integer NOT NULL
+);
+
+
+ALTER TABLE public.promotions_promotion OWNER TO kexdb;
+
+--
+-- Name: promotions_promotion_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.promotions_promotion_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.promotions_promotion_id_seq OWNER TO kexdb;
+
+--
+-- Name: promotions_promotion_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.promotions_promotion_id_seq OWNED BY public.promotions_promotion.id;
+
+
+--
+-- Name: sms_otp; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.sms_otp (
+    id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    code character varying(12) NOT NULL,
+    verified boolean NOT NULL,
+    mobile_phone character varying(128) NOT NULL
+);
+
+
+ALTER TABLE public.sms_otp OWNER TO kexdb;
+
+--
+-- Name: sms_otp_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.sms_otp_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sms_otp_id_seq OWNER TO kexdb;
+
+--
+-- Name: sms_otp_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.sms_otp_id_seq OWNED BY public.sms_otp.id;
+
+
+--
+-- Name: sms_smsmessage; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.sms_smsmessage (
+    id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    uuid uuid NOT NULL,
+    recipients character varying(255) NOT NULL,
+    content text NOT NULL,
+    error_code integer,
+    error_description character varying(255)
+);
+
+
+ALTER TABLE public.sms_smsmessage OWNER TO kexdb;
+
+--
+-- Name: sms_smsmessage_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.sms_smsmessage_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sms_smsmessage_id_seq OWNER TO kexdb;
+
+--
+-- Name: sms_smsmessage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.sms_smsmessage_id_seq OWNED BY public.sms_smsmessage.id;
+
+
+--
+-- Name: sms_smstemplate; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.sms_smstemplate (
+    id integer NOT NULL,
+    content text NOT NULL,
+    name character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.sms_smstemplate OWNER TO kexdb;
+
+--
+-- Name: sms_smstemplate_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.sms_smstemplate_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sms_smstemplate_id_seq OWNER TO kexdb;
+
+--
+-- Name: sms_smstemplate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.sms_smstemplate_id_seq OWNED BY public.sms_smstemplate.id;
+
+
+--
+-- Name: token_blacklist_blacklistedtoken; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.token_blacklist_blacklistedtoken (
+    id integer NOT NULL,
+    blacklisted_at timestamp with time zone NOT NULL,
+    token_id integer NOT NULL
+);
+
+
+ALTER TABLE public.token_blacklist_blacklistedtoken OWNER TO kexdb;
+
+--
+-- Name: token_blacklist_blacklistedtoken_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.token_blacklist_blacklistedtoken_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.token_blacklist_blacklistedtoken_id_seq OWNER TO kexdb;
+
+--
+-- Name: token_blacklist_blacklistedtoken_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.token_blacklist_blacklistedtoken_id_seq OWNED BY public.token_blacklist_blacklistedtoken.id;
+
+
+--
+-- Name: token_blacklist_outstandingtoken; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.token_blacklist_outstandingtoken (
+    id integer NOT NULL,
+    token text NOT NULL,
+    created_at timestamp with time zone,
+    expires_at timestamp with time zone NOT NULL,
+    user_id integer,
+    jti character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.token_blacklist_outstandingtoken OWNER TO kexdb;
+
+--
+-- Name: token_blacklist_outstandingtoken_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.token_blacklist_outstandingtoken_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.token_blacklist_outstandingtoken_id_seq OWNER TO kexdb;
+
+--
+-- Name: token_blacklist_outstandingtoken_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.token_blacklist_outstandingtoken_id_seq OWNED BY public.token_blacklist_outstandingtoken.id;
+
+
+--
+-- Name: translations_multilanguagechar; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.translations_multilanguagechar (
+    id integer NOT NULL,
+    text_ru character varying(256),
+    text_kk character varying(256),
+    text_en character varying(256)
+);
+
+
+ALTER TABLE public.translations_multilanguagechar OWNER TO kexdb;
+
+--
+-- Name: translations_multilanguagechar_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.translations_multilanguagechar_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.translations_multilanguagechar_id_seq OWNER TO kexdb;
+
+--
+-- Name: translations_multilanguagechar_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.translations_multilanguagechar_id_seq OWNED BY public.translations_multilanguagechar.id;
+
+
+--
+-- Name: translations_multilanguagefile; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.translations_multilanguagefile (
+    id integer NOT NULL,
+    file_ru character varying(100),
+    file_kk character varying(100),
+    file_en character varying(100)
+);
+
+
+ALTER TABLE public.translations_multilanguagefile OWNER TO kexdb;
+
+--
+-- Name: translations_multilanguagefile_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.translations_multilanguagefile_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.translations_multilanguagefile_id_seq OWNER TO kexdb;
+
+--
+-- Name: translations_multilanguagefile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.translations_multilanguagefile_id_seq OWNED BY public.translations_multilanguagefile.id;
+
+
+--
+-- Name: translations_multilanguagetext; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.translations_multilanguagetext (
+    id integer NOT NULL,
+    text_ru text,
+    text_kk text,
+    text_en text
+);
+
+
+ALTER TABLE public.translations_multilanguagetext OWNER TO kexdb;
+
+--
+-- Name: translations_multilanguagetext_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.translations_multilanguagetext_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.translations_multilanguagetext_id_seq OWNER TO kexdb;
+
+--
+-- Name: translations_multilanguagetext_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.translations_multilanguagetext_id_seq OWNED BY public.translations_multilanguagetext.id;
+
+
+--
+-- Name: users_user; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.users_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    mobile_phone character varying(128) NOT NULL,
+    is_active boolean NOT NULL,
+    is_staff boolean NOT NULL,
+    secret_key uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    email character varying(254),
+    name character varying(256)
+);
+
+
+ALTER TABLE public.users_user OWNER TO kexdb;
+
+--
+-- Name: users_user_groups; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.users_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.users_user_groups OWNER TO kexdb;
+
+--
+-- Name: users_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.users_user_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_user_groups_id_seq OWNER TO kexdb;
+
+--
+-- Name: users_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.users_user_groups_id_seq OWNED BY public.users_user_groups.id;
+
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.users_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_user_id_seq OWNER TO kexdb;
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users_user.id;
+
+
+--
+-- Name: users_user_user_permissions; Type: TABLE; Schema: public; Owner: kexdb
+--
+
+CREATE TABLE public.users_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.users_user_user_permissions OWNER TO kexdb;
+
+--
+-- Name: users_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: kexdb
+--
+
+CREATE SEQUENCE public.users_user_user_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_user_user_permissions_id_seq OWNER TO kexdb;
+
+--
+-- Name: users_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kexdb
+--
+
+ALTER SEQUENCE public.users_user_user_permissions_id_seq OWNED BY public.users_user_user_permissions.id;
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_celery_beat_clockedschedule id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_clockedschedule ALTER COLUMN id SET DEFAULT nextval('public.django_celery_beat_clockedschedule_id_seq'::regclass);
+
+
+--
+-- Name: django_celery_beat_crontabschedule id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_crontabschedule ALTER COLUMN id SET DEFAULT nextval('public.django_celery_beat_crontabschedule_id_seq'::regclass);
+
+
+--
+-- Name: django_celery_beat_intervalschedule id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_intervalschedule ALTER COLUMN id SET DEFAULT nextval('public.django_celery_beat_intervalschedule_id_seq'::regclass);
+
+
+--
+-- Name: django_celery_beat_periodictask id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_periodictask ALTER COLUMN id SET DEFAULT nextval('public.django_celery_beat_periodictask_id_seq'::regclass);
+
+
+--
+-- Name: django_celery_beat_solarschedule id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_solarschedule ALTER COLUMN id SET DEFAULT nextval('public.django_celery_beat_solarschedule_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: location_address id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_address ALTER COLUMN id SET DEFAULT nextval('public.location_address_id_seq'::regclass);
+
+
+--
+-- Name: location_city id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_city ALTER COLUMN id SET DEFAULT nextval('public.location_city_id_seq'::regclass);
+
+
+--
+-- Name: location_country id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_country ALTER COLUMN id SET DEFAULT nextval('public.location_country_id_seq'::regclass);
+
+
+--
+-- Name: nomenclature_category id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_category ALTER COLUMN id SET DEFAULT nextval('public.nomenclature_category_id_seq'::regclass);
+
+
+--
+-- Name: nomenclature_position id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_position ALTER COLUMN id SET DEFAULT nextval('public.nomenclature_position_id_seq'::regclass);
+
+
+--
+-- Name: nomenclature_positioninfobyorganization id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization ALTER COLUMN id SET DEFAULT nextval('public.nomenclature_positioninfobyorganization_id_seq'::regclass);
+
+
+--
+-- Name: orders_cart id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_cart ALTER COLUMN id SET DEFAULT nextval('public.orders_cart_id_seq'::regclass);
+
+
+--
+-- Name: orders_cartposition id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_cartposition ALTER COLUMN id SET DEFAULT nextval('public.orders_cartposition_id_seq'::regclass);
+
+
+--
+-- Name: orders_lead id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_lead ALTER COLUMN id SET DEFAULT nextval('public.orders_lead_id_seq'::regclass);
+
+
+--
+-- Name: orders_order id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_order ALTER COLUMN id SET DEFAULT nextval('public.orders_order_id_seq'::regclass);
+
+
+--
+-- Name: orders_orderstatustransition id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_orderstatustransition ALTER COLUMN id SET DEFAULT nextval('public.orders_orderstatustransition_id_seq'::regclass);
+
+
+--
+-- Name: partners_brand id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_brand ALTER COLUMN id SET DEFAULT nextval('public.partners_organization_id_seq'::regclass);
+
+
+--
+-- Name: partners_brandimage id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_brandimage ALTER COLUMN id SET DEFAULT nextval('public.partners_brandimage_id_seq'::regclass);
+
+
+--
+-- Name: partners_iikobrand id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_iikobrand ALTER COLUMN id SET DEFAULT nextval('public.partners_brandapilogin_id_seq'::regclass);
+
+
+--
+-- Name: partners_organization id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_organization ALTER COLUMN id SET DEFAULT nextval('public.partners_organization_id_seq1'::regclass);
+
+
+--
+-- Name: pipeline_servicehistory id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.pipeline_servicehistory ALTER COLUMN id SET DEFAULT nextval('public.pipeline_servicehistory_id_seq'::regclass);
+
+
+--
+-- Name: pipeline_serviceresponse id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.pipeline_serviceresponse ALTER COLUMN id SET DEFAULT nextval('public.pipeline_serviceresponse_id_seq'::regclass);
+
+
+--
+-- Name: promotions_promotion id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.promotions_promotion ALTER COLUMN id SET DEFAULT nextval('public.promotions_promotion_id_seq'::regclass);
+
+
+--
+-- Name: sms_otp id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_otp ALTER COLUMN id SET DEFAULT nextval('public.sms_otp_id_seq'::regclass);
+
+
+--
+-- Name: sms_smsmessage id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_smsmessage ALTER COLUMN id SET DEFAULT nextval('public.sms_smsmessage_id_seq'::regclass);
+
+
+--
+-- Name: sms_smstemplate id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_smstemplate ALTER COLUMN id SET DEFAULT nextval('public.sms_smstemplate_id_seq'::regclass);
+
+
+--
+-- Name: token_blacklist_blacklistedtoken id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.token_blacklist_blacklistedtoken ALTER COLUMN id SET DEFAULT nextval('public.token_blacklist_blacklistedtoken_id_seq'::regclass);
+
+
+--
+-- Name: token_blacklist_outstandingtoken id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.token_blacklist_outstandingtoken ALTER COLUMN id SET DEFAULT nextval('public.token_blacklist_outstandingtoken_id_seq'::regclass);
+
+
+--
+-- Name: translations_multilanguagechar id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.translations_multilanguagechar ALTER COLUMN id SET DEFAULT nextval('public.translations_multilanguagechar_id_seq'::regclass);
+
+
+--
+-- Name: translations_multilanguagefile id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.translations_multilanguagefile ALTER COLUMN id SET DEFAULT nextval('public.translations_multilanguagefile_id_seq'::regclass);
+
+
+--
+-- Name: translations_multilanguagetext id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.translations_multilanguagetext ALTER COLUMN id SET DEFAULT nextval('public.translations_multilanguagetext_id_seq'::regclass);
+
+
+--
+-- Name: users_user id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user ALTER COLUMN id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
+
+
+--
+-- Name: users_user_groups id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_groups ALTER COLUMN id SET DEFAULT nextval('public.users_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: users_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.users_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can change config	2	change_config
+6	Can view config	2	view_config
+7	Can add permission	3	add_permission
+8	Can change permission	3	change_permission
+9	Can delete permission	3	delete_permission
+10	Can view permission	3	view_permission
+11	Can add group	4	add_group
+12	Can change group	4	change_group
+13	Can delete group	4	delete_group
+14	Can view group	4	view_group
+15	Can add content type	5	add_contenttype
+16	Can change content type	5	change_contenttype
+17	Can delete content type	5	delete_contenttype
+18	Can view content type	5	view_contenttype
+19	Can add session	6	add_session
+20	Can change session	6	change_session
+21	Can delete session	6	delete_session
+22	Can view session	6	view_session
+23	Can add blacklisted token	7	add_blacklistedtoken
+24	Can change blacklisted token	7	change_blacklistedtoken
+25	Can delete blacklisted token	7	delete_blacklistedtoken
+26	Can view blacklisted token	7	view_blacklistedtoken
+27	Can add outstanding token	8	add_outstandingtoken
+28	Can change outstanding token	8	change_outstandingtoken
+29	Can delete outstanding token	8	delete_outstandingtoken
+30	Can view outstanding token	8	view_outstandingtoken
+31	Can add crontab	9	add_crontabschedule
+32	Can change crontab	9	change_crontabschedule
+33	Can delete crontab	9	delete_crontabschedule
+34	Can view crontab	9	view_crontabschedule
+35	Can add interval	10	add_intervalschedule
+36	Can change interval	10	change_intervalschedule
+37	Can delete interval	10	delete_intervalschedule
+38	Can view interval	10	view_intervalschedule
+39	Can add periodic task	11	add_periodictask
+40	Can change periodic task	11	change_periodictask
+41	Can delete periodic task	11	delete_periodictask
+42	Can view periodic task	11	view_periodictask
+43	Can add periodic tasks	12	add_periodictasks
+44	Can change periodic tasks	12	change_periodictasks
+45	Can delete periodic tasks	12	delete_periodictasks
+46	Can view periodic tasks	12	view_periodictasks
+47	Can add solar event	13	add_solarschedule
+48	Can change solar event	13	change_solarschedule
+49	Can delete solar event	13	delete_solarschedule
+50	Can view solar event	13	view_solarschedule
+51	Can add clocked	14	add_clockedschedule
+52	Can change clocked	14	change_clockedschedule
+53	Can delete clocked	14	delete_clockedschedule
+54	Can view clocked	14	view_clockedschedule
+55	Can add SMS сообщение	15	add_smsmessage
+56	Can change SMS сообщение	15	change_smsmessage
+57	Can delete SMS сообщение	15	delete_smsmessage
+58	Can view SMS сообщение	15	view_smsmessage
+59	Can add Шаблон СМС	16	add_smstemplate
+60	Can change Шаблон СМС	16	change_smstemplate
+61	Can delete Шаблон СМС	16	delete_smstemplate
+62	Can view Шаблон СМС	16	view_smstemplate
+63	Can add Одноразовый пароль	17	add_otp
+64	Can change Одноразовый пароль	17	change_otp
+65	Can delete Одноразовый пароль	17	delete_otp
+66	Can view Одноразовый пароль	17	view_otp
+67	Can add Учетная запись	18	add_user
+68	Can change Учетная запись	18	change_user
+69	Can delete Учетная запись	18	delete_user
+70	Can view Учетная запись	18	view_user
+71	Can add Заказ	19	add_order
+72	Can change Заказ	19	change_order
+73	Can delete Заказ	19	delete_order
+74	Can view Заказ	19	view_order
+75	Can add Истории статусов заказа	20	add_orderstatustransition
+76	Can change Истории статусов заказа	20	change_orderstatustransition
+77	Can delete Истории статусов заказа	20	delete_orderstatustransition
+78	Can view Истории статусов заказа	20	view_orderstatustransition
+79	Can add Корзина	21	add_cart
+80	Can change Корзина	21	change_cart
+81	Can delete Корзина	21	delete_cart
+82	Can view Корзина	21	view_cart
+83	Can add Лид	22	add_lead
+84	Can change Лид	22	change_lead
+85	Can delete Лид	22	delete_lead
+86	Can view Лид	22	view_lead
+87	Can add Товар корзины	23	add_cartposition
+88	Can change Товар корзины	23	change_cartposition
+89	Can delete Товар корзины	23	delete_cartposition
+90	Can view Товар корзины	23	view_cartposition
+91	Can add Брэнд	24	add_brand
+92	Can change Брэнд	24	change_brand
+93	Can delete Брэнд	24	delete_brand
+94	Can view Брэнд	24	view_brand
+95	Can add Организация	25	add_organization
+96	Can change Организация	25	change_organization
+97	Can delete Организация	25	delete_organization
+98	Can view Организация	25	view_organization
+99	Can add IIKO Брэнд	26	add_iikobrand
+100	Can change IIKO Брэнд	26	change_iikobrand
+101	Can delete IIKO Брэнд	26	delete_iikobrand
+102	Can view IIKO Брэнд	26	view_iikobrand
+103	Can add address	27	add_address
+104	Can change address	27	change_address
+105	Can delete address	27	delete_address
+106	Can view address	27	view_address
+107	Can add Страна	28	add_country
+108	Can change Страна	28	change_country
+109	Can delete Страна	28	delete_country
+110	Can view Страна	28	view_country
+111	Can add Город	29	add_city
+112	Can change Город	29	change_city
+113	Can delete Город	29	delete_city
+114	Can view Город	29	view_city
+115	Can add История запросов	30	add_servicehistory
+116	Can change История запросов	30	change_servicehistory
+117	Can delete История запросов	30	delete_servicehistory
+118	Can view История запросов	30	view_servicehistory
+119	Can add Лог сервиса	31	add_serviceresponse
+120	Can change Лог сервиса	31	change_serviceresponse
+121	Can delete Лог сервиса	31	delete_serviceresponse
+122	Can view Лог сервиса	31	view_serviceresponse
+123	Can add Категория	32	add_category
+124	Can change Категория	32	change_category
+125	Can delete Категория	32	delete_category
+126	Can view Категория	32	view_category
+127	Can add Позиция(Блюдо)	33	add_position
+128	Can change Позиция(Блюдо)	33	change_position
+129	Can delete Позиция(Блюдо)	33	delete_position
+130	Can view Позиция(Блюдо)	33	view_position
+131	Can add position info by organization	34	add_positioninfobyorganization
+132	Can change position info by organization	34	change_positioninfobyorganization
+133	Can delete position info by organization	34	delete_positioninfobyorganization
+134	Can view position info by organization	34	view_positioninfobyorganization
+135	Can add multi language char	35	add_multilanguagechar
+136	Can change multi language char	35	change_multilanguagechar
+137	Can delete multi language char	35	delete_multilanguagechar
+138	Can view multi language char	35	view_multilanguagechar
+139	Can add brand image	36	add_brandimage
+140	Can change brand image	36	change_brandimage
+141	Can delete brand image	36	delete_brandimage
+142	Can view brand image	36	view_brandimage
+143	Can add multi language file	37	add_multilanguagefile
+144	Can change multi language file	37	change_multilanguagefile
+145	Can delete multi language file	37	delete_multilanguagefile
+146	Can view multi language file	37	view_multilanguagefile
+147	Can add multi language text	38	add_multilanguagetext
+148	Can change multi language text	38	change_multilanguagetext
+149	Can delete multi language text	38	delete_multilanguagetext
+150	Can view multi language text	38	view_multilanguagetext
+151	Can add Акция	39	add_promotion
+152	Can change Акция	39	change_promotion
+153	Can delete Акция	39	delete_promotion
+154	Can view Акция	39	view_promotion
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2021-05-31 12:12:47.143055+06	1	Салам бро	1	[{"added": {}}]	24	1
+2	2021-05-31 12:18:23.977879+06	2	Халал Байт	1	[{"added": {}}]	24	1
+3	2021-05-31 12:19:03.113542+06	1	Казахстан	1	[{"added": {}}]	28	1
+4	2021-05-31 12:19:10.311754+06	1	Казахстан	2	[{"changed": {"fields": ["\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 (\\u043a\\u0430\\u0437)", "\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 (\\u0430\\u043d\\u0433\\u043b)"]}}]	28	1
+5	2021-05-31 12:19:25.591761+06	2	Халал Байт	2	[{"changed": {"fields": ["\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 (\\u043a\\u0430\\u0437)", "\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 (\\u0430\\u043d\\u0433\\u043b)"]}}]	24	1
+6	2021-05-31 12:19:45.830462+06	1	Салам бро	2	[{"changed": {"fields": ["\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 (\\u043a\\u0430\\u0437)", "\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 (\\u0430\\u043d\\u0433\\u043b)"]}}]	24	1
+7	2021-05-31 12:28:45.814645+06	1	Алматы(None)	1	[{"added": {}}]	29	1
+8	2021-05-31 12:29:02.572715+06	2	Актау(None)	1	[{"added": {}}]	29	1
+9	2021-05-31 12:32:36.55647+06	3	Актобе(None)	1	[{"added": {}}]	29	1
+10	2021-05-31 12:38:46.901866+06	1	SMSTemplate object (1)	1	[{"added": {}}]	16	1
+11	2021-05-31 12:43:39.400778+06	1	Алматы(Казахстан)	2	[{"changed": {"fields": ["\\u0421\\u0442\\u0440\\u0430\\u043d\\u0430"]}}]	29	1
+12	2021-05-31 12:43:55.310139+06	2	Актау(Казахстан)	2	[{"changed": {"fields": ["\\u0421\\u0442\\u0440\\u0430\\u043d\\u0430"]}}]	29	1
+13	2021-05-31 12:43:59.559169+06	3	Актобе(Казахстан)	2	[{"changed": {"fields": ["\\u0421\\u0442\\u0440\\u0430\\u043d\\u0430"]}}]	29	1
+14	2021-05-31 12:44:40.065205+06	1	Казахстан	2	[{"changed": {"fields": ["\\u041d\\u0430\\u0437\\u0432\\u0430\\u043d\\u0438\\u0435 (\\u0430\\u043d\\u0433\\u043b)"]}}]	28	1
+15	2021-05-31 12:49:57.705815+06	1	Салам бро. Алматы(Казахстан)	1	[{"added": {}}]	26	1
+16	2021-05-31 12:50:32.504195+06	2	Салам бро. Актау(Казахстан)	1	[{"added": {}}]	26	1
+17	2021-05-31 12:51:30.888728+06	3	Халал Байт. Алматы(Казахстан)	1	[{"added": {}}]	26	1
+18	2021-06-01 18:02:57.669821+06	2	Халал Байт	2	[{"added": {"name": "\\u041a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 \\u0411\\u0440\\u044d\\u043d\\u0434", "object": "BrandImage object (1)"}}]	24	1
+19	2021-06-01 18:07:42.304444+06	2	Халал Байт	2	[{"added": {"name": "\\u041a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 \\u0411\\u0440\\u044d\\u043d\\u0434", "object": "BrandImage object (2)"}}, {"added": {"name": "\\u041a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 \\u0411\\u0440\\u044d\\u043d\\u0434", "object": "BrandImage object (3)"}}, {"added": {"name": "\\u041a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 \\u0411\\u0440\\u044d\\u043d\\u0434", "object": "BrandImage object (4)"}}]	24	1
+20	2021-06-01 18:08:25.263379+06	1	Салам бро	2	[{"added": {"name": "\\u041a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 \\u0411\\u0440\\u044d\\u043d\\u0434", "object": "BrandImage object (5)"}}, {"added": {"name": "\\u041a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 \\u0411\\u0440\\u044d\\u043d\\u0434", "object": "BrandImage object (6)"}}, {"added": {"name": "\\u041a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 \\u0411\\u0440\\u044d\\u043d\\u0434", "object": "BrandImage object (7)"}}, {"added": {"name": "\\u041a\\u0430\\u0440\\u0442\\u0438\\u043d\\u043a\\u0430 \\u0411\\u0440\\u044d\\u043d\\u0434", "object": "BrandImage object (8)"}}]	24	1
+21	2021-06-02 11:56:25.562329+06	1	Салам бро Стадион	1	[{"added": {}}]	25	1
+22	2021-06-02 11:56:43.00996+06	2	Салам бро Ваз	1	[{"added": {}}]	25	1
+23	2021-06-02 11:57:11.193196+06	3	Салам бро Сейфуллина	1	[{"added": {}}]	25	1
+24	2021-06-02 12:09:23.046461+06	1	Комбо	1	[{"added": {}}]	32	1
+25	2021-06-02 12:09:38.70299+06	2	Бургеры	1	[{"added": {}}]	32	1
+26	2021-06-02 12:09:56.352443+06	3	Напитки	1	[{"added": {}}]	32	1
+27	2021-06-04 11:45:24.933859+06	1	MultiLanguageText object (1)	1	[{"added": {}}]	38	1
+28	2021-06-04 12:12:23.314702+06	9	videographer-definition_1_1_vMXiFg5.png	1	[{"added": {}}]	37	1
+29	2021-06-04 12:34:44.597232+06	1	Promotion object (1)	1	[{"added": {}}]	39	1
+30	2021-06-04 12:35:04.462619+06	1	Promotion object (1)	2	[{"changed": {"fields": ["\\u0427\\u0438\\u0442\\u0430\\u0431\\u0435\\u043b\\u044c\\u043d\\u0430\\u044f \\u0441\\u0441\\u044b\\u043b\\u043a\\u0430"]}}]	39	1
+31	2021-06-04 12:45:46.381531+06	10	vinyl_DHNulhu.jpg	1	[{"added": {}}]	37	1
+32	2021-06-04 15:23:55.611904+06	11	film-reel.png	1	[{"added": {}}]	37	1
+33	2021-06-04 15:24:35.995886+06	2	MultiLanguageText object (2)	1	[{"added": {}}]	38	1
+34	2021-06-04 15:25:12.02383+06	2	Promotion object (2)	1	[{"added": {}}]	39	1
+35	2021-06-04 15:46:17.488792+06	12	Photography-Cover-865x505.jpg	1	[{"added": {}}]	37	1
+36	2021-06-04 15:47:58.503513+06	3	MultiLanguageText object (3)	1	[{"added": {}}]	38	1
+37	2021-06-04 17:04:06.894454+06	13	What-is-the-difference-between-filmmaking-Cinematography.jpg	1	[{"added": {}}]	37	1
+38	2021-06-04 18:27:36.403036+06	4	MultiLanguageText object (4)	1	[{"added": {}}]	38	1
+39	2021-06-04 18:28:23.37604+06	4	MultiLanguageText object (4)	2	[{"changed": {"fields": ["\\u0422\\u0435\\u043a\\u0441\\u0442 (\\u0440\\u0443\\u0441)"]}}]	38	1
+40	2021-06-04 18:31:19.020536+06	3	MultiLanguageText object (3)	2	[{"changed": {"fields": ["\\u0422\\u0435\\u043a\\u0441\\u0442 (\\u043a\\u0430\\u0437)", "\\u0422\\u0435\\u043a\\u0441\\u0442 (\\u0430\\u043d\\u0433\\u043b)"]}}]	38	1
+\.
+
+
+--
+-- Data for Name: django_celery_beat_clockedschedule; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_celery_beat_clockedschedule (id, clocked_time, enabled) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_celery_beat_crontabschedule; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_celery_beat_crontabschedule (id, minute, hour, day_of_week, day_of_month, month_of_year, timezone) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_celery_beat_intervalschedule; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_celery_beat_intervalschedule (id, every, period) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_celery_beat_periodictask; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_celery_beat_periodictask (id, name, task, args, kwargs, queue, exchange, routing_key, expires, enabled, last_run_at, total_run_count, date_changed, description, crontab_id, interval_id, solar_id, one_off, start_time, priority, headers, clocked_id, expire_seconds) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_celery_beat_periodictasks; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_celery_beat_periodictasks (ident, last_update) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_celery_beat_solarschedule; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_celery_beat_solarschedule (id, event, latitude, longitude) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	constance	config
+3	auth	permission
+4	auth	group
+5	contenttypes	contenttype
+6	sessions	session
+7	token_blacklist	blacklistedtoken
+8	token_blacklist	outstandingtoken
+9	django_celery_beat	crontabschedule
+10	django_celery_beat	intervalschedule
+11	django_celery_beat	periodictask
+12	django_celery_beat	periodictasks
+13	django_celery_beat	solarschedule
+14	django_celery_beat	clockedschedule
+15	sms	smsmessage
+16	sms	smstemplate
+17	sms	otp
+18	users	user
+19	orders	order
+20	orders	orderstatustransition
+21	orders	cart
+22	orders	lead
+23	orders	cartposition
+24	partners	brand
+25	partners	organization
+26	partners	iikobrand
+27	location	address
+28	location	country
+29	location	city
+30	pipeline	servicehistory
+31	pipeline	serviceresponse
+32	nomenclature	category
+33	nomenclature	position
+34	nomenclature	positioninfobyorganization
+35	translations	multilanguagechar
+36	partners	brandimage
+37	translations	multilanguagefile
+38	translations	multilanguagetext
+39	promotions	promotion
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2021-05-31 10:45:09.131724+06
+2	contenttypes	0002_remove_content_type_name	2021-05-31 10:45:09.149723+06
+3	auth	0001_initial	2021-05-31 10:45:09.175722+06
+4	auth	0002_alter_permission_name_max_length	2021-05-31 10:45:09.203727+06
+5	auth	0003_alter_user_email_max_length	2021-05-31 10:45:09.209726+06
+6	auth	0004_alter_user_username_opts	2021-05-31 10:45:09.214731+06
+7	auth	0005_alter_user_last_login_null	2021-05-31 10:45:09.219749+06
+8	auth	0006_require_contenttypes_0002	2021-05-31 10:45:09.221727+06
+9	auth	0007_alter_validators_add_error_messages	2021-05-31 10:45:09.22873+06
+10	auth	0008_alter_user_username_max_length	2021-05-31 10:45:09.234725+06
+11	auth	0009_alter_user_last_name_max_length	2021-05-31 10:45:09.240721+06
+12	auth	0010_alter_group_name_max_length	2021-05-31 10:45:09.248726+06
+13	auth	0011_update_proxy_permissions	2021-05-31 10:45:09.255725+06
+14	auth	0012_alter_user_first_name_max_length	2021-05-31 10:45:09.261728+06
+15	users	0001_initial	2021-05-31 10:45:09.286725+06
+16	admin	0001_initial	2021-05-31 10:45:09.335727+06
+17	admin	0002_logentry_remove_auto_add	2021-05-31 10:45:09.350725+06
+18	admin	0003_logentry_add_action_flag_choices	2021-05-31 10:45:09.357725+06
+19	translations	0001_initial	2021-05-31 10:45:09.368726+06
+20	common	0001_initial	2021-05-31 10:45:09.379732+06
+21	partners	0001_initial	2021-05-31 10:45:09.407724+06
+22	location	0001_initial	2021-05-31 10:45:09.433725+06
+23	partners	0002_auto_20210407_2231	2021-05-31 10:45:09.460727+06
+24	common	0002_delete_address	2021-05-31 10:45:09.464726+06
+25	common	0003_descriptionfield_namefield_testcountry_testmodel	2021-05-31 10:45:09.506729+06
+26	common	0004_auto_20210527_2133	2021-05-31 10:45:09.564736+06
+27	django_celery_beat	0001_initial	2021-05-31 10:45:09.604723+06
+28	django_celery_beat	0002_auto_20161118_0346	2021-05-31 10:45:09.629729+06
+29	django_celery_beat	0003_auto_20161209_0049	2021-05-31 10:45:09.640726+06
+30	django_celery_beat	0004_auto_20170221_0000	2021-05-31 10:45:09.645721+06
+31	django_celery_beat	0005_add_solarschedule_events_choices	2021-05-31 10:45:09.649753+06
+32	django_celery_beat	0006_auto_20180322_0932	2021-05-31 10:45:09.677723+06
+33	django_celery_beat	0007_auto_20180521_0826	2021-05-31 10:45:09.711721+06
+34	django_celery_beat	0008_auto_20180914_1922	2021-05-31 10:45:09.743726+06
+35	django_celery_beat	0006_auto_20180210_1226	2021-05-31 10:45:09.760726+06
+36	django_celery_beat	0006_periodictask_priority	2021-05-31 10:45:09.767725+06
+37	django_celery_beat	0009_periodictask_headers	2021-05-31 10:45:09.795728+06
+38	django_celery_beat	0010_auto_20190429_0326	2021-05-31 10:45:09.942721+06
+39	django_celery_beat	0011_auto_20190508_0153	2021-05-31 10:45:09.960726+06
+40	django_celery_beat	0012_periodictask_expire_seconds	2021-05-31 10:45:09.971728+06
+41	location	0002_city_country	2021-05-31 10:45:09.98674+06
+42	location	0003_country_country_code	2021-05-31 10:45:09.998728+06
+43	location	0004_auto_20210421_2257	2021-05-31 10:45:10.003735+06
+44	location	0005_auto_20210426_2259	2021-05-31 10:45:10.012726+06
+45	location	0006_auto_20210509_2220	2021-05-31 10:45:10.033726+06
+46	location	0007_auto_20210510_0142	2021-05-31 10:45:10.044726+06
+47	location	0008_auto_20210527_2100	2021-05-31 10:45:10.056724+06
+48	location	0009_auto_20210527_2100	2021-05-31 10:45:10.066726+06
+49	location	0010_auto_20210527_2100	2021-05-31 10:45:10.078727+06
+50	partners	0003_auto_20210415_2235	2021-05-31 10:45:10.110725+06
+51	partners	0004_auto_20210415_2307	2021-05-31 10:45:10.138725+06
+52	orders	0001_initial	2021-05-31 10:45:10.269737+06
+53	orders	0002_auto_20210328_0209	2021-05-31 10:45:10.398725+06
+54	orders	0003_auto_20210328_0215	2021-05-31 10:45:10.433725+06
+55	orders	0004_auto_20210415_2307	2021-05-31 10:45:10.453724+06
+56	nomenclature	0001_initial	2021-05-31 10:45:10.487739+06
+57	nomenclature	0002_auto_20210415_2307	2021-05-31 10:45:10.563724+06
+58	partners	0005_auto_20210415_2307	2021-05-31 10:45:10.627728+06
+59	partners	0006_auto_20210427_0137	2021-05-31 10:45:10.658739+06
+60	partners	0007_auto_20210427_0140	2021-05-31 10:45:10.695726+06
+61	partners	0008_auto_20210429_1218	2021-05-31 10:45:10.74321+06
+62	partners	0009_auto_20210429_1231	2021-05-31 10:45:10.751439+06
+63	partners	0010_auto_20210429_1232	2021-05-31 10:45:10.758441+06
+64	orders	0005_lead_address	2021-05-31 10:45:10.774745+06
+65	orders	0006_lead_brand_api_login	2021-05-31 10:45:10.793803+06
+66	orders	0007_lead_organization	2021-05-31 10:45:10.817815+06
+67	partners	0011_auto_20210429_1241	2021-05-31 10:45:10.871556+06
+68	partners	0012_remove_organization_brand	2021-05-31 10:45:10.891172+06
+69	partners	0013_organization_iiko_brand	2021-05-31 10:45:10.912181+06
+70	partners	0014_iikobrand_is_active	2021-05-31 10:45:10.946227+06
+71	partners	0015_auto_20210504_0122	2021-05-31 10:45:10.977917+06
+72	partners	0016_auto_20210510_0107	2021-05-31 10:45:11.016317+06
+73	partners	0017_iikobrand_priority	2021-05-31 10:45:11.048375+06
+74	partners	0018_auto_20210512_1550	2021-05-31 10:45:11.070522+06
+75	partners	0019_auto_20210512_1640	2021-05-31 10:45:11.081496+06
+76	nomenclature	0003_delete_combo	2021-05-31 10:45:11.086496+06
+77	nomenclature	0004_remove_position_category	2021-05-31 10:45:11.116862+06
+78	nomenclature	0005_auto_20210523_1748	2021-05-31 10:45:11.167091+06
+79	nomenclature	0006_auto_20210523_1749	2021-05-31 10:45:11.236234+06
+80	nomenclature	0007_position_outer_id	2021-05-31 10:45:11.244246+06
+81	nomenclature	0008_auto_20210523_1848	2021-05-31 10:45:11.27234+06
+82	nomenclature	0009_auto_20210523_1907	2021-05-31 10:45:11.287095+06
+83	nomenclature	0010_auto_20210523_2021	2021-05-31 10:45:11.308328+06
+84	nomenclature	0011_auto_20210523_2024	2021-05-31 10:45:11.348202+06
+85	nomenclature	0012_auto_20210523_2031	2021-05-31 10:45:11.389167+06
+86	nomenclature	0013_auto_20210523_2049	2021-05-31 10:45:11.409168+06
+87	nomenclature	0014_auto_20210523_2053	2021-05-31 10:45:11.464676+06
+88	nomenclature	0015_category_uuid	2021-05-31 10:45:11.500686+06
+89	nomenclature	0016_remove_position_category	2021-05-31 10:45:11.521013+06
+90	nomenclature	0017_position_category	2021-05-31 10:45:11.541832+06
+91	nomenclature	0018_auto_20210524_0225	2021-05-31 10:45:11.565672+06
+92	nomenclature	0019_auto_20210527_2157	2021-05-31 10:45:11.599119+06
+93	nomenclature	0020_positioninfobyorganization_uuid	2021-05-31 10:45:11.627533+06
+94	nomenclature	0021_position_name	2021-05-31 10:45:11.647797+06
+95	partners	0020_auto_20210527_2105	2021-05-31 10:45:11.665805+06
+96	partners	0021_auto_20210527_2106	2021-05-31 10:45:11.697799+06
+97	orders	0008_auto_20210429_1244	2021-05-31 10:45:11.720446+06
+98	orders	0009_auto_20210510_0241	2021-05-31 10:45:11.739781+06
+99	orders	0010_auto_20210510_0319	2021-05-31 10:45:11.786725+06
+100	orders	0011_auto_20210523_1749	2021-05-31 10:45:11.81692+06
+101	orders	0012_remove_order_organization	2021-05-31 10:45:11.836247+06
+102	orders	0013_auto_20210527_2214	2021-05-31 10:45:12.004078+06
+103	pipeline	0001_initial	2021-05-31 10:45:12.132315+06
+104	pipeline	0002_auto_20210422_0408	2021-05-31 10:45:12.175319+06
+105	sessions	0001_initial	2021-05-31 10:45:12.190319+06
+106	sms	0001_initial	2021-05-31 10:45:12.238536+06
+107	sms	0002_auto_20210415_0108	2021-05-31 10:45:12.293622+06
+108	token_blacklist	0001_initial	2021-05-31 10:45:12.358614+06
+109	token_blacklist	0002_outstandingtoken_jti_hex	2021-05-31 10:45:12.375616+06
+110	token_blacklist	0003_auto_20171017_2007	2021-05-31 10:45:12.404615+06
+111	token_blacklist	0004_auto_20171017_2013	2021-05-31 10:45:12.420028+06
+112	token_blacklist	0005_remove_outstandingtoken_jti	2021-05-31 10:45:12.430057+06
+113	token_blacklist	0006_auto_20171017_2113	2021-05-31 10:45:12.444189+06
+114	token_blacklist	0007_auto_20171017_2214	2021-05-31 10:45:12.482193+06
+115	users	0002_auto_20210512_0043	2021-05-31 10:45:12.504774+06
+116	partners	0022_brandimage	2021-06-01 17:54:34.491971+06
+117	partners	0023_auto_20210601_1802	2021-06-01 18:02:31.533278+06
+118	partners	0024_auto_20210601_1803	2021-06-01 18:04:01.794452+06
+119	partners	0025_auto_20210602_1027	2021-06-02 10:27:55.683195+06
+120	partners	0026_auto_20210602_1215	2021-06-02 12:15:31.551802+06
+121	translations	0002_multilanguagefile_multilanguagetext	2021-06-04 11:43:43.591194+06
+122	promotions	0001_initial	2021-06-04 12:29:04.485305+06
+123	translations	0003_auto_20210604_1545	2021-06-04 15:45:49.450242+06
+124	location	0002_auto_20210606_0044	2021-06-07 11:21:25.362659+06
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+qbln9iw3wem3n1qrd668b7h997a8rwue	.eJxVjDsOwjAQBe_iGlnr1W5sU9JzBstfHEC2FCcV4u4QKQW0b2beSzi_rdVtIy9uTuIslDj9bsHHR247SHffbl3G3tZlDnJX5EGHvPaUn5fD_TuoftRvzRNQ0VPBEi0yoCGlSozIVDIBWAtFB0bkrAynoCGgJRN9YrKodRDvD7zcNuo:1lnaFl:nPcO3rdTHfFAYrUOySj27SzisJHM5uWQziCOCHLJySM	2021-06-14 11:14:17.13082+06
+\.
+
+
+--
+-- Data for Name: location_address; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.location_address (id, country, region, city, district, street, building, corpus, flat, postal_code, latitude, longitude) FROM stdin;
+\.
+
+
+--
+-- Data for Name: location_city; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.location_city (id, country_id, name_id) FROM stdin;
+1	1	4
+2	1	5
+3	1	6
+\.
+
+
+--
+-- Data for Name: location_country; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.location_country (id, country_code, name_id) FROM stdin;
+1	+7	3
+\.
+
+
+--
+-- Data for Name: nomenclature_category; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.nomenclature_category (id, name_id, iiko_brand_id, uuid) FROM stdin;
+1	10	1	1787d1ba-c028-4601-89bc-cdc1bbec5bf7
+2	11	1	2f562ecc-8f33-439a-8064-16ba5cff2f6d
+3	12	1	6ace5531-ea21-44ae-8698-fdac9b27372a
+\.
+
+
+--
+-- Data for Name: nomenclature_position; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.nomenclature_position (id, is_additional, outer_id, iiko_description, iiko_name, iiko_brand_id, category_id, name_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: nomenclature_positioninfobyorganization; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.nomenclature_positioninfobyorganization (id, price, organization_id, position_id, uuid) FROM stdin;
+\.
+
+
+--
+-- Data for Name: orders_cart; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.orders_cart (id, created_at, updated_at, uuid) FROM stdin;
+\.
+
+
+--
+-- Data for Name: orders_cartposition; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.orders_cartposition (id, created_at, updated_at, count, comment, cart_id, organization_position_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: orders_lead; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.orders_lead (id, uuid, address_id, iiko_brand_id, organization_id, estimated_duration, order_zone, created_at, updated_at, cart_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: orders_order; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.orders_order (id, created_at, updated_at, status, status_reason, user_id, lead_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: orders_orderstatustransition; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.orders_orderstatustransition (id, created_at, updated_at, status, status_reason, order_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: partners_brand; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.partners_brand (id, name_id) FROM stdin;
+2	2
+1	1
+\.
+
+
+--
+-- Data for Name: partners_brandimage; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.partners_brandimage (id, image, image_type, brand_id) FROM stdin;
+1	videographer-definition_1.png	IMAGE_SQUARE	2
+2	videographer-definition.jpg	IMAGE_SHORT	2
+3	videography3_600x600.jpg	IMAGE_TALL	2
+4	77524819_w640_h640_77524819.jpg	IMAGE_LONG	2
+5	videographer-definition_1_1.png	IMAGE_SQUARE	1
+6	videographer-definition_1_bgtCKOO.png	IMAGE_SHORT	1
+7	videographer-definition.png	IMAGE_TALL	1
+8	rocket.png	IMAGE_LONG	1
+\.
+
+
+--
+-- Data for Name: partners_iikobrand; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.partners_iikobrand (id, api_login, brand_id, city_id, full_name, is_active, priority) FROM stdin;
+1	27f71d14	1	1	Salam bro Almaty	t	1
+2	65c3c21a	1	2	Aktau Salam	t	1
+3	a7fef5ae	2	1	Halal Almaty	t	1
+\.
+
+
+--
+-- Data for Name: partners_organization; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.partners_organization (id, address_id, is_active, outer_id, iiko_brand_id, end_time, start_time, name_id) FROM stdin;
+1	\N	t	3292d07c-e658-4916-997b-bcfcd85c0b3b	1	22:00:00	10:00:00	7
+2	\N	t	5ef116ed-a2a6-4ac0-b046-4158a94c65d2	1	22:00:00	10:00:00	8
+3	\N	t	02b96823-a0c8-453b-8226-6f6813be6dc2	1	22:00:00	10:00:00	9
+\.
+
+
+--
+-- Data for Name: pipeline_servicehistory; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.pipeline_servicehistory (id, updated_at, object_id, service, data, status, created_at, runtime, content_type_id, service_pretty) FROM stdin;
+\.
+
+
+--
+-- Data for Name: pipeline_serviceresponse; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.pipeline_serviceresponse (id, url, method, request, response, code, created_at, history_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: promotions_promotion; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.promotions_promotion (id, slug, type, image_id, template_id) FROM stdin;
+1	first-article	ARTICLE	9	1
+2	2-article	ARTICLE	11	2
+\.
+
+
+--
+-- Data for Name: sms_otp; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.sms_otp (id, created_at, updated_at, code, verified, mobile_phone) FROM stdin;
+1	2021-05-31 12:37:29.912558+06	2021-05-31 12:37:29.926587+06	4956	f	+77780027505
+2	2021-05-31 12:39:19.160941+06	2021-05-31 12:39:19.163938+06	1662	t	+77780027505
+\.
+
+
+--
+-- Data for Name: sms_smsmessage; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.sms_smsmessage (id, created_at, updated_at, uuid, recipients, content, error_code, error_description) FROM stdin;
+1	2021-05-31 12:39:19.179938+06	2021-05-31 12:39:19.179938+06	176322a4-cddf-48f7-9675-6c891878d655	+77780027505	Ваш код для входа в приложение.\r\nНИКОМУ НЕ ГОВОРИТЕ ЕГО!	\N	\N
+\.
+
+
+--
+-- Data for Name: sms_smstemplate; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.sms_smstemplate (id, content, name) FROM stdin;
+1	Ваш код для входа в приложение.\r\nНИКОМУ НЕ ГОВОРИТЕ ЕГО!	OTP
+\.
+
+
+--
+-- Data for Name: token_blacklist_blacklistedtoken; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.token_blacklist_blacklistedtoken (id, blacklisted_at, token_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: token_blacklist_outstandingtoken; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.token_blacklist_outstandingtoken (id, token, created_at, expires_at, user_id, jti) FROM stdin;
+1	eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyMzA0Nzk3NiwianRpIjoiZDEyYWZjNWU2YTcxNGRhOWE2ZGUyYjM4NDMxODE0MzYiLCJ1c2VyX2lkIjozfQ.Cfk98Lb5ukNNoGqosAX1zUTn6LVtu-SLNEGRG5-rmqA	2021-05-31 12:39:36.156899+06	2021-06-07 12:39:36+06	3	d12afc5e6a714da9a6de2b3843181436
+\.
+
+
+--
+-- Data for Name: translations_multilanguagechar; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.translations_multilanguagechar (id, text_ru, text_kk, text_en) FROM stdin;
+4	Алматы	Алматы	Almaty
+5	Актау	Актау	Aktau
+6	Актобе	Актобе	Aktobe
+3	Казахстан	Казахстан	Kazakhstan
+2	Халал Байт	Халал Байт	Halal Bite
+1	Салам бро	Салам брат	Salam Bro
+7	Салам бро Стадион		
+8	Салам бро Ваз	Салам бро Ваз	Салам бро Ваз
+9	Салам бро Сейфуллина		
+10	Комбо	Комбо	Combo
+11	Бургеры	Бургеры	Burgers
+12	Напитки	Сусындар	Drinks
+\.
+
+
+--
+-- Data for Name: translations_multilanguagefile; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.translations_multilanguagefile (id, file_ru, file_kk, file_en) FROM stdin;
+9	videographer-definition_1_1_vMXiFg5.png	videographer-definition_1_K6hEH64.png	videographer-definition_yCaXlRq.png
+10	vinyl_DHNulhu.jpg		
+11	film-reel.png		
+12	Photography-Cover-865x505.jpg		
+13	What-is-the-difference-between-filmmaking-Cinematography.jpg		
+\.
+
+
+--
+-- Data for Name: translations_multilanguagetext; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.translations_multilanguagetext (id, text_ru, text_kk, text_en) FROM stdin;
+1	Русский текст	Казакша текст	English text
+2	<!DOCTYPE html>\r\n<html lang="en">\r\n<head>\r\n\t<meta charset="UTF-8">\r\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\r\n\t<title>Document</title>\r\n</head>\r\n<body>\r\n\tвсем салам\r\n</body>\r\n</html>		
+4	<p>sadfs jfkdsj Lorem&nbsp; &nbsp; inpuhm ipsum</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><iframe frameborder="0" height="400" scrolling="no" src="https://www.youtube.com/embed/D_uLM5i0Z4c" width="500"></iframe></p>		
+3	<h2><strong>Знаете ли вы?</strong></h2>\r\n\r\n<hr />\r\n<p>В США бла балбла бла бла бла аовлыжфва</p>\r\n\r\n<p>&nbsp;</p>	<h2><strong>Былесындер ма?</strong></h2>\r\n\r\n<hr />\r\n<p>СШАда бырдеме бырдеме</p>	<h2><strong>Do you know?</strong></h2>\r\n\r\n<hr />\r\n<p>In the USA blablalblalbal</p>
+\.
+
+
+--
+-- Data for Name: users_user; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.users_user (id, password, last_login, is_superuser, mobile_phone, is_active, is_staff, secret_key, created_at, updated_at, email, name) FROM stdin;
+2	pbkdf2_sha256$216000$NVGPbDi5J7s0$MOs+UCiC81iATUVQPEogSE/5J10ShTUWAfTJXEWXyAA=	\N	t	+77777777777	t	t	d92c60a7-8a4a-42f8-9fdf-3e232587cf76	2021-05-31 11:14:04.996167+06	2021-05-31 11:14:05.129179+06	\N	\N
+1	pbkdf2_sha256$216000$MZfVxTKxvIIf$WP0esEmBCaVJzm5TJq/Mcka29ztR3zR5x4FHXo6EJos=	2021-05-31 11:14:17.125241+06	t	+77775559999	t	t	0dcfba5e-f6e4-4a84-b10e-576f6f244d2e	2021-05-31 11:13:20.581322+06	2021-05-31 11:13:20.710321+06	\N	\N
+3		\N	f	+77780027505	t	f	b62eaa8c-83fa-4be6-b3e3-6e48aa04d826	2021-05-31 12:37:29.902578+06	2021-05-31 12:37:29.902578+06	\N	\N
+\.
+
+
+--
+-- Data for Name: users_user_groups; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.users_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: kexdb
+--
+
+COPY public.users_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 154, true);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 40, true);
+
+
+--
+-- Name: django_celery_beat_clockedschedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.django_celery_beat_clockedschedule_id_seq', 1, false);
+
+
+--
+-- Name: django_celery_beat_crontabschedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.django_celery_beat_crontabschedule_id_seq', 1, false);
+
+
+--
+-- Name: django_celery_beat_intervalschedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.django_celery_beat_intervalschedule_id_seq', 1, false);
+
+
+--
+-- Name: django_celery_beat_periodictask_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.django_celery_beat_periodictask_id_seq', 1, false);
+
+
+--
+-- Name: django_celery_beat_solarschedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.django_celery_beat_solarschedule_id_seq', 1, false);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 39, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 124, true);
+
+
+--
+-- Name: location_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.location_address_id_seq', 1, false);
+
+
+--
+-- Name: location_city_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.location_city_id_seq', 3, true);
+
+
+--
+-- Name: location_country_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.location_country_id_seq', 1, true);
+
+
+--
+-- Name: nomenclature_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.nomenclature_category_id_seq', 3, true);
+
+
+--
+-- Name: nomenclature_position_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.nomenclature_position_id_seq', 1, false);
+
+
+--
+-- Name: nomenclature_positioninfobyorganization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.nomenclature_positioninfobyorganization_id_seq', 1, false);
+
+
+--
+-- Name: orders_cart_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.orders_cart_id_seq', 1, false);
+
+
+--
+-- Name: orders_cartposition_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.orders_cartposition_id_seq', 1, false);
+
+
+--
+-- Name: orders_lead_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.orders_lead_id_seq', 1, false);
+
+
+--
+-- Name: orders_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.orders_order_id_seq', 1, false);
+
+
+--
+-- Name: orders_orderstatustransition_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.orders_orderstatustransition_id_seq', 1, false);
+
+
+--
+-- Name: partners_brandapilogin_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.partners_brandapilogin_id_seq', 3, true);
+
+
+--
+-- Name: partners_brandimage_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.partners_brandimage_id_seq', 8, true);
+
+
+--
+-- Name: partners_organization_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.partners_organization_id_seq', 2, true);
+
+
+--
+-- Name: partners_organization_id_seq1; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.partners_organization_id_seq1', 3, true);
+
+
+--
+-- Name: pipeline_servicehistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.pipeline_servicehistory_id_seq', 1, false);
+
+
+--
+-- Name: pipeline_serviceresponse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.pipeline_serviceresponse_id_seq', 1, false);
+
+
+--
+-- Name: promotions_promotion_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.promotions_promotion_id_seq', 2, true);
+
+
+--
+-- Name: sms_otp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.sms_otp_id_seq', 2, true);
+
+
+--
+-- Name: sms_smsmessage_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.sms_smsmessage_id_seq', 1, true);
+
+
+--
+-- Name: sms_smstemplate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.sms_smstemplate_id_seq', 1, true);
+
+
+--
+-- Name: token_blacklist_blacklistedtoken_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.token_blacklist_blacklistedtoken_id_seq', 1, false);
+
+
+--
+-- Name: token_blacklist_outstandingtoken_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.token_blacklist_outstandingtoken_id_seq', 1, true);
+
+
+--
+-- Name: translations_multilanguagechar_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.translations_multilanguagechar_id_seq', 12, true);
+
+
+--
+-- Name: translations_multilanguagefile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.translations_multilanguagefile_id_seq', 13, true);
+
+
+--
+-- Name: translations_multilanguagetext_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.translations_multilanguagetext_id_seq', 4, true);
+
+
+--
+-- Name: users_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.users_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.users_user_id_seq', 3, true);
+
+
+--
+-- Name: users_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kexdb
+--
+
+SELECT pg_catalog.setval('public.users_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_celery_beat_clockedschedule django_celery_beat_clockedschedule_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_clockedschedule
+    ADD CONSTRAINT django_celery_beat_clockedschedule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_celery_beat_crontabschedule django_celery_beat_crontabschedule_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_crontabschedule
+    ADD CONSTRAINT django_celery_beat_crontabschedule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_celery_beat_intervalschedule django_celery_beat_intervalschedule_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_intervalschedule
+    ADD CONSTRAINT django_celery_beat_intervalschedule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_celery_beat_periodictask django_celery_beat_periodictask_name_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_periodictask
+    ADD CONSTRAINT django_celery_beat_periodictask_name_key UNIQUE (name);
+
+
+--
+-- Name: django_celery_beat_periodictask django_celery_beat_periodictask_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_periodictask
+    ADD CONSTRAINT django_celery_beat_periodictask_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_celery_beat_periodictasks django_celery_beat_periodictasks_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_periodictasks
+    ADD CONSTRAINT django_celery_beat_periodictasks_pkey PRIMARY KEY (ident);
+
+
+--
+-- Name: django_celery_beat_solarschedule django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_solarschedule
+    ADD CONSTRAINT django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq UNIQUE (event, latitude, longitude);
+
+
+--
+-- Name: django_celery_beat_solarschedule django_celery_beat_solarschedule_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_solarschedule
+    ADD CONSTRAINT django_celery_beat_solarschedule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: location_address location_address_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_address
+    ADD CONSTRAINT location_address_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: location_city location_city_country_id_name_id_ff6b3c2b_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_city
+    ADD CONSTRAINT location_city_country_id_name_id_ff6b3c2b_uniq UNIQUE (country_id, name_id);
+
+
+--
+-- Name: location_city location_city_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_city
+    ADD CONSTRAINT location_city_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: location_country location_country_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_country
+    ADD CONSTRAINT location_country_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: nomenclature_category nomenclature_category_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_category
+    ADD CONSTRAINT nomenclature_category_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: nomenclature_category nomenclature_category_uuid_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_category
+    ADD CONSTRAINT nomenclature_category_uuid_key UNIQUE (uuid);
+
+
+--
+-- Name: nomenclature_position nomenclature_position_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_position
+    ADD CONSTRAINT nomenclature_position_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: nomenclature_positioninfobyorganization nomenclature_positioninf_position_id_organization_cf3a3e63_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization
+    ADD CONSTRAINT nomenclature_positioninf_position_id_organization_cf3a3e63_uniq UNIQUE (position_id, organization_id);
+
+
+--
+-- Name: nomenclature_positioninfobyorganization nomenclature_positioninfobyorganization_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization
+    ADD CONSTRAINT nomenclature_positioninfobyorganization_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: nomenclature_positioninfobyorganization nomenclature_positioninfobyorganization_uuid_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization
+    ADD CONSTRAINT nomenclature_positioninfobyorganization_uuid_key UNIQUE (uuid);
+
+
+--
+-- Name: orders_cart orders_cart_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_cart
+    ADD CONSTRAINT orders_cart_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: orders_cart orders_cart_uuid_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_cart
+    ADD CONSTRAINT orders_cart_uuid_key UNIQUE (uuid);
+
+
+--
+-- Name: orders_cartposition orders_cartposition_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_cartposition
+    ADD CONSTRAINT orders_cartposition_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: orders_lead orders_lead_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_lead
+    ADD CONSTRAINT orders_lead_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: orders_lead orders_lead_uuid_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_lead
+    ADD CONSTRAINT orders_lead_uuid_key UNIQUE (uuid);
+
+
+--
+-- Name: orders_order orders_order_lead_id_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_order
+    ADD CONSTRAINT orders_order_lead_id_key UNIQUE (lead_id);
+
+
+--
+-- Name: orders_order orders_order_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_order
+    ADD CONSTRAINT orders_order_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: orders_orderstatustransition orders_orderstatustransition_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_orderstatustransition
+    ADD CONSTRAINT orders_orderstatustransition_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: partners_iikobrand partners_brandapilogin_api_login_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_iikobrand
+    ADD CONSTRAINT partners_brandapilogin_api_login_key UNIQUE (api_login);
+
+
+--
+-- Name: partners_iikobrand partners_brandapilogin_brand_id_city_id_00ebb827_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_iikobrand
+    ADD CONSTRAINT partners_brandapilogin_brand_id_city_id_00ebb827_uniq UNIQUE (brand_id, city_id);
+
+
+--
+-- Name: partners_iikobrand partners_brandapilogin_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_iikobrand
+    ADD CONSTRAINT partners_brandapilogin_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: partners_brandimage partners_brandimage_brand_id_image_type_ab0163dd_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_brandimage
+    ADD CONSTRAINT partners_brandimage_brand_id_image_type_ab0163dd_uniq UNIQUE (brand_id, image_type);
+
+
+--
+-- Name: partners_brandimage partners_brandimage_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_brandimage
+    ADD CONSTRAINT partners_brandimage_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: partners_brand partners_organization_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_brand
+    ADD CONSTRAINT partners_organization_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: partners_organization partners_organization_pkey1; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_organization
+    ADD CONSTRAINT partners_organization_pkey1 PRIMARY KEY (id);
+
+
+--
+-- Name: pipeline_servicehistory pipeline_servicehistory_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.pipeline_servicehistory
+    ADD CONSTRAINT pipeline_servicehistory_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pipeline_serviceresponse pipeline_serviceresponse_history_id_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.pipeline_serviceresponse
+    ADD CONSTRAINT pipeline_serviceresponse_history_id_key UNIQUE (history_id);
+
+
+--
+-- Name: pipeline_serviceresponse pipeline_serviceresponse_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.pipeline_serviceresponse
+    ADD CONSTRAINT pipeline_serviceresponse_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: promotions_promotion promotions_promotion_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.promotions_promotion
+    ADD CONSTRAINT promotions_promotion_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: promotions_promotion promotions_promotion_slug_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.promotions_promotion
+    ADD CONSTRAINT promotions_promotion_slug_key UNIQUE (slug);
+
+
+--
+-- Name: sms_otp sms_otp_code_mobile_phone_df2bd353_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_otp
+    ADD CONSTRAINT sms_otp_code_mobile_phone_df2bd353_uniq UNIQUE (code, mobile_phone);
+
+
+--
+-- Name: sms_otp sms_otp_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_otp
+    ADD CONSTRAINT sms_otp_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sms_smsmessage sms_smsmessage_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_smsmessage
+    ADD CONSTRAINT sms_smsmessage_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sms_smsmessage sms_smsmessage_uuid_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_smsmessage
+    ADD CONSTRAINT sms_smsmessage_uuid_key UNIQUE (uuid);
+
+
+--
+-- Name: sms_smstemplate sms_smstemplate_name_5f066fd1_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_smstemplate
+    ADD CONSTRAINT sms_smstemplate_name_5f066fd1_uniq UNIQUE (name);
+
+
+--
+-- Name: sms_smstemplate sms_smstemplate_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.sms_smstemplate
+    ADD CONSTRAINT sms_smstemplate_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: token_blacklist_blacklistedtoken token_blacklist_blacklistedtoken_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.token_blacklist_blacklistedtoken
+    ADD CONSTRAINT token_blacklist_blacklistedtoken_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: token_blacklist_blacklistedtoken token_blacklist_blacklistedtoken_token_id_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.token_blacklist_blacklistedtoken
+    ADD CONSTRAINT token_blacklist_blacklistedtoken_token_id_key UNIQUE (token_id);
+
+
+--
+-- Name: token_blacklist_outstandingtoken token_blacklist_outstandingtoken_jti_hex_d9bdf6f7_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.token_blacklist_outstandingtoken
+    ADD CONSTRAINT token_blacklist_outstandingtoken_jti_hex_d9bdf6f7_uniq UNIQUE (jti);
+
+
+--
+-- Name: token_blacklist_outstandingtoken token_blacklist_outstandingtoken_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.token_blacklist_outstandingtoken
+    ADD CONSTRAINT token_blacklist_outstandingtoken_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: translations_multilanguagechar translations_multilanguagechar_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.translations_multilanguagechar
+    ADD CONSTRAINT translations_multilanguagechar_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: translations_multilanguagefile translations_multilanguagefile_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.translations_multilanguagefile
+    ADD CONSTRAINT translations_multilanguagefile_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: translations_multilanguagetext translations_multilanguagetext_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.translations_multilanguagetext
+    ADD CONSTRAINT translations_multilanguagetext_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_user_groups users_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_groups
+    ADD CONSTRAINT users_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_user_groups users_user_groups_user_id_group_id_b88eab82_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_groups
+    ADD CONSTRAINT users_user_groups_user_id_group_id_b88eab82_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: users_user users_user_mobile_phone_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user
+    ADD CONSTRAINT users_user_mobile_phone_key UNIQUE (mobile_phone);
+
+
+--
+-- Name: users_user users_user_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user
+    ADD CONSTRAINT users_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_user users_user_secret_key_key; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user
+    ADD CONSTRAINT users_user_secret_key_key UNIQUE (secret_key);
+
+
+--
+-- Name: users_user_user_permissions users_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_user_permissions
+    ADD CONSTRAINT users_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_user_user_permissions users_user_user_permissions_user_id_permission_id_43338c45_uniq; Type: CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_user_permissions
+    ADD CONSTRAINT users_user_user_permissions_user_id_permission_id_43338c45_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_celery_beat_periodictask_clocked_id_47a69f82; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_celery_beat_periodictask_clocked_id_47a69f82 ON public.django_celery_beat_periodictask USING btree (clocked_id);
+
+
+--
+-- Name: django_celery_beat_periodictask_crontab_id_d3cba168; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_celery_beat_periodictask_crontab_id_d3cba168 ON public.django_celery_beat_periodictask USING btree (crontab_id);
+
+
+--
+-- Name: django_celery_beat_periodictask_interval_id_a8ca27da; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_celery_beat_periodictask_interval_id_a8ca27da ON public.django_celery_beat_periodictask USING btree (interval_id);
+
+
+--
+-- Name: django_celery_beat_periodictask_name_265a36b7_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_celery_beat_periodictask_name_265a36b7_like ON public.django_celery_beat_periodictask USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: django_celery_beat_periodictask_solar_id_a87ce72c; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_celery_beat_periodictask_solar_id_a87ce72c ON public.django_celery_beat_periodictask USING btree (solar_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: location_city_country_id_2bc9d8e9; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX location_city_country_id_2bc9d8e9 ON public.location_city USING btree (country_id);
+
+
+--
+-- Name: location_city_name_id_15383c81; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX location_city_name_id_15383c81 ON public.location_city USING btree (name_id);
+
+
+--
+-- Name: location_country_name_id_d7690037; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX location_country_name_id_d7690037 ON public.location_country USING btree (name_id);
+
+
+--
+-- Name: nomenclature_category_iiko_brand_id_edb83264; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX nomenclature_category_iiko_brand_id_edb83264 ON public.nomenclature_category USING btree (iiko_brand_id);
+
+
+--
+-- Name: nomenclature_category_name_id_010374cd; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX nomenclature_category_name_id_010374cd ON public.nomenclature_category USING btree (name_id);
+
+
+--
+-- Name: nomenclature_position_category_id_e8d024f1; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX nomenclature_position_category_id_e8d024f1 ON public.nomenclature_position USING btree (category_id);
+
+
+--
+-- Name: nomenclature_position_iiko_brand_id_33fa85df; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX nomenclature_position_iiko_brand_id_33fa85df ON public.nomenclature_position USING btree (iiko_brand_id);
+
+
+--
+-- Name: nomenclature_position_name_id_6d73a5fe; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX nomenclature_position_name_id_6d73a5fe ON public.nomenclature_position USING btree (name_id);
+
+
+--
+-- Name: nomenclature_positioninfob_organization_id_322453fc; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX nomenclature_positioninfob_organization_id_322453fc ON public.nomenclature_positioninfobyorganization USING btree (organization_id);
+
+
+--
+-- Name: nomenclature_positioninfobyorganization_position_id_0af2d76f; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX nomenclature_positioninfobyorganization_position_id_0af2d76f ON public.nomenclature_positioninfobyorganization USING btree (position_id);
+
+
+--
+-- Name: orders_cart_created_at_5ba8e3ee; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_cart_created_at_5ba8e3ee ON public.orders_cart USING btree (created_at);
+
+
+--
+-- Name: orders_cart_updated_at_4c1eb0b8; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_cart_updated_at_4c1eb0b8 ON public.orders_cart USING btree (updated_at);
+
+
+--
+-- Name: orders_cartposition_cart_id_4f666c01; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_cartposition_cart_id_4f666c01 ON public.orders_cartposition USING btree (cart_id);
+
+
+--
+-- Name: orders_cartposition_created_at_dea071d7; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_cartposition_created_at_dea071d7 ON public.orders_cartposition USING btree (created_at);
+
+
+--
+-- Name: orders_cartposition_organization_position_id_6365f52b; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_cartposition_organization_position_id_6365f52b ON public.orders_cartposition USING btree (organization_position_id);
+
+
+--
+-- Name: orders_cartposition_updated_at_3f0b4e8f; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_cartposition_updated_at_3f0b4e8f ON public.orders_cartposition USING btree (updated_at);
+
+
+--
+-- Name: orders_lead_address_id_d9e5e5a2; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_lead_address_id_d9e5e5a2 ON public.orders_lead USING btree (address_id);
+
+
+--
+-- Name: orders_lead_brand_api_login_id_280e99ff; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_lead_brand_api_login_id_280e99ff ON public.orders_lead USING btree (iiko_brand_id);
+
+
+--
+-- Name: orders_lead_cart_id_9952af4d; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_lead_cart_id_9952af4d ON public.orders_lead USING btree (cart_id);
+
+
+--
+-- Name: orders_lead_created_at_bf2958bf; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_lead_created_at_bf2958bf ON public.orders_lead USING btree (created_at);
+
+
+--
+-- Name: orders_lead_organization_id_ebc5f3f3; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_lead_organization_id_ebc5f3f3 ON public.orders_lead USING btree (organization_id);
+
+
+--
+-- Name: orders_lead_updated_at_be0da4bb; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_lead_updated_at_be0da4bb ON public.orders_lead USING btree (updated_at);
+
+
+--
+-- Name: orders_order_created_at_20b8d253; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_order_created_at_20b8d253 ON public.orders_order USING btree (created_at);
+
+
+--
+-- Name: orders_order_updated_at_9fc52512; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_order_updated_at_9fc52512 ON public.orders_order USING btree (updated_at);
+
+
+--
+-- Name: orders_order_user_id_e9b59eb1; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_order_user_id_e9b59eb1 ON public.orders_order USING btree (user_id);
+
+
+--
+-- Name: orders_orderstatustransition_created_at_4bf9ec51; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_orderstatustransition_created_at_4bf9ec51 ON public.orders_orderstatustransition USING btree (created_at);
+
+
+--
+-- Name: orders_orderstatustransition_order_id_4f1c85ba; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_orderstatustransition_order_id_4f1c85ba ON public.orders_orderstatustransition USING btree (order_id);
+
+
+--
+-- Name: orders_orderstatustransition_updated_at_add829a9; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX orders_orderstatustransition_updated_at_add829a9 ON public.orders_orderstatustransition USING btree (updated_at);
+
+
+--
+-- Name: partners_brand_name_id_f2e2903e; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX partners_brand_name_id_f2e2903e ON public.partners_brand USING btree (name_id);
+
+
+--
+-- Name: partners_brandapilogin_api_login_6b024b03_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX partners_brandapilogin_api_login_6b024b03_like ON public.partners_iikobrand USING btree (api_login varchar_pattern_ops);
+
+
+--
+-- Name: partners_brandapilogin_brand_id_2ffe6f40; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX partners_brandapilogin_brand_id_2ffe6f40 ON public.partners_iikobrand USING btree (brand_id);
+
+
+--
+-- Name: partners_brandapilogin_city_id_5e60baa0; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX partners_brandapilogin_city_id_5e60baa0 ON public.partners_iikobrand USING btree (city_id);
+
+
+--
+-- Name: partners_brandimage_brand_id_22e5cac4; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX partners_brandimage_brand_id_22e5cac4 ON public.partners_brandimage USING btree (brand_id);
+
+
+--
+-- Name: partners_organization_address_id_bbf680f0; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX partners_organization_address_id_bbf680f0 ON public.partners_organization USING btree (address_id);
+
+
+--
+-- Name: partners_organization_iiko_brand_id_d6050590; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX partners_organization_iiko_brand_id_d6050590 ON public.partners_organization USING btree (iiko_brand_id);
+
+
+--
+-- Name: partners_organization_name_id_a1427b0b; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX partners_organization_name_id_a1427b0b ON public.partners_organization USING btree (name_id);
+
+
+--
+-- Name: pipeline_servicehistory_content_type_id_e493bd61; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX pipeline_servicehistory_content_type_id_e493bd61 ON public.pipeline_servicehistory USING btree (content_type_id);
+
+
+--
+-- Name: pipeline_servicehistory_created_at_6a56fddd; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX pipeline_servicehistory_created_at_6a56fddd ON public.pipeline_servicehistory USING btree (created_at);
+
+
+--
+-- Name: pipeline_servicehistory_updated_at_a416941c; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX pipeline_servicehistory_updated_at_a416941c ON public.pipeline_servicehistory USING btree (updated_at);
+
+
+--
+-- Name: pipeline_serviceresponse_created_at_b22c72db; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX pipeline_serviceresponse_created_at_b22c72db ON public.pipeline_serviceresponse USING btree (created_at);
+
+
+--
+-- Name: promotions_promotion_image_id_b13ebeaa; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX promotions_promotion_image_id_b13ebeaa ON public.promotions_promotion USING btree (image_id);
+
+
+--
+-- Name: promotions_promotion_slug_7d42103c_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX promotions_promotion_slug_7d42103c_like ON public.promotions_promotion USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: promotions_promotion_template_id_4dd9e269; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX promotions_promotion_template_id_4dd9e269 ON public.promotions_promotion USING btree (template_id);
+
+
+--
+-- Name: sms_otp_code_4689ba2e; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX sms_otp_code_4689ba2e ON public.sms_otp USING btree (code);
+
+
+--
+-- Name: sms_otp_code_4689ba2e_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX sms_otp_code_4689ba2e_like ON public.sms_otp USING btree (code varchar_pattern_ops);
+
+
+--
+-- Name: sms_otp_created_at_8017c381; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX sms_otp_created_at_8017c381 ON public.sms_otp USING btree (created_at);
+
+
+--
+-- Name: sms_otp_updated_at_c15f6998; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX sms_otp_updated_at_c15f6998 ON public.sms_otp USING btree (updated_at);
+
+
+--
+-- Name: sms_smsmessage_created_at_70851a7b; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX sms_smsmessage_created_at_70851a7b ON public.sms_smsmessage USING btree (created_at);
+
+
+--
+-- Name: sms_smsmessage_updated_at_62abb0e2; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX sms_smsmessage_updated_at_62abb0e2 ON public.sms_smsmessage USING btree (updated_at);
+
+
+--
+-- Name: sms_smstemplate_name_5f066fd1_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX sms_smstemplate_name_5f066fd1_like ON public.sms_smstemplate USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: token_blacklist_outstandingtoken_jti_hex_d9bdf6f7_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX token_blacklist_outstandingtoken_jti_hex_d9bdf6f7_like ON public.token_blacklist_outstandingtoken USING btree (jti varchar_pattern_ops);
+
+
+--
+-- Name: token_blacklist_outstandingtoken_user_id_83bc629a; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX token_blacklist_outstandingtoken_user_id_83bc629a ON public.token_blacklist_outstandingtoken USING btree (user_id);
+
+
+--
+-- Name: users_user_groups_group_id_9afc8d0e; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX users_user_groups_group_id_9afc8d0e ON public.users_user_groups USING btree (group_id);
+
+
+--
+-- Name: users_user_groups_user_id_5f6f5a90; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX users_user_groups_user_id_5f6f5a90 ON public.users_user_groups USING btree (user_id);
+
+
+--
+-- Name: users_user_mobile_phone_ae325381_like; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX users_user_mobile_phone_ae325381_like ON public.users_user USING btree (mobile_phone varchar_pattern_ops);
+
+
+--
+-- Name: users_user_user_permissions_permission_id_0b93982e; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX users_user_user_permissions_permission_id_0b93982e ON public.users_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: users_user_user_permissions_user_id_20aca447; Type: INDEX; Schema: public; Owner: kexdb
+--
+
+CREATE INDEX users_user_user_permissions_user_id_20aca447 ON public.users_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_users_user_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_users_user_id FOREIGN KEY (user_id) REFERENCES public.users_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_celery_beat_periodictask django_celery_beat_p_clocked_id_47a69f82_fk_django_ce; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_periodictask
+    ADD CONSTRAINT django_celery_beat_p_clocked_id_47a69f82_fk_django_ce FOREIGN KEY (clocked_id) REFERENCES public.django_celery_beat_clockedschedule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_celery_beat_periodictask django_celery_beat_p_crontab_id_d3cba168_fk_django_ce; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_periodictask
+    ADD CONSTRAINT django_celery_beat_p_crontab_id_d3cba168_fk_django_ce FOREIGN KEY (crontab_id) REFERENCES public.django_celery_beat_crontabschedule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_celery_beat_periodictask django_celery_beat_p_interval_id_a8ca27da_fk_django_ce; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_periodictask
+    ADD CONSTRAINT django_celery_beat_p_interval_id_a8ca27da_fk_django_ce FOREIGN KEY (interval_id) REFERENCES public.django_celery_beat_intervalschedule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_celery_beat_periodictask django_celery_beat_p_solar_id_a87ce72c_fk_django_ce; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.django_celery_beat_periodictask
+    ADD CONSTRAINT django_celery_beat_p_solar_id_a87ce72c_fk_django_ce FOREIGN KEY (solar_id) REFERENCES public.django_celery_beat_solarschedule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: location_city location_city_country_id_2bc9d8e9_fk_location_country_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_city
+    ADD CONSTRAINT location_city_country_id_2bc9d8e9_fk_location_country_id FOREIGN KEY (country_id) REFERENCES public.location_country(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: location_city location_city_name_id_15383c81_fk_translati; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_city
+    ADD CONSTRAINT location_city_name_id_15383c81_fk_translati FOREIGN KEY (name_id) REFERENCES public.translations_multilanguagechar(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: location_country location_country_name_id_d7690037_fk_translati; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.location_country
+    ADD CONSTRAINT location_country_name_id_d7690037_fk_translati FOREIGN KEY (name_id) REFERENCES public.translations_multilanguagechar(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: nomenclature_category nomenclature_categor_iiko_brand_id_edb83264_fk_partners_; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_category
+    ADD CONSTRAINT nomenclature_categor_iiko_brand_id_edb83264_fk_partners_ FOREIGN KEY (iiko_brand_id) REFERENCES public.partners_iikobrand(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: nomenclature_category nomenclature_categor_name_id_010374cd_fk_translati; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_category
+    ADD CONSTRAINT nomenclature_categor_name_id_010374cd_fk_translati FOREIGN KEY (name_id) REFERENCES public.translations_multilanguagechar(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: nomenclature_position nomenclature_positio_category_id_e8d024f1_fk_nomenclat; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_position
+    ADD CONSTRAINT nomenclature_positio_category_id_e8d024f1_fk_nomenclat FOREIGN KEY (category_id) REFERENCES public.nomenclature_category(uuid) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: nomenclature_position nomenclature_positio_iiko_brand_id_33fa85df_fk_partners_; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_position
+    ADD CONSTRAINT nomenclature_positio_iiko_brand_id_33fa85df_fk_partners_ FOREIGN KEY (iiko_brand_id) REFERENCES public.partners_iikobrand(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: nomenclature_position nomenclature_positio_name_id_6d73a5fe_fk_translati; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_position
+    ADD CONSTRAINT nomenclature_positio_name_id_6d73a5fe_fk_translati FOREIGN KEY (name_id) REFERENCES public.translations_multilanguagechar(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: nomenclature_positioninfobyorganization nomenclature_positio_organization_id_322453fc_fk_partners_; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization
+    ADD CONSTRAINT nomenclature_positio_organization_id_322453fc_fk_partners_ FOREIGN KEY (organization_id) REFERENCES public.partners_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: nomenclature_positioninfobyorganization nomenclature_positio_position_id_0af2d76f_fk_nomenclat; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.nomenclature_positioninfobyorganization
+    ADD CONSTRAINT nomenclature_positio_position_id_0af2d76f_fk_nomenclat FOREIGN KEY (position_id) REFERENCES public.nomenclature_position(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_cartposition orders_cartposition_cart_id_4f666c01_fk_orders_cart_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_cartposition
+    ADD CONSTRAINT orders_cartposition_cart_id_4f666c01_fk_orders_cart_id FOREIGN KEY (cart_id) REFERENCES public.orders_cart(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_cartposition orders_cartposition_organization_positio_6365f52b_fk_nomenclat; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_cartposition
+    ADD CONSTRAINT orders_cartposition_organization_positio_6365f52b_fk_nomenclat FOREIGN KEY (organization_position_id) REFERENCES public.nomenclature_positioninfobyorganization(uuid) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_lead orders_lead_address_id_d9e5e5a2_fk_location_address_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_lead
+    ADD CONSTRAINT orders_lead_address_id_d9e5e5a2_fk_location_address_id FOREIGN KEY (address_id) REFERENCES public.location_address(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_lead orders_lead_cart_id_9952af4d_fk_orders_cart_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_lead
+    ADD CONSTRAINT orders_lead_cart_id_9952af4d_fk_orders_cart_id FOREIGN KEY (cart_id) REFERENCES public.orders_cart(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_lead orders_lead_iiko_brand_id_24455271_fk_partners_iikobrand_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_lead
+    ADD CONSTRAINT orders_lead_iiko_brand_id_24455271_fk_partners_iikobrand_id FOREIGN KEY (iiko_brand_id) REFERENCES public.partners_iikobrand(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_lead orders_lead_organization_id_ebc5f3f3_fk_partners_; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_lead
+    ADD CONSTRAINT orders_lead_organization_id_ebc5f3f3_fk_partners_ FOREIGN KEY (organization_id) REFERENCES public.partners_organization(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_order orders_order_lead_id_4feed272_fk_orders_lead_uuid; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_order
+    ADD CONSTRAINT orders_order_lead_id_4feed272_fk_orders_lead_uuid FOREIGN KEY (lead_id) REFERENCES public.orders_lead(uuid) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_order orders_order_user_id_e9b59eb1_fk_users_user_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_order
+    ADD CONSTRAINT orders_order_user_id_e9b59eb1_fk_users_user_id FOREIGN KEY (user_id) REFERENCES public.users_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: orders_orderstatustransition orders_orderstatustr_order_id_4f1c85ba_fk_orders_or; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.orders_orderstatustransition
+    ADD CONSTRAINT orders_orderstatustr_order_id_4f1c85ba_fk_orders_or FOREIGN KEY (order_id) REFERENCES public.orders_order(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: partners_brand partners_brand_name_id_f2e2903e_fk_translati; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_brand
+    ADD CONSTRAINT partners_brand_name_id_f2e2903e_fk_translati FOREIGN KEY (name_id) REFERENCES public.translations_multilanguagechar(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: partners_iikobrand partners_brandapilogin_brand_id_2ffe6f40_fk_partners_brand_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_iikobrand
+    ADD CONSTRAINT partners_brandapilogin_brand_id_2ffe6f40_fk_partners_brand_id FOREIGN KEY (brand_id) REFERENCES public.partners_brand(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: partners_iikobrand partners_brandapilogin_city_id_5e60baa0_fk_location_city_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_iikobrand
+    ADD CONSTRAINT partners_brandapilogin_city_id_5e60baa0_fk_location_city_id FOREIGN KEY (city_id) REFERENCES public.location_city(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: partners_brandimage partners_brandimage_brand_id_22e5cac4_fk_partners_brand_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_brandimage
+    ADD CONSTRAINT partners_brandimage_brand_id_22e5cac4_fk_partners_brand_id FOREIGN KEY (brand_id) REFERENCES public.partners_brand(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: partners_organization partners_organizatio_address_id_bbf680f0_fk_location_; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_organization
+    ADD CONSTRAINT partners_organizatio_address_id_bbf680f0_fk_location_ FOREIGN KEY (address_id) REFERENCES public.location_address(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: partners_organization partners_organizatio_iiko_brand_id_d6050590_fk_partners_; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_organization
+    ADD CONSTRAINT partners_organizatio_iiko_brand_id_d6050590_fk_partners_ FOREIGN KEY (iiko_brand_id) REFERENCES public.partners_iikobrand(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: partners_organization partners_organizatio_name_id_a1427b0b_fk_translati; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.partners_organization
+    ADD CONSTRAINT partners_organizatio_name_id_a1427b0b_fk_translati FOREIGN KEY (name_id) REFERENCES public.translations_multilanguagechar(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: pipeline_servicehistory pipeline_servicehist_content_type_id_e493bd61_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.pipeline_servicehistory
+    ADD CONSTRAINT pipeline_servicehist_content_type_id_e493bd61_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: pipeline_serviceresponse pipeline_serviceresp_history_id_d66ec7c5_fk_pipeline_; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.pipeline_serviceresponse
+    ADD CONSTRAINT pipeline_serviceresp_history_id_d66ec7c5_fk_pipeline_ FOREIGN KEY (history_id) REFERENCES public.pipeline_servicehistory(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: promotions_promotion promotions_promotion_image_id_b13ebeaa_fk_translati; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.promotions_promotion
+    ADD CONSTRAINT promotions_promotion_image_id_b13ebeaa_fk_translati FOREIGN KEY (image_id) REFERENCES public.translations_multilanguagefile(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: promotions_promotion promotions_promotion_template_id_4dd9e269_fk_translati; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.promotions_promotion
+    ADD CONSTRAINT promotions_promotion_template_id_4dd9e269_fk_translati FOREIGN KEY (template_id) REFERENCES public.translations_multilanguagetext(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: token_blacklist_blacklistedtoken token_blacklist_blac_token_id_3cc7fe56_fk_token_bla; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.token_blacklist_blacklistedtoken
+    ADD CONSTRAINT token_blacklist_blac_token_id_3cc7fe56_fk_token_bla FOREIGN KEY (token_id) REFERENCES public.token_blacklist_outstandingtoken(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: token_blacklist_outstandingtoken token_blacklist_outs_user_id_83bc629a_fk_users_use; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.token_blacklist_outstandingtoken
+    ADD CONSTRAINT token_blacklist_outs_user_id_83bc629a_fk_users_use FOREIGN KEY (user_id) REFERENCES public.users_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: users_user_groups users_user_groups_group_id_9afc8d0e_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_groups
+    ADD CONSTRAINT users_user_groups_group_id_9afc8d0e_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: users_user_groups users_user_groups_user_id_5f6f5a90_fk_users_user_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_groups
+    ADD CONSTRAINT users_user_groups_user_id_5f6f5a90_fk_users_user_id FOREIGN KEY (user_id) REFERENCES public.users_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: users_user_user_permissions users_user_user_perm_permission_id_0b93982e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_user_permissions
+    ADD CONSTRAINT users_user_user_perm_permission_id_0b93982e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: users_user_user_permissions users_user_user_permissions_user_id_20aca447_fk_users_user_id; Type: FK CONSTRAINT; Schema: public; Owner: kexdb
+--
+
+ALTER TABLE ONLY public.users_user_user_permissions
+    ADD CONSTRAINT users_user_user_permissions_user_id_20aca447_fk_users_user_id FOREIGN KEY (user_id) REFERENCES public.users_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

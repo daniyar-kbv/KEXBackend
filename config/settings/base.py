@@ -60,6 +60,7 @@ THIRD_PARTY_APPS = [
     "phonenumber_field",
     "constance",
     "django_celery_beat",
+    "dbbackup",
 ]
 
 LOCAL_APPS = [
@@ -127,6 +128,11 @@ DATABASES = {
     }
 }
 
+
+DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
+DBBACKUP_STORAGE_OPTIONS = {
+    "location": os.path.join(BASE_DIR, "backups")
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
