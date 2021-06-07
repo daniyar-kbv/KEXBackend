@@ -41,7 +41,7 @@ class GetBranchNomenclature(BaseIIKOService):
         return unavailable_price
 
     @staticmethod
-    def _fetch_modifiers(position: Dict) -> List[Optional[PythonModifier]]:
+    def _fetch_modifiers(position: Dict) -> List[Dict]:
         modifiers: List[Dict] = list()
 
         for modifier in position.get("modifiers", list()):
@@ -53,6 +53,13 @@ class GetBranchNomenclature(BaseIIKOService):
             ).__dict__)
 
         return modifiers or None
+
+    @staticmethod
+    def sort_positions(positions):
+        return sorted(
+            positions,
+            key=lambda x: bool(x.get('modifiers'))
+        )
 
     def prepare_to_save(self, data: dict) -> List:
         positions: List[Dict] = list()
@@ -67,13 +74,14 @@ class GetBranchNomenclature(BaseIIKOService):
                 modifiers=self._fetch_modifiers(position),
             ).__dict__)
 
-        return positions
+        p = self.sort_positions(positions)
+        print(p)
+        return p
 
     def finalize_response(self, response):
         return None
 
     def save(self, prepared_data):
-        # print("prepared_data", self.prepare_to_save(prepared_data))
         serializer = self.save_serializer(
             data=self.prepare_to_save(prepared_data), many=True,
             context={"branch": self.instance}
