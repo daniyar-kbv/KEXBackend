@@ -19,12 +19,14 @@ class BrandImagesSerializer(serializers.ModelSerializer):
 
 class BrandSerializer(AbstractNameSerializer):
     image = serializers.CharField(required=False)
+    position = serializers.IntegerField()
     is_available = serializers.BooleanField(required=False)
 
     class Meta:
         model = Brand
         fields = (
             "id",
+            "position",
             "name",
             "image",
             "is_available"

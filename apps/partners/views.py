@@ -42,5 +42,6 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
                     img = img.first().image
                     img = self.request.build_absolute_uri(img.url)
                 setattr(brand, 'image', img)
+                setattr(brand, 'position', i+1)
 
             return queryset
