@@ -13,6 +13,18 @@ class AbstractNameSerializer(serializers.ModelSerializer):
         return getattr(obj.name, self.context['request'].headers.get('language'))
 
 
+class AbstractImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        abstract = True
+
+    def get_image(self, obj):
+        return self.context['request'].build_absolute_uri(
+            getattr(obj.image, self.context['request'].headers.get('language'))
+        )
+
+
 class AbstractDescriptionSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField()
 

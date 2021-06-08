@@ -8,7 +8,8 @@ class PromotionAdmin(admin.ModelAdmin):
     list_display = [
         'slug',
         'image',
-        'template',
+        'position',
         'type',
     ]
+    list_editable = ['position']
     prepopulated_fields = {"slug": ("template", 'type')}

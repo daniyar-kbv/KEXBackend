@@ -1,3 +1,4 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from ckeditor.fields import RichTextField
 
@@ -62,9 +63,12 @@ class MultiLanguageText(MultiLanguageString):
 
 
 class MultiLanguageTextEditor(MultiLanguageString):
-    text_ru = RichTextField("Текст (рус)", null=True)
-    text_kk = RichTextField("Текст (каз)", blank=True, null=True)
-    text_en = RichTextField("Текст (англ)", blank=True, null=True)
+    text_ru = RichTextUploadingField("Текст (рус)", null=True)
+    text_kk = RichTextUploadingField("Текст (каз)", blank=True, null=True)
+    text_en = RichTextUploadingField("Текст (англ)", blank=True, null=True)
+
+    def __str__(self):
+        return self.text_ru[:20] + "..."
 
 
 class MultiLanguageFile(models.Model):
@@ -74,7 +78,7 @@ class MultiLanguageFile(models.Model):
 
     @property
     def ru(self):
-        return self.file_ru
+        return self.file_ru.url
 
     @ru.setter
     def ru(self, value):
@@ -83,7 +87,7 @@ class MultiLanguageFile(models.Model):
 
     @property
     def kk(self):
-        return self.file_kk
+        return self.file_kk.url
 
     @kk.setter
     def kk(self, value):
@@ -92,7 +96,7 @@ class MultiLanguageFile(models.Model):
 
     @property
     def en(self):
-        return self.file_en
+        return self.file_en.url
 
     @en.setter
     def en(self, value):
