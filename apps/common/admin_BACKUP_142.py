@@ -53,10 +53,8 @@ class HistoryInline(ReadOnlyMixin, GenericTabularInline):
     show.short_description = _("Лог сервиса")
 
 
-<<<<<<< HEAD
 admin.site.register(MultiLanguageChar)
 admin.site.register(MultiLanguageText)
-=======
 # admin.site.register(NameField)
 # admin.site.register(DescriptionField)
 # admin.site.register(TestCountry)
@@ -116,7 +114,6 @@ admin.site.register(MultiLanguageText)
 #     class Meta:
 #         verbose_name = "Test"
 #         verbose_name_plural = "Tests"
->>>>>>> kex006
 
 
 class AbstractNameModelForm(forms.ModelForm):
