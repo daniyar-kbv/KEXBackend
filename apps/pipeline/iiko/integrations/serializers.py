@@ -119,7 +119,8 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             BranchPositionModifier.objects.update_or_create(
                 main_position_id=branch_position.uuid,
                 modifier=BranchPosition.objects.get(
-                    outer_id=modifier["outer_id"]
+                    branch=self.context["branch"],
+                    outer_id=modifier["outer_id"],
                 ),
                 defaults={
                     "min_amount": modifier["min_amount"],
