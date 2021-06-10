@@ -79,7 +79,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = BranchPosition
         fields = (
-            "id",
+            "uuid",
             "name",
             "description",
             "image",
