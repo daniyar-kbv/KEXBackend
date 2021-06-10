@@ -1,17 +1,17 @@
 from decimal import Decimal
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Dict
 
 from rest_framework import serializers
+from django.db.transaction import atomic
 
 from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.partners.models import Branch
-from apps.nomenclature.models import LocalPosition, BranchPosition
+from apps.nomenclature.models import LocalPosition, BranchPosition, BranchPositionModifier
 
 if TYPE_CHECKING:
     from ..python_entities.positions import (
             Modifier as PythonModifier,
-            Position as PythonPosition,
     )
 
 
@@ -71,38 +71,60 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
+class IIKOModifierSerializer(serializers.Serializer):
+    outer_id = serializers.CharField(required=True)
+    min_amount = serializers.IntegerField(required=False, default=0)
+    max_amount = serializers.IntegerField(required=False, default=1)
+    required = serializers.BooleanField(default=False)
+
+
 class IIKONomenclatureSerializer(serializers.ModelSerializer):
     price = serializers.DecimalField(max_digits=12, decimal_places=2, required=True)
     iiko_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     iiko_description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    modifiers = IIKOModifierSerializer(many=True, required=False, allow_null=True)
 
     class Meta:
         model = LocalPosition
         fields = "__all__"
 
-    def create(self, validated_data):
-        # print(validated_data)
-        modifiers: List['PythonModifier'] = validated_data.pop('modifiers', None)
-        price: Decimal = validated_data.pop("price", Decimal(0))
-        iiko_name: str = validated_data.pop("iiko_name", None)
-        iiko_description: str = validated_data.pop("iiko_description", None)
+    def validate(self, attrs):
+        return super().validate(attrs)
 
-        local_position, created = LocalPosition.objects.update_or_create(
-            outer_id=validated_data.pop("outer_id"),
+    def create(self, validated_data):
+        modifiers: List[Dict] = validated_data.pop('modifiers') or list()
+
+        local_position, created = LocalPosition.objects.update_or_create(  # noqa
+            outer_id=validated_data.get("outer_id"),
             defaults={
-                **validated_data
+                "local_brand": validated_data.get("local_brand"),
             }
         )
 
-        BranchPosition.objects.update_or_create(
+        branch_position, created = BranchPosition.objects.update_or_create(  # noqa
             branch=self.context["branch"],
             local_position=local_position,
             defaults={
-                "price": price,
-                "iiko_name": iiko_name,
-                "iiko_description": iiko_description,
+                "price": validated_data.get('price') or Decimal(0),
+                "outer_id": local_position.outer_id,
+                "iiko_name": validated_data.get("iiko_name"),
+                "iiko_description": validated_data.get("iiko_description"),
                 "name": local_position.name,
             }
         )
+
+        print("modifier:", modifiers)
+
+        for modifier in modifiers:
+            BranchPositionModifier.objects.update_or_create(
+                main_position_id=branch_position.uuid,
+                modifier=BranchPosition.objects.get(
+                    outer_id=modifier["outer_id"]
+                ),
+                defaults={
+                    "min_amount": modifier["min_amount"],
+                    "max_amount": modifier["max_amount"],
+                }
+            )
 
         return local_position

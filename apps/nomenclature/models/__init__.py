@@ -6,4 +6,5 @@ from .categories import (
 from .positions import (
     LocalPosition,
     BranchPosition,
+    BranchPositionModifier,
 )
