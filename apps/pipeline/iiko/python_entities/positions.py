@@ -7,8 +7,8 @@ from dataclasses import dataclass
 @dataclass
 class Modifier:
     outer_id: UUID
-    min_amount: int = None
-    max_amount: int = None
+    min_amount: int = 0
+    max_amount: int = 1
     required: bool = False
 
 

@@ -41,21 +41,28 @@ class GetBranchNomenclature(BaseIIKOService):
         return unavailable_price
 
     @staticmethod
-    def _fetch_modifiers(position: Dict) -> List[Optional[PythonModifier]]:
-        modifiers: List[Optional[PythonModifier]] = list()
+    def _fetch_modifiers(position) -> List[Dict]:
+        modifiers: List[Dict] = list()
 
         for modifier in position.get("modifiers", list()):
             modifiers.append(PythonModifier(
                 outer_id=modifier.get("id"),
-                min_amount=modifier.get("min_amount"),
-                max_amount=modifier.get("max_amount"),
-                required=modifier.get("required"),
+                min_amount=modifier.get("min_amount") or 0,
+                max_amount=modifier.get("max_amount") or 1,
+                required=modifier.get("required") or False,
             ).__dict__)
 
         return modifiers or None
 
+    @staticmethod
+    def sort_positions(positions):
+        return sorted(
+            positions,
+            key=lambda x: bool(x.get('modifiers'))
+        )
+
     def prepare_to_save(self, data: dict) -> List:
-        positions: List[PythonPosition] = list()
+        positions: List[Dict] = list()
 
         for position in data.get("products", list()):
             positions.append(PythonPosition(
@@ -67,13 +74,12 @@ class GetBranchNomenclature(BaseIIKOService):
                 modifiers=self._fetch_modifiers(position),
             ).__dict__)
 
-        return positions
+        return self.sort_positions(positions)
 
     def finalize_response(self, response):
         return None
 
     def save(self, prepared_data):
-        # print("prepared_data", self.prepare_to_save(prepared_data))
         serializer = self.save_serializer(
             data=self.prepare_to_save(prepared_data), many=True,
             context={"branch": self.instance}

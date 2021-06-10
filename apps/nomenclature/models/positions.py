@@ -94,8 +94,32 @@ class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
         max_digits=12,
         default=Decimal(0),
     )
+    outer_id = models.UUIDField(
+        _("UUID в системе IIKO"), null=True,  # noqa
+    )
     is_available = models.BooleanField(
         _("В данный момент не доступен"),
         default=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
+
+
+class BranchPositionModifier(models.Model):
+    class Meta:
+        verbose_name = _("Modifier")
+        verbose_name_plural = _("Modifiers")
+        unique_together = ("main_position", "modifier")
+
+    main_position = models.ForeignKey(
+        BranchPosition,
+        on_delete=models.PROTECT,
+        to_field="uuid", null=True,
+        related_name="modifiers",
+    )
+    modifier = models.ForeignKey(
+        BranchPosition,
+        on_delete=models.PROTECT,
+        to_field="uuid", null=True,
+    )
+    min_amount = models.PositiveSmallIntegerField(default=0)
+    max_amount = models.PositiveSmallIntegerField(default=1)
