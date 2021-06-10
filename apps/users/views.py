@@ -1,23 +1,20 @@
 # from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 
 from apps.common.mixins import JSONRendererMixin
 
 from .models import User
 from .serializers import (
-    UserViewSerializer,
-    UserCreateUpdateSerializer,
+    AccountInfoSerializer,
 )
 
 
-class UserViewSet(ModelViewSet):
-    queryset = User.objects.all()
-    # filter_backends = [DjangoFilterBackend]
-    filter_fields = ["is_active"]
+class AccountInfoView(JSONRendererMixin, GenericAPIView):
+    serializer_class = AccountInfoSerializer
 
-    def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update"]:
-            return UserCreateUpdateSerializer
-
-        return UserViewSerializer
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(instance=request.user)
+        return Response(serializer.data)

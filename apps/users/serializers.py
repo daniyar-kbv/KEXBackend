@@ -5,39 +5,14 @@ from django.contrib.auth.models import Permission
 from .models import User
 
 
-class TestSerializer(serializers.ModelSerializer):
+class AccountInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
-
-
-class UserInfoSerializer(serializers.ModelSerializer):
-    full_name = serializers.ReadOnlyField(required=False)
-    branch = serializers.SerializerMethodField(required=False)
-    role = serializers.SerializerMethodField(required=False)
-
-    def get_role(self, instance):
-        if instance.is_supervisor:
-            return "supervisor"
-
-        if instance.is_superuser:
-            return "superuser"
-
-        elif instance.is_credit_manager:
-            return "credit_manager"
-
-    def get_branch(self, instance) -> str:
-        return instance.branch.address if instance.branch else ""
-
-    class Meta:
-        model = User
-        fields = (
+        fields = [
+            "name",
             "email",
-            "role",
-            "full_name",
-            "merchant",
-            "branch"
-        )
+            "mobile_phone",
+        ]
 
 
 class UserViewSerializer(serializers.ModelSerializer):
