@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.location.models import Address
 from apps.partners.models import LocalBrand, Branch
 from apps.partners.exceptions import BrandNotFound
-from apps.nomenclature.models import BranchCategory, BranchPosition
+from apps.nomenclature.models import BranchCategory, BranchPosition, BranchPositionModifier
 
 from .models import Lead
 
@@ -141,6 +141,64 @@ class LeadNomenclatureSerializer(serializers.ModelSerializer):
         ).data
 
         return data
+
+
+class ModifierSerializer(serializers.ModelSerializer):
+    uuid = serializers.CharField(source="modifier.uuid")
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BranchPositionModifier
+        fields = (
+            "uuid",
+            "name",
+            "min_amount",
+            "max_amount",
+        )
+
+    def get_name(self, obj):
+        if not obj.modifier.name:
+            return
+
+        return obj.modifier.name.text(lang=self.context["language"])
+
+
+class BranchPositionSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+    modifiers = ModifierSerializer(many=True, required=False)
+
+    class Meta:
+        model = BranchPosition
+        fields = (
+            "uuid",
+            "name",
+            "description",
+            "image",
+            "price",
+            "branch_category",
+            "modifiers",
+        )
+
+    def get_name(self, obj):
+        if not obj.name:
+            return
+
+        return obj.name.text(lang=self.context["language"])
+
+    def get_description(self, obj):
+        if not obj.description:
+            return
+
+        return obj.description.text(lang=self.context["language"])
+
+    def get_image(self, obj):
+        if not obj.local_position.image:
+            return
+
+        request = self.context["request"]
+        return request.build_absolute_uri(obj.local_position.image.url)
 
 
 from apps.orders.models import Cart, CartPosition

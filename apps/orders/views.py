@@ -10,7 +10,7 @@ from apps.common.mixins import JSONPublicAPIMixin
 from apps.nomenclature.models import BranchPosition
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 
-from .serializers import ApplyLeadSerializer, LeadNomenclatureSerializer
+from .serializers import ApplyLeadSerializer, LeadNomenclatureSerializer, BranchPositionSerializer
 from .models import Lead
 
 
@@ -37,12 +37,18 @@ class LeadNomenclatureView(JSONPublicAPIMixin, RetrieveAPIView):
 
 
 class BranchPositionView(JSONPublicAPIMixin, RetrieveAPIView):
-    serializer_class = None
+    serializer_class = BranchPositionSerializer
     queryset = BranchPosition.objects.all()
 
     def get_object(self):
         print("kwargs:", self.kwargs)
         return get_object_or_404(BranchPosition, uuid=self.kwargs["position_uuid"])
+
+    def get_serializer_context(self):
+        return {
+            "request": self.request,
+            "language": self.request.META["HTTP_LANGUAGE"],
+        }
 
 
 from .models import CartPosition
