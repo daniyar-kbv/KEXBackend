@@ -18,3 +18,19 @@ class AccountInfoView(JSONRendererMixin, GenericAPIView):
     def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(instance=request.user)
         return Response(serializer.data)
+
+
+class AccountUpdateView(JSONRendererMixin, GenericAPIView):
+    serializer_class = AccountInfoSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            instance=request.user,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.validated_data)
+
