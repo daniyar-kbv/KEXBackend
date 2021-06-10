@@ -41,7 +41,7 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         if not LocalBrand.objects.filter(brand_id=brand_id, city_id=city_id).exists():
             raise BrandNotFound
 
-        attrs["local_brand"] = LocalBrand.objects.get(brand_id=brand_id, city_id=brand_id)
+        attrs["local_brand"] = LocalBrand.objects.get(brand_id=brand_id, city_id=city_id)
 
         return attrs
 
