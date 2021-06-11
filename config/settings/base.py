@@ -74,7 +74,8 @@ LOCAL_APPS = [
     'apps.pipeline.apps.PipelineConfig',
     'apps.nomenclature.apps.NomenclatureConfig',
     'apps.translations.apps.TranslationsConfig',
-    'apps.promotions.apps.PromotionsConfig'
+    'apps.promotions.apps.PromotionsConfig',
+    'apps.docs.apps.DocsConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

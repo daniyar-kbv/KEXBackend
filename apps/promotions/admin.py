@@ -6,10 +6,11 @@ from apps.promotions.models import Promotion
 @admin.register(Promotion)
 class PromotionAdmin(admin.ModelAdmin):
     list_display = [
-        'slug',
-        'image',
-        'position',
+        'name',
         'type',
+        'image',
+        'priority',
+        # 'slug',
     ]
-    list_editable = ['position']
+    list_editable = ['priority']
     prepopulated_fields = {"slug": ("template", 'type')}

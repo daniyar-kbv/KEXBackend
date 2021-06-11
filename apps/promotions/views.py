@@ -20,7 +20,7 @@ class PromotionView(PublicAPIMixin, APIView):
             print('exists baby')
             content = promotion.first().template
             content = getattr(content, request.headers.get('Language'))
-        return render(request, 'promotions/promotion_page.html', {'content': content})
+        return render(request, 'docs/template_page.html', {'content': content})
 
 
 class PromotionListView(JSONPublicAPIMixin, ListAPIView):
