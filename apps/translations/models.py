@@ -1,4 +1,6 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
+from ckeditor.fields import RichTextField
 
 
 class MultiLanguageString(models.Model):
@@ -55,6 +57,52 @@ class MultiLanguageChar(MultiLanguageString):
 
 
 class MultiLanguageText(MultiLanguageString):
-    text_ru = models.TextField("Текст (рус)", max_length=256, null=True)
-    text_kk = models.TextField("Текст (каз)", max_length=256, blank=True, null=True)
-    text_en = models.TextField("Текст (англ)", max_length=256, blank=True, null=True)
+    text_ru = models.TextField("Текст (рус)", null=True)
+    text_kk = models.TextField("Текст (каз)", blank=True, null=True)
+    text_en = models.TextField("Текст (англ)", blank=True, null=True)
+
+from ckeditor.fields import RichTextField
+
+class MultiLanguageTextEditor(MultiLanguageString):
+    text_ru = RichTextField("Текст (рус)", null=True)
+    text_kk = RichTextUploadingField("Текст (каз)", blank=True, null=True)
+    text_en = RichTextUploadingField("Текст (англ)", blank=True, null=True)
+
+    def __str__(self):
+        return self.text_ru[:20] + "..."
+
+
+class MultiLanguageFile(models.Model):
+    file_ru = models.FileField("Файл (рус)", upload_to='', null=True)
+    file_kk = models.FileField("Файл (каз)", upload_to='', blank=True, null=True)
+    file_en = models.FileField("Файл (англ)", upload_to='', blank=True, null=True)
+
+    @property
+    def ru(self):
+        return self.file_ru.url
+
+    @ru.setter
+    def ru(self, value):
+        self.file_ru = value
+        self.save()
+
+    @property
+    def kk(self):
+        return self.file_kk.url
+
+    @kk.setter
+    def kk(self, value):
+        self.file_kk = value
+        self.save()
+
+    @property
+    def en(self):
+        return self.file_en.url
+
+    @en.setter
+    def en(self, value):
+        self.file_en = value
+        self.save()
+
+    def __str__(self):
+        return self.file_ru.name
