@@ -37,7 +37,10 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
             )
             for i, brand in enumerate(queryset):
                 blocks_amount = len(self.image_map)
-                img = BrandImage.objects.filter(brand_id=brand.id, image_type=self.image_map[(i + 1) % blocks_amount])
+                img = BrandImage.objects.filter(
+                    brand_id=brand.id,
+                    image_type=self.image_map[(i + 1) % blocks_amount if (i + 1) != blocks_amount else blocks_amount]
+                )
                 if img.exists():
                     img = img.first().image
                     img = self.request.build_absolute_uri(img.url)
