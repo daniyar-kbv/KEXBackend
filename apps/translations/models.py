@@ -1,6 +1,5 @@
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
-from ckeditor.fields import RichTextField
 
 
 class MultiLanguageString(models.Model):
@@ -61,10 +60,9 @@ class MultiLanguageText(MultiLanguageString):
     text_kk = models.TextField("Текст (каз)", blank=True, null=True)
     text_en = models.TextField("Текст (англ)", blank=True, null=True)
 
-from ckeditor.fields import RichTextField
 
 class MultiLanguageTextEditor(MultiLanguageString):
-    text_ru = RichTextField("Текст (рус)", null=True)
+    text_ru = RichTextUploadingField("Текст (рус)", null=True)
     text_kk = RichTextUploadingField("Текст (каз)", blank=True, null=True)
     text_en = RichTextUploadingField("Текст (англ)", blank=True, null=True)
 
