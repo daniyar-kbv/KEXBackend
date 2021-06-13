@@ -121,5 +121,6 @@ class BranchPositionModifier(models.Model):
         on_delete=models.PROTECT,
         to_field="uuid", null=True,
     )
-    min_amount = models.PositiveSmallIntegerField(default=0)
+    min_amount = models.PositiveSmallIntegerField(default=1)
     max_amount = models.PositiveSmallIntegerField(default=1)
+    is_required = models.BooleanField(default=False)
