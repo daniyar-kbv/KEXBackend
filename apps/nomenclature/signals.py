@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from .models import (
     Category, LocalCategory, BranchCategory,
-    LocalPosition, BranchPosition,
+    LocalPosition
 )
 
 @receiver(post_save, sender=Category)

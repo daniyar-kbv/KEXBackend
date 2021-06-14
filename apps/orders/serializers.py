@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
 from apps.location.models import Address
-from apps.partners.models import LocalBrand, Branch
+from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
+from apps.orders.models import Cart, CartPosition, CartPositionModifier
 from apps.nomenclature.models import BranchCategory, BranchPosition, BranchPositionModifier
 
 from .models import Lead
@@ -51,7 +52,13 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
             **validated_data.pop("address")
         )
 
-        return super().create(validated_data)
+        lead = super().create(validated_data)
+
+        if lead.cart is None:
+            lead.cart = Cart.objects.create()
+            lead.save(update_fields=["cart"])
+
+        return Lead
 
 
 class NomenclatureCategorySerializer(serializers.ModelSerializer):
@@ -201,33 +208,92 @@ class BranchPositionSerializer(serializers.ModelSerializer):
         return request.build_absolute_uri(obj.local_position.image.url)
 
 
-from apps.orders.models import Cart, CartPosition
+class BranchPositionShortSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BranchPosition
+        fields = (
+            "uuid",
+            "name",
+            "image",
+            "price",
+            "branch_category",
+        )
+
+    def get_name(self, obj):
+        if not obj.name:
+            return
+
+        return obj.name.text(lang=self.context["language"])
+
+    def get_image(self, obj):
+        if not obj.local_position.image:
+            return
+
+        request = self.context["request"]
+        return request.build_absolute_uri(obj.local_position.image.url)
 
 
-class UpdatePositionSerializer(serializers.ModelSerializer):
-    position_uuid = serializers.UUIDField(required=True)
+class CartPositionModifierSerializer(serializers.ModelSerializer):
+    position_uuid = serializers.UUIDField(required=True, write_only=True)
+    position = BranchPositionShortSerializer(read_only=True)
+
+    class Meta:
+        model = CartPositionModifier
+        fields = (
+            "position",
+            "position_uuid",
+            "count",
+        )
+
+
+class CartPositionSerializer(serializers.ModelSerializer):
+    modifiers = CartPositionModifierSerializer(many=True, required=False)
+    position_uuid = serializers.UUIDField(required=True, write_only=True)
+    position = BranchPositionShortSerializer(read_only=True)
 
     class Meta:
         model = CartPosition
         fields = (
             "position_uuid",
             "count",
+            "position",
             "comment",
+            "modifiers",
         )
 
 
 class UpdateCartSerializer(serializers.ModelSerializer):
-    cart_positions = UpdatePositionSerializer(many=True, required=True)
+    positions = CartPositionSerializer(many=True, required=False)
 
     class Meta:
         model = Cart
-        fields = "cart_positions",
+        fields = (
+            "positions",
+        )
 
     def update(self, instance, validated_data):
-        for cart_position in validated_data["cart_positions"]:
-            instance.cart_positions.update_or_create(
-                organization_position_id=cart_position.pop("position_uuid"),
-                defaults={**cart_position}
+        positions = validated_data.pop("positions")
+
+        for position in positions:
+            print("position is", position)
+            cart_position, created = instance.positions.get_or_create(
+                branch_position_id=position["position_uuid"],
+                defaults={
+                    "comment":position["comment"],
+                    "count": position["count"],
+                }
             )
+
+            for modifier in position.get("modifiers", list()):
+                cart_position.modifiers.get_or_create(
+                    branch_position_id=modifier["position_uuid"],
+                    defaults={
+                        "count": modifier["count"],
+                    }
+                )
 
         return instance

@@ -3,50 +3,8 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import TimestampModel, UUIDModel, ServiceHistoryModel
 
-from . import OrderStatuses
-from .managers import OrdersManager
-
-
-class Cart(UUIDModel, TimestampModel):
-    class Meta:
-        verbose_name = _("Корзина")
-        verbose_name_plural = _("Корзины")
-
-
-class CartPosition(TimestampModel):
-    class Meta:
-        verbose_name = _("Товар корзины")
-        verbose_name_plural = _("Товары корзины")
-
-    cart = models.ForeignKey(
-        "orders.Cart",
-        on_delete=models.CASCADE,
-        related_name="cart_positions",
-    )
-    organization_position = models.ForeignKey(
-        "nomenclature.BranchPosition",
-        on_delete=models.CASCADE,
-        related_name="carts",
-        to_field="uuid",
-    )
-    count = models.PositiveSmallIntegerField(
-        _("Количество"), default=1,
-    )
-    comment = models.TextField(
-        _("Комментарий к заказу"),
-        null=True, blank=True,
-    )
-
-    def increment_count(self):
-        self.count += 1
-        self.save(update_fields=["count"])
-
-    def decrement_count(self):
-        self.count -= 1
-        if self.count < 0:
-            self.count = 0
-
-        self.save(update_fields=["count"])
+from apps.orders import OrderStatuses
+from apps.orders.managers import OrdersManager
 
 
 class Lead(
@@ -88,10 +46,10 @@ class Lead(
         null=True,
     )
 
-    cart = models.ForeignKey(
+    cart = models.OneToOneField(
         "orders.Cart",
         on_delete=models.PROTECT,
-        related_name="leads",
+        related_name="lead",
         null=True, blank=True,
     )
 

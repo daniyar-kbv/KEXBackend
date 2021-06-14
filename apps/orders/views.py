@@ -51,21 +51,19 @@ class BranchPositionView(JSONPublicAPIMixin, RetrieveAPIView):
         }
 
 
-from .models import CartPosition
-from .serializers import UpdateCartSerializer
+from .models import CartPosition, Cart, CartPositionModifier
 from rest_framework.response import Response
 
-class UpdateCartView(JSONPublicAPIMixin, APIView):
-    def post(self, request, lead_uuid, *args, **kwargs):
-        lead = get_object_or_404(Lead, uuid=lead_uuid)
-        serializer = UpdateCartSerializer(
-            instance=lead.cart,
-            data=request.data,
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+from rest_framework.generics import RetrieveUpdateAPIView, UpdateAPIView
+from .serializers import UpdateCartSerializer
 
-        return Response(data=serializer.data)
+
+class UpdateCartView(JSONPublicAPIMixin, RetrieveUpdateAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = UpdateCartSerializer
+
+    def get_object(self):
+        return get_object_or_404(Cart, lead__uuid=self.kwargs.get("lead_uuid"))
 
 
 class IncrementCartPositionView(JSONPublicAPIMixin, APIView):
