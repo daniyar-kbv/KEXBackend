@@ -210,7 +210,6 @@ class BranchPositionSerializer(serializers.ModelSerializer):
 
 class BranchPositionShortSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
-    description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
 
     class Meta:
@@ -227,7 +226,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
         if not obj.name:
             return
 
-        return obj.name.text(lang=self.context["language"])
+        return obj.name.text(lang=self.context.get("language", "ru"))
 
     def get_image(self, obj):
         if not obj.local_position.image:
@@ -239,7 +238,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
 
 class CartPositionModifierSerializer(serializers.ModelSerializer):
     position_uuid = serializers.UUIDField(required=True, write_only=True)
-    position = BranchPositionShortSerializer(read_only=True)
+    position = BranchPositionShortSerializer(source="branch_position", read_only=True)
 
     class Meta:
         model = CartPositionModifier
@@ -253,7 +252,7 @@ class CartPositionModifierSerializer(serializers.ModelSerializer):
 class CartPositionSerializer(serializers.ModelSerializer):
     modifiers = CartPositionModifierSerializer(many=True, required=False)
     position_uuid = serializers.UUIDField(required=True, write_only=True)
-    position = BranchPositionShortSerializer(read_only=True)
+    position = BranchPositionShortSerializer(source="branch_position", read_only=True)
 
     class Meta:
         model = CartPosition
