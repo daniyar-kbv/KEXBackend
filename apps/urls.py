@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 
+from apps.docs.views import ContactListView
 from apps.views import index_view
 
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
     path("users/", include("apps.users.urls")),
     path("promotions/", include("apps.promotions.urls")),
     path("documents/", include("apps.docs.urls")),
+    path("contacts/", ContactListView.as_view()),
     path('', index_view),
 ]
 

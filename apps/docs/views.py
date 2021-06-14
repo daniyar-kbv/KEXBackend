@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.urls import resolve
 
-
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView
+from rest_framework.response import Response
 from rest_framework.views import APIView
+from constance import config
 
+from config.settings.base import CONSTANCE_CONFIG_FIELDSETS
 from .models import Document
 from apps.common.mixins import PublicAPIMixin, JSONPublicAPIMixin
 from .serializers import DocumentListSerializer
@@ -37,3 +39,16 @@ class DocumentListView(JSONPublicAPIMixin, ListAPIView):
             setattr(doc, 'link', link)
 
         return queryset
+
+
+class ContactListView(JSONPublicAPIMixin, GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        contancts = []
+        for contact in CONSTANCE_CONFIG_FIELDSETS['Contacts']:
+            contancts.append({
+                'name': contact,
+                'value': getattr(config, contact)
+            })
+
+        return Response(contancts)
