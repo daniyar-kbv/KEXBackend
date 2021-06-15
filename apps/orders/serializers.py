@@ -10,26 +10,35 @@ from .models import Lead
 
 
 class LeadAddressSerializer(serializers.ModelSerializer):
-    longitude = serializers.CharField(required=True)
-    latitude = serializers.CharField(required=True)
-
     class Meta:
         model = Address
-        fields = "__all__"
+        fields = (
+            "city",
+            "longitude",
+            "latitude",
+            "district",
+            "street",
+            "building",
+            "corpus",
+            "flat",
+        )
+
+    extra_kwargs = {
+        "longitude": {"required": True},
+        "latitude": {"required": True},
+        "city": {"required": True},
+    }
 
 
 class ApplyLeadSerializer(serializers.ModelSerializer):
-    address = LeadAddressSerializer(write_only=True)
-    city_id = serializers.CharField(required=True, write_only=True)
-    brand_id = serializers.CharField(required=True, write_only=True)
+    address = LeadAddressSerializer(write_only=True, required=True)
 
     class Meta:
         model = Lead
         fields = (
             "uuid",
-            "brand_id",
-            "city_id",
             "address",
+            "local_brand",
         )
         extra_kwargs = {
             "uuid": {"read_only": True}
@@ -37,12 +46,9 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        city_id, brand_id = attrs.pop("city_id"), attrs.pop("brand_id")
 
-        if not LocalBrand.objects.filter(brand_id=brand_id, city_id=city_id).exists():
+        if not attrs["local_brand"].city == attrs["address"]["city"]:
             raise BrandNotFound
-
-        attrs["local_brand"] = LocalBrand.objects.get(brand_id=brand_id, city_id=city_id)
 
         return attrs
 
@@ -51,14 +57,16 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         validated_data["address"], created = Address.objects.get_or_create(  # noqa
             **validated_data.pop("address")
         )
-
+        print("created address", created, validated_data["address"])
+        print("validated_data is:", validated_data)
         lead = super().create(validated_data)
+        print("lead_is, ", lead)
 
         if lead.cart is None:
             lead.cart = Cart.objects.create()
             lead.save(update_fields=["cart"])
 
-        return Lead
+        return lead
 
 
 class NomenclatureCategorySerializer(serializers.ModelSerializer):
