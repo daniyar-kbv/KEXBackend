@@ -55,7 +55,7 @@ class BranchPositionView(JSONPublicAPIMixin, RetrieveAPIView):
         }
 
 
-class UpdateCartView(JSONPublicAPIMixin, RetrieveUpdateAPIView):
+class CartRetrieveUpdateView(JSONPublicAPIMixin, RetrieveUpdateAPIView):
     queryset = Cart.objects.all()
     serializer_class = UpdateCartSerializer
 
