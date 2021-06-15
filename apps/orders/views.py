@@ -1,17 +1,21 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.generics import (
     CreateAPIView,
     RetrieveAPIView,
-    GenericAPIView,
 )
 
 from apps.common.mixins import JSONPublicAPIMixin
 from apps.nomenclature.models import BranchPosition
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 
-from .serializers import ApplyLeadSerializer, LeadNomenclatureSerializer, BranchPositionSerializer
-from .models import Lead
+from .models import Lead, Cart
+from .serializers import (
+    ApplyLeadSerializer,
+    LeadNomenclatureSerializer,
+    BranchPositionSerializer,
+    UpdateCartSerializer,
+)
 
 
 class ApplyView(JSONPublicAPIMixin, CreateAPIView):
@@ -51,44 +55,9 @@ class BranchPositionView(JSONPublicAPIMixin, RetrieveAPIView):
         }
 
 
-from .models import CartPosition, Cart, CartPositionModifier
-from rest_framework.response import Response
-
-from rest_framework.generics import RetrieveUpdateAPIView, UpdateAPIView
-from .serializers import UpdateCartSerializer
-
-
 class UpdateCartView(JSONPublicAPIMixin, RetrieveUpdateAPIView):
     queryset = Cart.objects.all()
     serializer_class = UpdateCartSerializer
 
     def get_object(self):
         return get_object_or_404(Cart, lead__uuid=self.kwargs.get("lead_uuid"))
-
-
-class IncrementCartPositionView(JSONPublicAPIMixin, APIView):
-    def post(self, request, lead_uuid, position_uuid, *args, **kwargs):
-        lead = get_object_or_404(Lead, uuid=lead_uuid)
-        position: CartPosition = get_object_or_404(
-            CartPosition,
-            cart_id=lead.cart_id,
-            position_id=position_uuid,
-        )
-
-        position.increment_count()
-
-        return Response()
-
-
-class DecrementCartPositionView(JSONPublicAPIMixin, APIView):
-    def post(self, request, lead_uuid, position_uuid, *args, **kwargs):
-        lead = get_object_or_404(Lead, uuid=lead_uuid)
-        position: CartPosition = get_object_or_404(
-            CartPosition,
-            cart_id=lead.cart_id,
-            position_id=position_uuid,
-        )
-
-        position.decrement_count()
-
-        return Response()
