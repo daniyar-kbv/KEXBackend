@@ -57,8 +57,6 @@ class Address(models.Model):
     building = models.CharField(_("Дом / здание"), max_length=100, null=True, blank=True)
     corpus = models.CharField(_("Корпус"), max_length=100, null=True, blank=True)
     flat = models.CharField(_("Квартира"), max_length=50, null=True, blank=True)
-    postal_code = models.CharField(_("Почтовый индекс"), max_length=7, null=True, blank=True)
-
     longitude = models.DecimalField(_("Долгота"), max_digits=12, decimal_places=8, null=True)
     latitude = models.DecimalField(_("Широта"), max_digits=12, decimal_places=8, null=True)
 
