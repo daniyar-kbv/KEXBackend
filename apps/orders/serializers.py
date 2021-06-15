@@ -89,6 +89,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    category = serializers.UUIDField(source="branch_category_id")
 
     class Meta:
         model = BranchPosition
@@ -98,7 +99,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
             "description",
             "image",
             "price",
-            "branch_category",
+            "category",
         )
 
     def get_name(self, obj):
