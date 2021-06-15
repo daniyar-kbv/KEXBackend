@@ -17,10 +17,10 @@ def update_brand_branches() -> None:
     :return:
     """
 
-    for brand in LocalBrand.objects.active():
+    for local_brand in LocalBrand.objects.active():
         with atomic():
-            brand.deactivate_branches()
-            GetBranches(instance=brand).run()
+            local_brand.deactivate_branches()
+            GetBranches(instance=local_brand).run()
 
 
 @celery_app.task(name="iiko.update_brand_nomenclatures") # noqa

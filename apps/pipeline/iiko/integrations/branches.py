@@ -21,8 +21,7 @@ class GetBranches(BaseIIKOService):
             "returnAdditionalInfo": True,
         })
 
-    @staticmethod
-    def parse_address(full_address=None):
+    def parse_address(self, full_address=None):
         try:
             district, city, street_with_building = full_address.split(', ')
             street, building = street_with_building.split()
@@ -30,7 +29,7 @@ class GetBranches(BaseIIKOService):
             return {}
 
         return {
-            "city": city,
+            "city": self.instance.city_id,
             "district": district,
             "street": street,
             "building": building,
@@ -44,7 +43,7 @@ class GetBranches(BaseIIKOService):
                 "iiko_name": org.get("name"),
                 "outer_id": org.get("id"),
                 "address": {
-                    "country": org.get("country"),
+                    "country": self.instance.country_id,
                     "longitude": org.get("longitude"),
                     "latitude": org.get("latitude"),
                     **self.parse_address(org.get("restaurantAddress")),
