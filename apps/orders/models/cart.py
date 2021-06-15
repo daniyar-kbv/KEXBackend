@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.common.models import TimestampModel, UUIDModel
+from apps.common.models import TimestampModel
 
 
-class Cart(UUIDModel, TimestampModel):
+class Cart(TimestampModel):
     class Meta:
         verbose_name = _("Корзина")
         verbose_name_plural = _("Корзины")
@@ -18,8 +18,8 @@ class CartPosition(models.Model):
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
-        to_field="uuid",
         related_name="positions",
+        null=True,
     )
     branch_position = models.ForeignKey(
         "nomenclature.BranchPosition",

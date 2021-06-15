@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from apps.location.models import Address
-from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
 from apps.orders.models import Cart, CartPosition, CartPositionModifier
 from apps.nomenclature.models import BranchCategory, BranchPosition, BranchPositionModifier
