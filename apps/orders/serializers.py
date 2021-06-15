@@ -287,7 +287,7 @@ class UpdateCartSerializer(serializers.ModelSerializer):
 
         for position in positions:
             print("position is", position)
-            cart_position, created = instance.positions.get_or_create(
+            cart_position, created = instance.positions.update_or_create(
                 branch_position_id=position["position_uuid"],
                 defaults={
                     "comment":position["comment"],
@@ -296,7 +296,7 @@ class UpdateCartSerializer(serializers.ModelSerializer):
             )
 
             for modifier in position.get("modifiers", list()):
-                cart_position.modifiers.get_or_create(
+                cart_position.modifiers.update_or_create(
                     branch_position_id=modifier["position_uuid"],
                     defaults={
                         "count": modifier["count"],
