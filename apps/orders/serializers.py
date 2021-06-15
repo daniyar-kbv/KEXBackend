@@ -219,6 +219,7 @@ class BranchPositionSerializer(serializers.ModelSerializer):
 class BranchPositionShortSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    category = serializers.UUIDField(source="branch_category_id")
 
     class Meta:
         model = BranchPosition
@@ -227,7 +228,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
             "name",
             "image",
             "price",
-            "branch_category",
+            "category",
         )
 
     def get_name(self, obj):
