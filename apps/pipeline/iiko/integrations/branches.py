@@ -105,4 +105,7 @@ class FindOrganization(BaseIIKOService):
         }
 
     def finalize_response(self, response) -> bool:
+        if response is None:
+            return False
+
         return response.get("isAllowed", False)
