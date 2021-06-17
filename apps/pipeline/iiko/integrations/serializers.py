@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 class IIKOAddressSerializer(serializers.ModelSerializer):
     longitude = serializers.CharField()
     latitude = serializers.CharField()
+    # city = serializers.CharField()
 
     class Meta:
         model = Address
@@ -33,6 +34,10 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         address = validated_data.pop("address", None)
+        if address:
+            address["city"] = address["city"].id
+
+        # print('validated_data', address)
 
         instance, created = Branch.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),

@@ -29,7 +29,6 @@ class GetBranches(BaseIIKOService):
             return {}
 
         return {
-            "city": self.instance.city_id,
             "district": district,
             "street": street,
             "building": building,
@@ -46,6 +45,7 @@ class GetBranches(BaseIIKOService):
                     # "country": self.instance.country_id,
                     "longitude": org.get("longitude"),
                     "latitude": org.get("latitude"),
+                    "city": self.instance.city_id,
                     **self.parse_address(org.get("restaurantAddress")),
                 },
             })
