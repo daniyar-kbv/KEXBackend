@@ -7,6 +7,19 @@ from apps.location.models import Address
 from .models import User, UserAddress
 
 
+class ChangeCurrentAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAddress
+        fields = "is_current",
+        extra_kwargs = {
+            "is_current": {"default": True},
+        }
+
+    def update(self, instance, validated_data):
+        self.context["request"].user.set_is_current_false(current_pk=instance.pk)
+        return super().update(instance, validated_data)
+
+
 class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
@@ -38,8 +51,8 @@ class AddUserAddressSerializer(serializers.ModelSerializer):
             address=Address.objects.create(**validated_data["address"])
         )
 
-        UserAddress.objects.exclude(pk=user_address.pk).update(
-            is_current=False,
+        self.context["request"].user.set_is_current_false(
+            current_pk=user_address.pk
         )
 
         return user_address

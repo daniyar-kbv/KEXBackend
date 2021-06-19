@@ -40,8 +40,12 @@ class User(PermissionsMixin, AbstractBaseUser):
 
         return perm in self.get_all_permissions(obj)
 
+    @property
     def current_address(self):
         return self.addresses.filter(is_current=True).first()
+
+    def set_is_current_false(self, current_pk: int) -> None:
+        self.addresses.exclude(pk=current_pk).update(is_current=False)
 
     def has_module_perms(self, app_label):
         if self.is_superuser:
