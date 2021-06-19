@@ -61,7 +61,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.mobile_phone
 
 
-class UserAddresses(TimestampModel):
+class UserAddress(TimestampModel):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
