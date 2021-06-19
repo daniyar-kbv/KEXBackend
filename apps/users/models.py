@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from phonenumber_field.modelfields import PhoneNumberField
 
+from apps.common.models import TimestampModel
 
 from .managers import UserManager
 
@@ -39,6 +40,9 @@ class User(PermissionsMixin, AbstractBaseUser):
 
         return perm in self.get_all_permissions(obj)
 
+    def current_address(self):
+        return self.addresses.filter(is_current=True).first()
+
     def has_module_perms(self, app_label):
         if self.is_superuser:
             return True
@@ -55,3 +59,29 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def get_username(self):
         return self.mobile_phone
+
+
+class UserAddresses(TimestampModel):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="addresses"
+    )
+    address = models.ForeignKey(
+        "location.Address",
+        on_delete=models.CASCADE,
+    ),
+    is_current = models.BooleanField(
+        _("Текущий адрес"),
+        default=False,
+    )
+    local_brand = models.ForeignKey(
+        "partners.LocalBrand",
+        on_delete=models.PROTECT,
+        null=True,
+    )
+    branch = models.ForeignKey(
+        "partners.Branch",
+        on_delete=models.CASCADE,
+        null=True,
+    )

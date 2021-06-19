@@ -6,13 +6,19 @@ from .models import User
 
 
 class AccountInfoSerializer(serializers.ModelSerializer):
+    current_address = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = [
             "name",
             "email",
             "mobile_phone",
+            "current_address",
         ]
+
+    def get_current_address(self, obj: User):
+        return obj.current_address()
 
 
 class UserViewSerializer(serializers.ModelSerializer):

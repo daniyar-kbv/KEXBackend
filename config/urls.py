@@ -13,7 +13,7 @@ internal_schema_view = get_schema_view(
     openapi.Info(
         title="KEX API", default_version="v1", description="Kex",
     ),
-    url="https://dev.kexbrands.kz/",
+    # url="https://dev.kexbrands.kz/",
     public=True,
     permission_classes=(permissions.AllowAny,),
 )

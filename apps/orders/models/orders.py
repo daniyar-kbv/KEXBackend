@@ -45,7 +45,13 @@ class Lead(
         _("Примерное время доставки"),
         null=True,
     )
-
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.PROTECT,
+        related_name="leads",
+        null=True, blank=True,
+        verbose_name=_("Клиент"),
+    )
     cart = models.OneToOneField(
         "orders.Cart",
         on_delete=models.PROTECT,
@@ -73,7 +79,6 @@ class Order(
     user = models.ForeignKey(
         "users.User",
         on_delete=models.PROTECT,
-        null=True, blank=True,
         related_name="orders",
         verbose_name=_("Клиент"),
     )

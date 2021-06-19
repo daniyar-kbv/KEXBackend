@@ -31,3 +31,5 @@ class AccountUpdateView(JSONRendererMixin, GenericAPIView):
 
         return Response(serializer.validated_data)
 
+
+# class AddUserAddress(JSONRendererMixin, GenericAPIView):
