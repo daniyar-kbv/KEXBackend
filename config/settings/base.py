@@ -149,6 +149,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 # LOGGING = {
 #     'version': 1,
 #     'filters': {
