@@ -1,11 +1,16 @@
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework.generics import (
+    CreateAPIView,
+    RetrieveAPIView,
+    GenericAPIView,
+)
 
 from apps.common.mixins import JSONRendererMixin
 
+from .models import UserAddress
 from .serializers import (
     AccountInfoSerializer,
+    AddUserAddressSerializer,
 )
 
 
@@ -32,4 +37,6 @@ class AccountUpdateView(JSONRendererMixin, GenericAPIView):
         return Response(serializer.validated_data)
 
 
-# class AddUserAddress(JSONRendererMixin, GenericAPIView):
+class AddUserAddressView(JSONRendererMixin, CreateAPIView):
+    queryset = UserAddress
+    serializer_class = AddUserAddressSerializer

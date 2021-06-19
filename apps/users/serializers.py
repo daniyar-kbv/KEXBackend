@@ -2,11 +2,51 @@ from rest_framework import serializers
 from django.apps import apps
 from django.contrib.auth.models import Permission
 
-from .models import User
+from apps.location.models import Address
+
+from .models import User, UserAddress
+
+
+class UserAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = "__all__"
+
+    extra_kwargs = {
+        "country": {"required": True},
+        "city": {"required": True},
+        "longitude": {"required": True},
+        "latitude": {"required": True},
+    }
+
+
+class AddUserAddressSerializer(serializers.ModelSerializer):
+    address = UserAddressSerializer(required=True)
+
+    class Meta:
+        model = UserAddress
+        fields = "address",
+        extra_kwargs = {
+            "user": {"read_only": True},
+            "is_current": {"read_only": True},
+        }
+
+    def create(self, validated_data):
+        user_address = UserAddress.objects.create(
+            is_current=True,
+            user=self.context["request"].user,
+            address=Address.objects.create(**validated_data["address"])
+        )
+
+        UserAddress.objects.exclude(pk=user_address.pk).update(
+            is_current=False,
+        )
+
+        return user_address
 
 
 class AccountInfoSerializer(serializers.ModelSerializer):
-    current_address = serializers.SerializerMethodField()
+    current_address = UserAddressSerializer(required=False)
 
     class Meta:
         model = User
@@ -16,9 +56,6 @@ class AccountInfoSerializer(serializers.ModelSerializer):
             "mobile_phone",
             "current_address",
         ]
-
-    def get_current_address(self, obj: User):
-        return obj.current_address()
 
 
 class UserViewSerializer(serializers.ModelSerializer):

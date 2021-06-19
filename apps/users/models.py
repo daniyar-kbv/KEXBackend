@@ -70,7 +70,8 @@ class UserAddress(TimestampModel):
     address = models.ForeignKey(
         "location.Address",
         on_delete=models.CASCADE,
-    ),
+        null=True,
+    )
     is_current = models.BooleanField(
         _("Текущий адрес"),
         default=False,
