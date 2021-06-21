@@ -125,7 +125,7 @@ class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
     )
 
 
-class BranchPositionPrices(models.Model):
+class BranchPositionPrice(models.Model):
     branch_position = models.ForeignKey(
         BranchPosition,
         on_delete=models.PROTECT,
