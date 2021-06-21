@@ -10,7 +10,7 @@ from apps.common.models import (
 )
 
 
-class BranchSize(UUIDModel, AbstractNameModel):
+class PositionSize(UUIDModel, AbstractNameModel):
     class Meta:
         verbose_name = _("Размеры блюда")
         verbose_name_plural = _("Размеры блюд")
@@ -133,7 +133,7 @@ class BranchPositionPrices(models.Model):
         related_name="prices",
     )
     size = models.ForeignKey(
-        BranchSize,
+        PositionSize,
         on_delete=models.SET_NULL,
         null=True,
         related_name="branch_position_prices",
