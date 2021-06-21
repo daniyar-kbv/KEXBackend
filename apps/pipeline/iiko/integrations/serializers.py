@@ -1,24 +1,24 @@
 from decimal import Decimal
-from typing import TYPE_CHECKING, List, Dict
+from typing import List, Dict
 
 from rest_framework import serializers
-from django.db.transaction import atomic
 
 from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.partners.models import Branch
-from apps.nomenclature.models import LocalPosition, BranchPosition, BranchPositionModifier
-
-if TYPE_CHECKING:
-    from ..python_entities.positions import (
-            Modifier as PythonModifier,
-    )
+from apps.common.utils import create_multi_language_char
+from apps.nomenclature.models import (
+    PositionSize,
+    LocalPosition,
+    BranchPosition,
+    BranchPositionPrice,
+    BranchPositionModifier,
+)
 
 
 class IIKOAddressSerializer(serializers.ModelSerializer):
     longitude = serializers.CharField()
     latitude = serializers.CharField()
-    # city = serializers.CharField()
 
     class Meta:
         model = Address
@@ -76,18 +76,52 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class IIKOModifierSerializer(serializers.Serializer):
+class IIKOPositionSizeSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source="uuid", required=True, write_only=True)
+    name = serializers.CharField(source="iiko_name")
+    isDefault = serializers.BooleanField(source="is_default", default=False)
+
+    class Meta:
+        model = PositionSize
+        fields = (
+            "id",
+            "name",
+            "priority",
+            "isDefault",
+        )
+
+    def create(self, validated_data):
+        instance, created = PositionSize.objects.update_or_create(
+            uuid=validated_data.pop("uuid"),
+            defaults={
+                **validated_data,
+            }
+        )
+
+        if instance.name is None:
+            instance.name = create_multi_language_char(instance.iiko_name)
+            instance.save(update_fields=["name"])
+
+        return instance
+
+
+class IIKOModifierSerializer(serializers.Serializer):  # noqa
     outer_id = serializers.CharField(required=True)
     min_amount = serializers.IntegerField(required=False, default=0)
     max_amount = serializers.IntegerField(required=False, default=1)
     required = serializers.BooleanField(default=False)
 
 
-class IIKONomenclatureSerializer(serializers.ModelSerializer):
+class PricesSerializer(serializers.Serializer):  # noqa
+    outer_id = serializers.UUIDField(allow_null=True)
     price = serializers.DecimalField(max_digits=12, decimal_places=2, required=True)
+
+
+class IIKONomenclatureSerializer(serializers.ModelSerializer):
     iiko_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     iiko_description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     modifiers = IIKOModifierSerializer(many=True, required=False, allow_null=True)
+    size_prices = PricesSerializer(many=True, required=True, allow_null=False)
 
     class Meta:
         model = LocalPosition
@@ -98,6 +132,8 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         modifiers: List[Dict] = validated_data.pop('modifiers') or list()
+        size_prices: List[Dict] = validated_data.pop('size_prices')
+        print("prices in serializer:", size_prices)
 
         local_position, created = LocalPosition.objects.update_or_create(  # noqa
             outer_id=validated_data.get("outer_id"),
@@ -110,15 +146,19 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             branch=self.context["branch"],
             local_position=local_position,
             defaults={
-                "price": validated_data.get('price') or Decimal(0),
                 "outer_id": local_position.outer_id,
                 "iiko_name": validated_data.get("iiko_name"),
                 "iiko_description": validated_data.get("iiko_description"),
                 "name": local_position.name,
             }
         )
-
-        print("modifier:", modifiers)
+        for size_price in size_prices:
+            branch_position.prices.update_or_create(
+                size_id=size_price["outer_id"],
+                defaults={
+                    "price": size_price["price"],
+                }
+            )
 
         for modifier in modifiers:
             BranchPositionModifier.objects.update_or_create(

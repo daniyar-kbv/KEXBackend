@@ -1,16 +1,23 @@
-from django.contrib import admin
+from apps.translations.models import MultiLanguageText, MultiLanguageChar
 
 
-class HiddenAdmin(admin.ModelAdmin):
-    def get_model_perms(self, request):
-        return {}  # Hide model in admin list
+def create_multi_language_model_instance(default_text: str, model):
+    return model.objects.create(
+        text_ru=default_text,
+        text_kk=default_text,
+        text_en=default_text,
+    )
 
 
-class ChangeOnlyMixin:
-    def has_add_permission(self, request, obj=None):
-        return False
+def create_multi_language_text(default_text: str):
+    return create_multi_language_model_instance(
+        default_text=default_text,
+        model=MultiLanguageText,
+    )
 
 
-class ReadOnlyMixin(ChangeOnlyMixin):
-    def has_change_permission(self, request, obj=None):
-        return False
+def create_multi_language_char(default_text: str):
+    return create_multi_language_model_instance(
+        default_text=default_text,
+        model=MultiLanguageChar,
+    )

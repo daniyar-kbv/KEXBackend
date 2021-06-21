@@ -135,7 +135,7 @@ class BranchPositionPrice(models.Model):
     size = models.ForeignKey(
         PositionSize,
         on_delete=models.SET_NULL,
-        null=True,
+        to_field="uuid", null=True,
         related_name="branch_position_prices",
     )
     price = models.DecimalField(
