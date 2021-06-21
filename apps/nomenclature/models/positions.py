@@ -9,6 +9,27 @@ from apps.common.models import (
     UUIDModel,
 )
 
+
+class BranchSize(UUIDModel, AbstractNameModel):
+    class Meta:
+        verbose_name = _("Размеры блюда")
+        verbose_name_plural = _("Размеры блюд")
+
+    iiko_name = models.CharField(
+        _("Название в системе IIKO"),
+        max_length=512,
+        null=True,
+    )
+    is_default = models.BooleanField(
+        _("Размер по умолчания"),
+        default=False,
+    )
+    priority = models.PositiveSmallIntegerField(
+        _("Приоритетность"),
+        null=True,
+    )
+
+
 # class Position(UUIDModel, AbstractNameModel):
 #     """
 #     reserved
@@ -101,6 +122,27 @@ class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
         _("В данный момент не доступен"),
         default=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
+    )
+
+
+class BranchPositionPrices(models.Model):
+    branch_position = models.ForeignKey(
+        BranchPosition,
+        on_delete=models.PROTECT,
+        to_field="uuid", null=True,
+        related_name="prices",
+    )
+    size = models.ForeignKey(
+        BranchSize,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="branch_position_prices",
+    )
+    price = models.DecimalField(
+        _("Цена"),
+        decimal_places=2,
+        max_digits=12,
+        default=Decimal(0),
     )
 
 
