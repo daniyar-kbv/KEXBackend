@@ -1,10 +1,11 @@
 import base64
 import os
+from collections import OrderedDict
 from datetime import timedelta
 
 from . import Languages
 from config.constants.error_messages import ERROR_MESSAGES
-
+from config.constants.contacts import CONTACTS
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -24,33 +25,23 @@ CONSTANCE_CONFIG = {
     "IIKO_SERVICE_HOST": ("https://api-ru.iiko.services", "IIKO service host"),
     "IIKO_AUTH_TOKEN_LIFETIME": (60 * 30, "IIKO auth token lifetime in seconds"),
     **ERROR_MESSAGES,
+    **CONTACTS,
 }
 
-CONSTANCE_CONFIG_FIELDSETS = {
-    "IIKO Credentials&settings": (
+CONSTANCE_CONFIG_FIELDSETS = OrderedDict([
+    ("Contacts", tuple(CONTACTS.keys())),
+    ("IIKO Credentials&settings", (
         "IIKO_SERVICE_HOST",
         "IIKO_AUTH_TOKEN_LIFETIME",
-    ),
-    "Error messages": (
-        tuple(ERROR_MESSAGES.keys())
-    ),
-}
+    )),
+    ("Error messages", tuple(ERROR_MESSAGES.keys())),
+])
 
 CONSTANCE_REDIS_CONNECTION = {
     'host': os.getenv("REDIS_HOST", "localhost"),
     'port': 6379,
     'db': 0,
 }
-
-DJANGO_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-]
-
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
@@ -62,7 +53,18 @@ THIRD_PARTY_APPS = [
     "django_celery_beat",
     "ckeditor",
     "ckeditor_uploader",
+    # "constance.backends.database",
 ]
+
+DJANGO_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+
 
 LOCAL_APPS = [
     'apps.sms.apps.SmsConfig',
@@ -74,7 +76,8 @@ LOCAL_APPS = [
     'apps.pipeline.apps.PipelineConfig',
     'apps.nomenclature.apps.NomenclatureConfig',
     'apps.translations.apps.TranslationsConfig',
-    'apps.promotions.apps.PromotionsConfig'
+    'apps.promotions.apps.PromotionsConfig',
+    'apps.docs.apps.DocsConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
