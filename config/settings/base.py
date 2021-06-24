@@ -53,7 +53,6 @@ THIRD_PARTY_APPS = [
     "django_celery_beat",
     "ckeditor",
     "ckeditor_uploader",
-    # "constance.backends.database",
 ]
 
 DJANGO_APPS = [
@@ -196,7 +195,6 @@ STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, 'static'))
 
 MEDIA_URL = os.getenv("MEDIA_URL", "/media/")
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
-
 
 CKEDITOR_UPLOAD_PATH = "ncrm_helper"
 # CKEDITOR_CONFIGS = {

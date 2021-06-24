@@ -1,11 +1,13 @@
+from django.urls import reverse
 from rest_framework import serializers
 
-from .models import Document
 from apps.common.serializers import AbstractNameSerializer
+
+from .models import Document
 
 
 class DocumentListSerializer(AbstractNameSerializer):
-    link = serializers.CharField(required=False)
+    link = serializers.SerializerMethodField()
 
     class Meta:
         model = Document
@@ -16,3 +18,10 @@ class DocumentListSerializer(AbstractNameSerializer):
             'slug',
             'link',
         ]
+
+    def get_link(self, obj):
+        request = self.context["request"]
+        return request.build_absolute_uri(reverse(
+            "documents:render-by-slug",
+            args=[obj.slug]
+        ))

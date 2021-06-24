@@ -13,7 +13,7 @@ urlpatterns = [
     path("orders/", include("apps.orders.urls")),
     path("users/", include("apps.users.urls")),
     path("promotions/", include("apps.promotions.urls")),
-    path("documents/", include("apps.docs.urls")),
+    path("documents/", include(("apps.docs.urls", "documents"), namespace="documents")),
     path("contacts/", ContactListView.as_view()),
     path('', index_view),
 ]

@@ -15,6 +15,7 @@ class TemplateModel(AbstractNameModel):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name.ru)
+
         super(TemplateModel, self).save(*args, **kwargs)
 
 

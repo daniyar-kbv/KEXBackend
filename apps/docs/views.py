@@ -1,14 +1,13 @@
-from django.shortcuts import render
-from django.urls import resolve
-
-from rest_framework.generics import ListAPIView, GenericAPIView
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from constance import config
+from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.generics import ListAPIView, GenericAPIView
 
-from config.settings.base import CONSTANCE_CONFIG_FIELDSETS
-from .models import Document
+from config.constants.contacts import CONTACTS
 from apps.common.mixins import PublicAPIMixin, JSONPublicAPIMixin
+
+from .models import Document
 from .serializers import DocumentListSerializer
 
 
@@ -19,13 +18,12 @@ class DocumentView(PublicAPIMixin, APIView):
         content = None
         document = self.queryset.filter(slug=document_slug)
         if document.exists():
-            print('exists baby')
             content = document.first().template
             content = getattr(content, request.headers.get('Language'))
         return render(request, 'docs/template_page.html', {'content': content})
 
 
-class DocumentListView(JSONPublicAPIMixin, ListAPIView):
+class DocumentListViewOld(JSONPublicAPIMixin, ListAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentListSerializer
 
@@ -41,14 +39,14 @@ class DocumentListView(JSONPublicAPIMixin, ListAPIView):
         return queryset
 
 
-class ContactListView(JSONPublicAPIMixin, GenericAPIView):
+class DocumentListView(JSONPublicAPIMixin, ListAPIView):
+    queryset = Document.objects.all()
+    serializer_class = DocumentListSerializer
 
-    def get(self, request, *args, **kwargs):
-        contancts = []
-        for contact in CONSTANCE_CONFIG_FIELDSETS['Contacts']:
-            contancts.append({
-                'name': contact,
-                'value': getattr(config, contact)
-            })
 
-        return Response(contancts)
+class ContactListView(JSONPublicAPIMixin, APIView):
+    def get(self, request, *args, **kwargs):  # noqa
+        return Response([
+            {"name": contact, "value": getattr(config, contact)}
+            for contact in CONTACTS.keys()
+        ])
