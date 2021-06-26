@@ -21,6 +21,9 @@ class Category(AbstractNameModel):
     is_active = models.BooleanField(
         default=False
     )
+    outer_id = models.UUIDField(
+        _("UUID в системе IIKO"), null=True,  # noqa
+    )
 
 
 class LocalCategory(AbstractNameModel):
@@ -44,6 +47,9 @@ class LocalCategory(AbstractNameModel):
     is_active = models.BooleanField(
         default=True,
     )
+    outer_id = models.UUIDField(
+        _("UUID в системе IIKO"), null=True,  # noqa
+    )
 
 
 class BranchCategory(UUIDModel, AbstractNameModel):
@@ -66,4 +72,7 @@ class BranchCategory(UUIDModel, AbstractNameModel):
     )
     is_active = models.BooleanField(
         default=True
+    )
+    outer_id = models.UUIDField(
+        _("UUID в системе IIKO"), null=True,  # noqa
     )

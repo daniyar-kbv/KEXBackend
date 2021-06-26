@@ -1,14 +1,18 @@
 from decimal import Decimal
-from typing import TYPE_CHECKING, List, Dict
+from typing import TYPE_CHECKING, List, Dict, Tuple
 
 from ..python_entities.positions import (
     Modifier as PythonModifier,
     Position as PythonPosition,
-    SizePrice as PythonSizePrice,
+    ModifierGroup as PythonModifierGroup,
 )
 
 from .base import BaseIIKOService
-from .serializers import IIKONomenclatureSerializer, IIKOPositionSizeSerializer
+from .serializers import (
+    IIKONomenclatureSerializer,
+    IIKOCategorySerializer,
+    IIKOModifierGroupCreateSerializer,
+)
 
 if TYPE_CHECKING:
     from apps.partners.models import Branch
@@ -29,66 +33,97 @@ class GetBranchNomenclature(BaseIIKOService):
         })
 
     @staticmethod
-    def _fetch_size_prices(position: Dict) -> List[Dict]:
-        size_prices = []
-
-        for size_price in position.get("sizePrices", list()):
-            size_prices.append(PythonSizePrice(
-                outer_id=size_price["sizeId"],
-                price=size_price.get("price", {}).get("currentPrice")
-            ).__dict__)
-
-        print("size_prices:", size_prices)
-        return size_prices
+    def _fetch_price_and_is_additional(position: Dict) -> Tuple[Decimal, bool]:
+        try:
+            size_price = position["sizePrices"].pop()["price"]
+            return Decimal(size_price["currentPrice"]), bool(size_price["isIncludedInMenu"])
+        except Exception as exc:
+            print("Error while fetching position price:", exc)
+            return Decimal(0), False
 
     @staticmethod
-    def _fetch_modifiers(position) -> List[Dict]:
-        modifiers: List[Dict] = list()
+    def _fetch_modifier_groups(position) -> List[Dict]:
+        modifier_groups = list()
+        print("modifier groups:", modifier_groups)
 
-        for modifier in position.get("modifiers", list()):
-            modifiers.append(PythonModifier(
-                outer_id=modifier.get("id"),
-                min_amount=modifier.get("min_amount") or 1,
-                max_amount=modifier.get("max_amount") or 1,
-                required=modifier.get("required") or False,
+        for modifier_group in position["groupModifiers"]:
+            modifier_groups.append(PythonModifierGroup(
+                outer_id=modifier_group["id"],
+                min_amount=modifier_group["minAmount"],
+                max_amount=modifier_group["maxAmount"],
+                is_required=bool(modifier_group["required"]),
+                modifiers=[  # noqa
+                    PythonModifier(outer_id=modifier["id"],).__dict__
+                    for modifier in modifier_group["childModifiers"]
+                ],
             ).__dict__)
 
-        return modifiers or None
+        return modifier_groups
 
     @staticmethod
     def sort_positions(positions):
         return sorted(
             positions,
-            key=lambda x: bool(x.get('modifiers'))
+            key=lambda x: bool(x.get('modifier_groups'))
         )
 
-    @staticmethod
-    def save_position_sizes(position_sizes):
-        serializer = IIKOPositionSizeSerializer(data=position_sizes, many=True)
+    def save_categories(self, categories: Dict) -> None:
+        serializer = IIKOCategorySerializer(
+            data=categories,
+            many=True,
+            context={
+                "branch": self.instance,
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+    def save_position_groups(self, position_groups):
+        print("position groups:", position_groups)
+        serializer = IIKOModifierGroupCreateSerializer(
+            data=[
+                position_group for position_group in position_groups
+                if position_group.get("isGroupModifier")
+            ],
+            many=True,
+            context={
+                "local_brand_id": self.instance.local_brand_id,  # noqa
+            }
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
     def prepare_to_save(self, data: dict) -> List:
         positions: List[Dict] = list()
-        position_sizes = data.get("sizes")
+        categories = data.get("productCategories")
+        position_groups = data.get("groups")
 
-        if position_sizes:
-            self.save_position_sizes(position_sizes)
+        if categories is not None:
+            self.save_categories(categories)
+
+        print("before save position groups")
+        if position_groups is not None:
+            self.save_position_groups(position_groups)
+        print("after saving positions")
 
         for position in data.get("products", list()):
+            price, is_additional = self._fetch_price_and_is_additional(position)
+
             positions.append(PythonPosition(
+                price=price,
                 outer_id=position.get('id'),
-                local_brand=self.instance.local_brand_id,  # noqa
-                iiko_name=position.get("name") or None,
-                iiko_description=position.get("description") or None,
-                size_prices=self._fetch_size_prices(position), # noqa
-                modifiers=self._fetch_modifiers(position), # noqa
+                is_additional=is_additional,
+                iiko_name=position.get("name"),
+                iiko_description=position.get("description"),
+                category_outer_id=position.get("productCategoryId"),
+                local_brand=self.instance.local_brand_id, # noqa
+                modifier_groups=self._fetch_modifier_groups(position)  # noqa
             ).__dict__)
 
         return self.sort_positions(positions)
 
     def finalize_response(self, response):
-        return None
+        return response
 
     def save(self, prepared_data):
         serializer = self.save_serializer(

@@ -10,26 +10,6 @@ from apps.common.models import (
 )
 
 
-class PositionSize(UUIDModel, AbstractNameModel):
-    class Meta:
-        verbose_name = _("Размеры блюда")
-        verbose_name_plural = _("Размеры блюд")
-
-    iiko_name = models.CharField(
-        _("Название в системе IIKO"),
-        max_length=512,
-        null=True,
-    )
-    is_default = models.BooleanField(
-        _("Размер по умолчания"),
-        default=False,
-    )
-    priority = models.PositiveSmallIntegerField(
-        _("Приоритетность"),
-        null=True,
-    )
-
-
 # class Position(UUIDModel, AbstractNameModel):
 #     """
 #     reserved
@@ -47,27 +27,17 @@ class LocalPosition(AbstractNameModel, AbstractDescriptionModel):
         on_delete=models.PROTECT,
         related_name="local_positions",
     )
-    image = models.ImageField(
-        null=True, blank=True
-    )
-    price = models.DecimalField(
-        _("Цена"),
-        max_digits=12,
-        decimal_places=2,
-        default=Decimal(0),
-    )
     local_category = models.ForeignKey(
         "nomenclature.LocalCategory",
         on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name="local_positions"
     )
+    image = models.ImageField(
+        null=True, blank=True
+    )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
-    )
-    is_additional = models.BooleanField(
-        _("Дополнительная позиция"),
-        default=False,
     )
     is_active = models.BooleanField(
         _("Временно отключен"),
@@ -118,6 +88,10 @@ class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
     )
+    is_additional = models.BooleanField(
+        _("Дополнительная позиция"),
+        default=False,
+    )
     is_available = models.BooleanField(
         _("В данный момент не доступен"),
         default=True,
@@ -125,24 +99,31 @@ class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
     )
 
 
-class BranchPositionPrice(models.Model):
-    branch_position = models.ForeignKey(
-        BranchPosition,
+class ModifierGroup(UUIDModel, AbstractNameModel):
+    local_brand = models.ForeignKey(
+        "partners.LocalBrand",
         on_delete=models.PROTECT,
-        to_field="uuid", null=True,
-        related_name="prices",
+        related_name="modifier_groups",
+        null=True,
     )
-    size = models.ForeignKey(
-        PositionSize,
-        on_delete=models.SET_NULL,
-        to_field="uuid", null=True,
-        related_name="branch_position_prices",
+    positions = models.ManyToManyField(
+        BranchPosition,
+        related_name="modifier_groups",
     )
-    price = models.DecimalField(
-        _("Цена"),
-        decimal_places=2,
-        max_digits=12,
-        default=Decimal(0),
+    iiko_name = models.CharField(
+        max_length=255,
+    )
+    min_amount = models.PositiveSmallIntegerField(
+        default=0
+    )
+    max_amount = models.PositiveSmallIntegerField(
+        default=0
+    )
+    is_required = models.BooleanField(
+        default=False,
+    )
+    outer_id = models.UUIDField(
+        null=True,
     )
 
 
@@ -163,6 +144,9 @@ class BranchPositionModifier(models.Model):
         on_delete=models.PROTECT,
         to_field="uuid", null=True,
     )
-    min_amount = models.PositiveSmallIntegerField(default=1)
-    max_amount = models.PositiveSmallIntegerField(default=1)
-    is_required = models.BooleanField(default=False)
+    modifier_group = models.ForeignKey(
+        ModifierGroup,
+        on_delete=models.SET_NULL,
+        related_name="modifiers",
+        null=True,
+    )

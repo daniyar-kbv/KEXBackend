@@ -6,7 +6,7 @@ from apps.orders.models import Cart, CartPosition, CartPositionModifier
 from apps.nomenclature.models import (
     BranchCategory,
     BranchPosition,
-    BranchPositionPrice,
+    ModifierGroup,
     BranchPositionModifier,
 )
 
@@ -90,36 +90,11 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
         return obj.name.text(lang=self.context["language"])
 
 
-class BranchPositionSizeSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField(required=False)
-    size = serializers.UUIDField(source="size_id", required=False)
-    is_default = serializers.BooleanField(source="size.is_default", required=False)
-
-    class Meta:
-        model = BranchPositionPrice
-        fields = (
-            "name",
-            "size",
-            "price",
-            "is_default",
-        )
-
-    def get_name(self, obj):
-        if not obj.size:
-            return
-
-        if not obj.size.name:
-            return obj.size.iiko_name
-
-        return obj.size.name.text(lang=self.context["language"])
-
-
 class NomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     category = serializers.UUIDField(source="branch_category_id")
-    prices = BranchPositionSizeSerializer(many=True)
 
     class Meta:
         model = BranchPosition
@@ -128,7 +103,6 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "image",
-            "prices",
             "category",
         )
 
@@ -197,8 +171,6 @@ class ModifierSerializer(serializers.ModelSerializer):
         fields = (
             "uuid",
             "name",
-            "min_amount",
-            "max_amount",
         )
 
     def get_name(self, obj):
@@ -208,11 +180,33 @@ class ModifierSerializer(serializers.ModelSerializer):
         return obj.modifier.name.text(lang=self.context["language"])
 
 
+class ModifierGroupSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    modifiers = ModifierSerializer(many=True, required=False)
+
+    class Meta:
+        model = ModifierGroup
+        fields = (
+            "uuid",
+            "name",
+            "modifiers",
+            "min_amount",
+            "max_amount",
+            "is_required",
+        )
+
+    def get_name(self, obj):
+        if not obj.name:
+            return
+
+        return obj.name.text(lang=self.context["language"])
+
+
 class BranchPositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
-    modifiers = ModifierSerializer(many=True, required=False)
+    modifier_groups = ModifierGroupSerializer(many=True, required=False)
 
     class Meta:
         model = BranchPosition
@@ -223,7 +217,7 @@ class BranchPositionSerializer(serializers.ModelSerializer):
             "image",
             "price",
             "branch_category",
-            "modifiers",
+            "modifier_groups",
         )
 
     def get_name(self, obj):
