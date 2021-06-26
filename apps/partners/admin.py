@@ -80,7 +80,7 @@ class BrandAdmin(admin.ModelAdmin):
 class LocalBrandAdmin(admin.ModelAdmin):
     inlines = [
         LocalCategoryInline,
-        LocalPositionInline,
+        # LocalPositionInline,
         BranchInline,
     ]
     list_filter = ('city',)
@@ -91,5 +91,5 @@ class BranchAdmin(admin.ModelAdmin):
     list_filter = ('local_brand',)
     inlines = [
         BranchCategoryInline,
-        BranchPositionInline,
+        # BranchPositionInline,
     ]
