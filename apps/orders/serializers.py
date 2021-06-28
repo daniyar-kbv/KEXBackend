@@ -61,14 +61,10 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        print('validated_data is', validated_data)
         validated_data["address"], created = Address.objects.get_or_create(  # noqa
             **validated_data.pop("address")
         )
-        print("created address", created, validated_data["address"])
-        print("validated_data is:", validated_data)
         lead = super().create(validated_data)
-        print("lead_is, ", lead)
 
         if lead.cart is None:
             lead.cart = Cart.objects.create()
@@ -319,7 +315,7 @@ class UpdateCartSerializer(serializers.ModelSerializer):
             cart_position, created = instance.positions.update_or_create(
                 branch_position_id=position["position_uuid"],
                 defaults={
-                    "comment":position["comment"],
+                    "comment": position["comment"],
                     "count": position["count"],
                 }
             )

@@ -18,6 +18,7 @@ class BrandImagesSerializer(serializers.ModelSerializer):
 
 
 class BrandSerializer(AbstractNameSerializer):
+    id = serializers.SerializerMethodField()
     image = serializers.CharField(required=False)
     position = serializers.IntegerField()
     is_available = serializers.BooleanField(required=False)
@@ -31,6 +32,11 @@ class BrandSerializer(AbstractNameSerializer):
             "image",
             "is_available"
         )
+
+    def get_id(self, obj):
+        local_brand = obj.local_brands.filter(city_id=self.context["city_id"]).first()
+        if local_brand is not None:
+            return local_brand.id
 
 
 class BrandAPILoginSerializer(serializers.ModelSerializer):
