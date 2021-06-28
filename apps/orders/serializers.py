@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.location.models import Address
+from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
 from apps.orders.models import Cart, CartPosition, CartPositionModifier
 from apps.nomenclature.models import (
@@ -53,6 +54,9 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
 
         if not attrs["local_brand"].city == attrs["address"]["city"]:
             raise BrandNotFound
+
+        # for testing
+        attrs["local_brand"] = LocalBrand.objects.active().first()
 
         return attrs
 

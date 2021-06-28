@@ -190,7 +190,6 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        # modifiers: List[Dict] = validated_data.pop('modifiers') or list()
         modifier_groups: List[Dict] = validated_data.pop("modifier_groups") or list()
         local_category, branch_category = self.get_local_branch_categories(
             validated_data.pop("category_outer_id")
