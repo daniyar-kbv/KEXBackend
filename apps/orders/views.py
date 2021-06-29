@@ -15,6 +15,7 @@ from .serializers import (
     LeadNomenclatureSerializer,
     BranchPositionSerializer,
     UpdateCartSerializer,
+    LeadDetailSerializer,
 )
 
 
@@ -30,6 +31,13 @@ class ApplyView(JSONPublicAPIMixin, CreateAPIView):
         lead.save(update_fields=["branch"])
 
         # find_lead_organization(lead_pk=lead.pk)
+
+
+class LeadShowView(JSONPublicAPIMixin, RetrieveAPIView):
+    serializer_class = LeadDetailSerializer
+    queryset = Lead.objects.all()
+    lookup_field = "uuid"
+    lookup_url_kwarg = "lead_uuid"
 
 
 class LeadNomenclatureView(JSONPublicAPIMixin, RetrieveAPIView):

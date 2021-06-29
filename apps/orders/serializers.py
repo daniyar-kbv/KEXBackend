@@ -73,6 +73,36 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         return lead
 
 
+class LeadDetailSerializer(serializers.ModelSerializer):
+    address = LeadAddressSerializer(required=False)
+    brand_name = serializers.SerializerMethodField(required=False)
+    brand_image = serializers.SerializerMethodField(required=False)
+
+    class Meta:
+        model = Lead
+        fields = (
+            "uuid",
+            "address",
+            "brand_name",
+            "brand_image",
+        )
+
+    def get_brand_name(self, obj):
+        try:
+            return obj.local_brand.brand.name.text_ru
+        except Exception as exc:
+            return None
+
+    def get_brand_image(self, obj):
+        from apps.partners import BrandImageTypes
+
+        request = self.context["request"]
+        image = obj.local_brand.brand.images.filter(image_type=BrandImageTypes.IMAGE_SQUARE).first()
+
+        if image is not None:
+            return request.build_absolute_uri(image.image.url)
+
+
 class NomenclatureCategorySerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
 
