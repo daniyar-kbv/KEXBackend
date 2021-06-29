@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Конкурс на запуск сервиса</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .mybtn, .infobtn{
+            margin: 15px;
+            padding: 5px 10px;
+            background: #289FDB;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .modal {
+            position: absolute;
+            background: #FFB344;
+            width: 500px;
+            height: 500px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="content"></div>
+    <div class="modal"></div>
+<script>
+    $.get('http://127.0.0.1:8000/promotions/contest/{{promo_type}}').done(function(resp){
+        console.log(resp);
+        users = resp.data.users
+        for (i=0; i < users.length; i++){
+            $('.content').append(`<p> ${users[i].name}, ${users[i].instagram}, sum= ${users[i].sum}$</p>`);
+            //$('.content').append(`${users[i].name}, ${users[i].instagram}, sum= ${users[i].sum}$`);
+        }
+        $('.content').append(`<a href="${resp.data.participate_url}" class="mybtn">Участвовать</a>`);
+        $('.content').append(`<button class="infobtn">Информация</button>`);
+    });
+
+</script>
+</body>
+</html>
