@@ -5,9 +5,17 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 
 from apps.translations.models import MultiLanguageChar, MultiLanguageText
+from .managers import MainManager
 
 
-class AbstractNameModel(models.Model):
+class MainModel(models.Model):
+    objects = MainManager()
+
+    class Meta:
+        abstract = True
+
+
+class AbstractNameModel(MainModel):
     name = models.ForeignKey(
         MultiLanguageChar,
         verbose_name=_("Название"),
@@ -25,7 +33,7 @@ class AbstractNameModel(models.Model):
         return "Не задано"
 
 
-class AbstractDescriptionModel(models.Model):
+class AbstractDescriptionModel(MainModel):
     description = models.ForeignKey(
         MultiLanguageText,
         verbose_name=_("Описание"),
@@ -43,7 +51,7 @@ class AbstractDescriptionModel(models.Model):
         return "Не задано"
 
 
-class CharIDModel(models.Model):
+class CharIDModel(MainModel):
     id = models.CharField(
         _("Уникальный код"),
         max_length=16,
@@ -54,14 +62,14 @@ class CharIDModel(models.Model):
         abstract = True
 
 
-class UUIDModel(models.Model):
+class UUIDModel(MainModel):
     uuid = models.UUIDField("Идентификатор", default=uuid4, unique=True, editable=False)
 
     class Meta:
         abstract = True
 
 
-class TimestampModel(models.Model):
+class TimestampModel(MainModel):
     created_at = models.DateTimeField(
         _("Время создания"), auto_now_add=True, db_index=True
     )
@@ -81,7 +89,7 @@ class TimestampModel(models.Model):
         return self.updated_at.strftime("%d/%m/%Y %H:%M:%S")  # noqa
 
 
-class ServiceHistoryModel(models.Model):
+class ServiceHistoryModel(MainModel):
     history = GenericRelation('pipeline.ServiceHistory')
 
     class Meta:

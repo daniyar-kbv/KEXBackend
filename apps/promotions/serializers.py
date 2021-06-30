@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from apps.common.serializers import AbstractImageSerializer, AbstractNameSerializer
-from apps.promotions.models import Promotion
+from apps.promotions.models import Promotion, Participation
 
 
 class PromotionListSerializer(AbstractNameSerializer, AbstractImageSerializer):
@@ -18,3 +18,14 @@ class PromotionListSerializer(AbstractNameSerializer, AbstractImageSerializer):
             'slug',
             'link',
         ]
+
+
+# class ParticipationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Participation
+#         fields = [
+#             'user': {
+#                 'user',
+#                 'insta'
+#             }
+#         ]

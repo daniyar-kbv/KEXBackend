@@ -3,7 +3,7 @@ from datetime import time
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.common.models import AbstractNameModel, ServiceHistoryModel
+from apps.common.models import AbstractNameModel, ServiceHistoryModel, MainModel
 
 from . import BrandImageTypes
 from .managers import LocalBrandManager, BranchesQuerySet
@@ -15,7 +15,7 @@ class Brand(AbstractNameModel):
         verbose_name_plural = _("Брэнды")
 
 
-class BrandImage(models.Model):
+class BrandImage(MainModel):
     class Meta:
         verbose_name = _("Brand Image")
         verbose_name_plural = _("Brand Images")
