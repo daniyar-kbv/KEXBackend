@@ -29,7 +29,7 @@
     <div class="content"></div>
     <div class="modal"></div>
 <script>
-    $.get('http://127.0.0.1:8000/promotions/contest/{{promo_type}}').done(function(resp){
+    $.get(document.location.href + 'promotions/contest/{{promo_type}}').done(function(resp){
         console.log(resp);
         users = resp.data.users
         for (i=0; i < users.length; i++){
