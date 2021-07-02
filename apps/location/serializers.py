@@ -13,7 +13,7 @@ class CountrySerializer(AbstractNameSerializer):
 class CitySerializer(AbstractNameSerializer):
     class Meta:
         model = City
-        fields = "id", "name",
+        fields = "id", "name", "latitude", "longitude"
 
 
 class CityRetrieveSerializer(serializers.ModelSerializer):

@@ -29,6 +29,8 @@ class City(AbstractNameModel):
         related_name="cities",
         verbose_name=_("Страна")
     )
+    longitude = models.DecimalField(_("Долгота"), max_digits=12, decimal_places=8, null=True)
+    latitude = models.DecimalField(_("Широта"), max_digits=12, decimal_places=8, null=True)
 
     @property
     def country_name(self):
