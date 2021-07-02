@@ -14,6 +14,10 @@ class Brand(AbstractNameModel):
         verbose_name = _("Брэнд")
         verbose_name_plural = _("Брэнды")
 
+    priority = models.PositiveSmallIntegerField(
+        _("Приоритетность"),
+        default=1,
+    )
 
 class BrandImage(MainModel):
     class Meta:
@@ -66,10 +70,6 @@ class LocalBrand(ServiceHistoryModel):
     )
     is_active = models.BooleanField(
         _("Активна"), default=False
-    )
-    priority = models.PositiveSmallIntegerField(
-        _("Приоритетность"),
-        default=1,
     )
 
     objects = LocalBrandManager()

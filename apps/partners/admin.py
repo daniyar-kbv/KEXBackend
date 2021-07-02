@@ -51,7 +51,6 @@ class LocalBrandInlineBase(ReadChangeOnlyTabularInline):
 class LocalBrandPriorityInline(LocalBrandInlineBase):
     fields = (
         "get_local_brand_link",
-        "priority",
     )
     readonly_fields = (
         "get_local_brand_link",
@@ -62,7 +61,6 @@ class LocalBrandInline(LocalBrandInlineBase):
     fields = (
         "get_local_brand_link",
         "city",
-        "priority",
         "is_active",
     )
     readonly_fields = (
@@ -74,6 +72,8 @@ class LocalBrandInline(LocalBrandInlineBase):
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     inlines = [BrandImageInline, CategoryInline, LocalBrandInline]
+    list_editable = ["priority"]
+    list_display = ['name', "id", "priority"]
 
 
 @admin.register(LocalBrand)

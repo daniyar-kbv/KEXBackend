@@ -131,6 +131,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
         fields = (
             "uuid",
             "name",
+            "price",
             "description",
             "image",
             "category",
@@ -195,12 +196,14 @@ class LeadNomenclatureSerializer(serializers.ModelSerializer):
 class ModifierSerializer(serializers.ModelSerializer):
     uuid = serializers.CharField(source="modifier.uuid")
     name = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = BranchPositionModifier
         fields = (
             "uuid",
             "name",
+            "image",
         )
 
     def get_name(self, obj):
@@ -208,6 +211,14 @@ class ModifierSerializer(serializers.ModelSerializer):
             return
 
         return obj.modifier.name.text(lang=self.context["language"])
+
+    def get_image(self, obj):
+        if not obj.modifier.local_position.image:
+            return
+
+        return self.context["request"].build_absolute_uri(
+            obj.modifier.local_position.image.url
+        )
 
 
 class ModifierGroupSerializer(serializers.ModelSerializer):

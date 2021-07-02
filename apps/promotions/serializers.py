@@ -13,7 +13,7 @@ class PromotionListSerializer(AbstractNameSerializer, AbstractImageSerializer):
             'priority',
             'id',
             'name',
-            'type',
+            # 'promotion_type',
             'image',
             'slug',
             'link',

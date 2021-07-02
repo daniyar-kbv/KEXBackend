@@ -36,16 +36,18 @@ class CartPosition(models.Model):
         null=True, blank=True,
     )
 
-    def increment_count(self):
-        self.count += 1
-        self.save(update_fields=["count"])
 
-    def decrement_count(self):
-        self.count -= 1
-        if self.count < 0:
-            self.count = 0
-
-        self.save(update_fields=["count"])
+# class CartPositionModifierGroup(models.Model):
+#     cart_position = models.ForeignKey(
+#         CartPosition,
+#         on_delete=models.CASCADE,
+#         related_name="modifier_groups",
+#         null=True,
+#     )
+#     modifier_group = models.ForeignKey(
+#         "nomenclature.ModifierGroup",
+#         ""
+#     )
 
 
 class CartPositionModifier(models.Model):
