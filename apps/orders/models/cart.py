@@ -37,22 +37,25 @@ class CartPosition(models.Model):
     )
 
 
-# class CartPositionModifierGroup(models.Model):
-#     cart_position = models.ForeignKey(
-#         CartPosition,
-#         on_delete=models.CASCADE,
-#         related_name="modifier_groups",
-#         null=True,
-#     )
-#     modifier_group = models.ForeignKey(
-#         "nomenclature.ModifierGroup",
-#         ""
-#     )
+class CartPositionModifierGroup(models.Model):
+    cart_position = models.ForeignKey(
+        CartPosition,
+        on_delete=models.CASCADE,
+        related_name="modifier_groups",
+        null=True,
+    )
+    modifier_group = models.ForeignKey(
+        "nomenclature.ModifierGroup",
+        on_delete=models.CASCADE,
+        related_name="cart_modifier_groups",
+        to_field="uuid",
+        null=True,
+    )
 
 
 class CartPositionModifier(models.Model):
-    cart_position = models.ForeignKey(
-        CartPosition,
+    cart_position_modifier_group = models.ForeignKey(
+        CartPositionModifierGroup,
         on_delete=models.CASCADE,
         related_name="modifiers",
         null=True,
@@ -60,7 +63,7 @@ class CartPositionModifier(models.Model):
     branch_position = models.ForeignKey(
         "nomenclature.BranchPosition",
         on_delete=models.CASCADE,
-        related_name="carts",
+        related_name="cart_modifiers",
         to_field="uuid",
         null=True,
     )

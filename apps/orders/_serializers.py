@@ -3,7 +3,12 @@ from rest_framework import serializers
 from apps.location.models import Address
 from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
-from apps.orders.models import Cart, CartPosition, CartPositionModifier
+from apps.orders.models import (
+    Cart,
+    CartPosition,
+    CartPositionModifier,
+    CartPositionModifierGroup,
+)
 from apps.nomenclature.models import (
     BranchCategory,
     BranchPosition,
@@ -43,7 +48,6 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         fields = (
             "uuid",
             "address",
-            "local_brand",
         )
         extra_kwargs = {
             "uuid": {"read_only": True}
@@ -281,10 +285,11 @@ class BranchPositionSerializer(serializers.ModelSerializer):
         return request.build_absolute_uri(obj.local_position.image.url)
 
 
+# Cart Serializers
 class BranchPositionShortSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
-    category = serializers.UUIDField(source="branch_category_id")
+    name = serializers.SerializerMethodField(read_only=True)
+    image = serializers.SerializerMethodField(read_only=True)
+    category = serializers.UUIDField(source="branch_category_id", read_only=True)
 
     class Meta:
         model = BranchPosition
@@ -295,6 +300,9 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
             "price",
             "category",
         )
+        extra_kwargs = {
+            "price": {"read_only": True}
+        }
 
     def get_name(self, obj):
         if not obj.name:
@@ -311,31 +319,44 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
 
 
 class CartPositionModifierSerializer(serializers.ModelSerializer):
-    position_uuid = serializers.UUIDField(required=True, write_only=True)
-    position = BranchPositionShortSerializer(source="branch_position", read_only=True)
+    # position_uuid = serializers.UUIDField(required=True, write_only=True)
+    position = BranchPositionShortSerializer(source="branch_position") #, read_only=True)
 
     class Meta:
         model = CartPositionModifier
         fields = (
             "position",
-            "position_uuid",
+            #"position_uuid",
             "count",
         )
 
 
-class CartPositionSerializer(serializers.ModelSerializer):
+class CartPositionModifierGroupSerializer(serializers.ModelSerializer):
+    group_uuid = serializers.UUIDField(required=True, write_only=True)
     modifiers = CartPositionModifierSerializer(many=True, required=False)
-    position_uuid = serializers.UUIDField(required=True, write_only=True)
-    position = BranchPositionShortSerializer(source="branch_position", read_only=True)
+
+    class Meta:
+        model = CartPositionModifierGroup
+        fields = (
+            "group_uuid",
+            "modifiers",
+        )
+
+
+class CartPositionSerializer(serializers.ModelSerializer):
+    position = serializers.UUIDField(required=True, write_only=True)
+    #position = BranchPositionShortSerializer(source="branch_position")#, read_only=True)
+    modifier_groups = CartPositionModifierGroupSerializer(many=True, required=False)
 
     class Meta:
         model = CartPosition
         fields = (
-            "position_uuid",
+            "position",
             "count",
             "position",
             "comment",
-            "modifiers",
+            #"modifiers",
+            "modifier_groups",
         )
 
 

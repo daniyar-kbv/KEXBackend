@@ -67,10 +67,28 @@ class BranchPositionView(JSONPublicAPIMixin, RetrieveAPIView):
             "language": self.request.META["HTTP_LANGUAGE"],
         }
 
-
-class CartRetrieveUpdateView(JSONPublicAPIMixin, RetrieveUpdateAPIView):
+from rest_framework.response import Response
+from rest_framework.generics import UpdateAPIView
+from .serializers import RetrieveCartSerializer
+class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
     queryset = Cart.objects.all()
     serializer_class = UpdateCartSerializer
 
     def get_object(self):
         return get_object_or_404(Cart, lead__uuid=self.kwargs.get("lead_uuid"))
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        output_serializer = RetrieveCartSerializer(instance)
+        # output_serializer.is_valid(raise_exception=True)
+        return Response(output_serializer.data)
