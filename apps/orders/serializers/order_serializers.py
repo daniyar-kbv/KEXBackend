@@ -240,7 +240,6 @@ class ModifierGroupSerializer(serializers.ModelSerializer):
         return obj.name.text(lang=self.context["language"])
 
 
-
 class BranchPositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()

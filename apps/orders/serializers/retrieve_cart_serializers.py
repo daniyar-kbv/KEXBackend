@@ -52,19 +52,27 @@ class RetrieveCartPositionModifierSerializer(serializers.ModelSerializer):
 
 
 class RetrieveCartPositionModifierGroupSerializer(serializers.ModelSerializer):
-    group_uuid = serializers.UUIDField(required=True, write_only=True)
+    modifier_group = serializers.UUIDField(required=True, source="modifier_group.uuid")
+    name = serializers.SerializerMethodField(required=False)
     modifiers = RetrieveCartPositionModifierSerializer(many=True, required=False)
 
     class Meta:
         model = CartPositionModifierGroup
         fields = (
-            "group_uuid",
+            "name",
+            "modifier_group",
             "modifiers",
         )
 
+    def get_name(self, obj):
+        if not obj.modifier_group or not obj.modifier_group.name:
+            return
+
+        return obj.modifier_group.name.text(lang=self.context.get("language", "ru"))
+
 
 class RetrieveCartPositionSerializer(serializers.ModelSerializer):
-    position = BranchPositionShortSerializer(source="branch_position")#, read_only=True)
+    position = BranchPositionShortSerializer(source="branch_position")
     modifier_groups = RetrieveCartPositionModifierGroupSerializer(many=True, required=False)
 
     class Meta:
