@@ -1,22 +1,29 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.response import Response
+from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, ListAPIView
 from rest_framework.generics import (
     CreateAPIView,
+    UpdateAPIView,
     RetrieveAPIView,
 )
 
-from apps.common.mixins import JSONPublicAPIMixin
+from apps.common.mixins import JSONPublicAPIMixin, JSONRendererMixin
 from apps.nomenclature.models import BranchPosition
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 
 from .models import Lead, Cart
+from .models.orders import RateStar
 from .serializers import (
     ApplyLeadSerializer,
     LeadNomenclatureSerializer,
     BranchPositionSerializer,
     UpdateCartSerializer,
     LeadDetailSerializer,
-)
+    RetrieveCartSerializer,
+    RatedOrderListSerializer,
+    RateStarListSerializer,
+    CreateRateOrderSerializer,
+    RatedOrderListSerializer, RateStarListSerializer, CreateRateOrderSerializer)
 
 
 class ApplyView(JSONPublicAPIMixin, CreateAPIView):
@@ -67,9 +74,7 @@ class BranchPositionView(JSONPublicAPIMixin, RetrieveAPIView):
             "language": self.request.META["HTTP_LANGUAGE"],
         }
 
-from rest_framework.response import Response
-from rest_framework.generics import UpdateAPIView
-from .serializers import RetrieveCartSerializer
+
 class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
     queryset = Cart.objects.all()
     serializer_class = UpdateCartSerializer
@@ -92,3 +97,12 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
         output_serializer = RetrieveCartSerializer(instance)
         # output_serializer.is_valid(raise_exception=True)
         return Response(output_serializer.data)
+
+
+class RateStarListView(JSONPublicAPIMixin, ListAPIView):
+    queryset = RateStar.objects.all()
+    serializer_class = RateStarListSerializer
+
+
+class CreateRateOrderView(JSONPublicAPIMixin, CreateAPIView):
+    serializer_class = CreateRateOrderSerializer

@@ -33,6 +33,24 @@ class AbstractNameModel(MainModel):
         return "Не задано"
 
 
+class AbstractTitleModel(MainModel):
+    title = models.ForeignKey(
+        MultiLanguageChar,
+        verbose_name=_("Заголовок"),
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        if self.title is not None:
+            return self.title.ru
+
+        return "Не задано"
+
+
 class AbstractDescriptionModel(MainModel):
     description = models.ForeignKey(
         MultiLanguageText,

@@ -13,6 +13,26 @@ class AbstractNameSerializer(serializers.ModelSerializer):
         return getattr(obj.name, self.context['request'].headers.get('language'))
 
 
+class AbstractTitleSerializer(serializers.ModelSerializer):
+    title = serializers.SerializerMethodField()
+
+    class Meta:
+        abstract = True
+
+    def get_title(self, obj):
+        return getattr(obj.title, self.context['request'].headers.get('language'))
+
+
+class AbstractDescriptionSerializer(serializers.ModelSerializer):
+    description = serializers.SerializerMethodField()
+
+    class Meta:
+        abstract = True
+
+    def get_description(self, obj):
+        return getattr(obj.description, self.context['request'].headers.get('language'))
+
+
 class AbstractImageSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
 
@@ -24,12 +44,3 @@ class AbstractImageSerializer(serializers.ModelSerializer):
             getattr(obj.image, self.context['request'].headers.get('language'))
         )
 
-
-class AbstractDescriptionSerializer(serializers.ModelSerializer):
-    description = serializers.SerializerMethodField()
-
-    class Meta:
-        abstract = True
-
-    def get_description(self, obj):
-        return getattr(obj.name, self.context['request'].headers.get('language'))

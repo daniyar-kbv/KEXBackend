@@ -17,6 +17,8 @@ from apps.nomenclature.models import (
 )
 
 from .models import Lead
+from .models.orders import RatedOrder, RateSample, RateStar
+from apps.common.serializers import AbstractNameSerializer, AbstractTitleSerializer, AbstractDescriptionSerializer
 
 
 class LeadAddressSerializer(serializers.ModelSerializer):
