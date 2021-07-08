@@ -41,6 +41,7 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         fields = (
             "uuid",
             "address",
+            "local_brand",
         )
         extra_kwargs = {
             "uuid": {"read_only": True}

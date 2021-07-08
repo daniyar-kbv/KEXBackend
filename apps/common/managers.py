@@ -18,4 +18,3 @@ class MainManager(models.Manager):
 
         queryset = queryset.select_related(*rel_fields)
         return queryset
-
