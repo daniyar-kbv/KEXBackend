@@ -11,6 +11,8 @@ from apps.nomenclature.models import (
     BranchPositionModifier,
 )
 
+from .retrieve_cart_serializers import RetrieveCartSerializer
+
 
 class LeadAddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -75,10 +77,12 @@ class LeadDetailSerializer(serializers.ModelSerializer):
     address = LeadAddressSerializer(required=False)
     brand_name = serializers.SerializerMethodField(required=False)
     brand_image = serializers.SerializerMethodField(required=False)
+    cart = RetrieveCartSerializer(required=False)
 
     class Meta:
         model = Lead
         fields = (
+            "cart",
             "uuid",
             "address",
             "brand_name",

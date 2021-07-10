@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.generics import RetrieveUpdateAPIView, ListCreateAPIView, ListAPIView
+from rest_framework.generics import ListAPIView
 from rest_framework.generics import (
     CreateAPIView,
     UpdateAPIView,
@@ -22,8 +22,8 @@ from .serializers import (
     RetrieveCartSerializer,
     RatedOrderListSerializer,
     RateStarListSerializer,
-    CreateRateOrderSerializer,
-    RatedOrderListSerializer, RateStarListSerializer, CreateRateOrderSerializer)
+    CreateRateOrderSerializer
+)
 
 
 class ApplyView(JSONPublicAPIMixin, CreateAPIView):
