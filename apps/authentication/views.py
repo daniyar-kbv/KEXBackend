@@ -3,6 +3,7 @@ from uuid import uuid4
 import requests
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 
@@ -15,7 +16,7 @@ from rest_framework_simplejwt.views import (
 
 from apps.sms.services import send_otp
 from apps.sms.serializers import VerifyOTPSerializer
-from apps.common.mixins import JSONRendererMixin, PublicAPIMixin
+from apps.common.mixins import JSONRendererMixin, PublicAPIMixin, JSONPublicAPIMixin
 from django.conf import settings
 from .serializers import (
     TokenObtainPairSerializer,
@@ -80,53 +81,3 @@ class OTPResendView(PublicAPIMixin, JSONRendererMixin, GenericAPIView):
         send_otp(serializer.validated_data['mobile_phone'])
 
         return Response(data={})
-
-
-class InstagramAuthView(PublicAPIMixin, JSONRendererMixin, APIView):
-    """
-    Получение кода авторизации
-    """
-
-    def get(self, request, promo_type):  # noqa
-        username = None
-        # print('instagram view')
-        code = request.GET.get('code')
-        if code:
-            code = code.split('#')[0]
-            # print("auth code: ", code)
-            data = {
-                'client_id': settings.INSTAGRAM_CLIENT_ID,
-                'client_secret': settings.INSTAGRAM_CLIENT_SECRET,
-                'code': code,
-                'grant_type': 'authorization_code',
-                'redirect_uri': request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI + promo_type)
-            }
-            response = requests.post(
-                url='https://api.instagram.com/oauth/access_token/',
-                data=data,
-            )
-            # print("getting access token:")
-            # print("response: ", response)
-            # print("response content: ", response.content)
-            # print(response.json())
-            # print(response.text)
-            if response.status_code == 200:
-                access_token = response.json().get('access_token')
-                # print("access_token: ", access_token)
-                if access_token:
-                    resp = requests.get(
-                        f'https://graph.instagram.com/me?fields=id,username&access_token={access_token}'
-                    )
-                    # print("getting user profile:")
-                    # print("response: ", response)
-                    # print("response content: ", response.content)
-                    if resp.status_code == 200:
-                        # print(resp.content)
-                        Participation.objects.create(
-                            user=request.user,
-                            promotion=Promotion.objects.filter(promo_type=promo_type).first(),
-                            instagram_username=resp.json().get('username')
-                        )
-                        # print(username)
-
-        return redirect('promotions:promotion_contest_render_view', promo_type=promo_type)
