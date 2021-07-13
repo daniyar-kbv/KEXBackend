@@ -19,7 +19,7 @@ class PromotionAdmin(admin.ModelAdmin):
 @admin.register(Participation)
 class ParticipationAdmin(admin.ModelAdmin):
     list_display = [
-        'user',
+        # 'user',
         'instagram_username',
-        'promotion'
+        # 'promotion'
     ]

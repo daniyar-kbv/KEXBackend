@@ -34,4 +34,12 @@ ERROR_MESSAGES = {
     f"{USER_NOT_FOUND}_{Languages.RUSSIAN}": ("Пользователь не найден", ""),
     f"{USER_NOT_FOUND}_{Languages.KAZAKH}": ("ondai adam zhok", ""),
     f"{USER_NOT_FOUND}_{Languages.ENGLISH}": ("There is no such user", ""),
+
+    f"{INSTAGRAM_CODE_INVALID}_{Languages.RUSSIAN}": ("Инстаграм код неправильный", ""),
+    f"{INSTAGRAM_CODE_INVALID}_{Languages.KAZAKH}": ("Instagram code invalid deimyn sagan", ""),
+    f"{INSTAGRAM_CODE_INVALID}_{Languages.ENGLISH}": ("Instagram code invalid", ""),
+
+    f"{INSTAGRAM_UNKNOWN_ERROR}_{Languages.RUSSIAN}": ("Инстаграм неизвестная ошибка", ""),
+    f"{INSTAGRAM_UNKNOWN_ERROR}_{Languages.KAZAKH}": ("Instagram unknown error deimyn sagan", ""),
+    f"{INSTAGRAM_UNKNOWN_ERROR}_{Languages.ENGLISH}": ("Instagram unknown error", ""),
 }
