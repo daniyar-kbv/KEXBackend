@@ -61,6 +61,7 @@ class Address(models.Model):
     flat = models.CharField(_("Квартира"), max_length=50, null=True, blank=True)
     longitude = models.DecimalField(_("Долгота"), max_digits=12, decimal_places=8, null=True)
     latitude = models.DecimalField(_("Широта"), max_digits=12, decimal_places=8, null=True)
+    comment = models.TextField(_("Комментарий к адресу"), null=True, blank=True)
 
     def __str__(self):
         if self.street:

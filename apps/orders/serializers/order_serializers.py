@@ -26,6 +26,7 @@ class LeadAddressSerializer(serializers.ModelSerializer):
             "building",
             "corpus",
             "flat",
+            "comment",
         )
 
     extra_kwargs = {
