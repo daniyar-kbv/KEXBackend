@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.transaction import atomic
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _  # noqa
 
@@ -94,6 +95,12 @@ class Order(
         related_name="orders",
         verbose_name=_("Клиент"),
     )
+    cart = models.OneToOneField(
+        "orders.Cart",
+        on_delete=models.PROTECT,
+        related_name="order",
+        null=True, blank=True,
+    )
     status = models.CharField(
         _("Статус"),
         max_length=32,
@@ -101,10 +108,21 @@ class Order(
         default=OrderStatuses.NEW,
     )
     status_reason = models.TextField(
-        _("Причина присвоения статуса")
+        _("Причина присвоения статуса"),
+        null=True,
     )
 
     objects = OrdersManager()
+
+    @atomic
+    def change_status(self, status: str, status_reason: str = None):
+        self.status = status
+        self.status_reason = status_reason
+        self.save(update_fields=["status", "status_reason"])
+        self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
+
+    def mark_as_paid(self):
+        self.change_status(status=OrderStatuses.PAID)
 
 
 class OrderStatusTransition(TimestampModel):
@@ -126,7 +144,7 @@ class OrderStatusTransition(TimestampModel):
         blank=True, null=True,
         verbose_name=_("Заказ"),
     )
-    status_reason = models.TextField(_("Причина присвоения статуса"))
+    status_reason = models.TextField(_("Причина присвоения статуса"), null=True)
 
 
 class RateSample(AbstractNameModel):

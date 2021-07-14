@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
@@ -9,6 +11,16 @@ class Cart(TimestampModel):
         verbose_name = _("Корзина")
         verbose_name_plural = _("Корзины")
 
+    @property
+    def price(self) -> Decimal:
+        return Decimal("5600.00")
+
+        if self.positions.exists():
+            return sum(
+                [position.branch_position.price for position in self.positions.all()]
+            )
+
+        return Decimal('0.00')
 
 class CartPosition(models.Model):
     class Meta:

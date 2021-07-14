@@ -24,6 +24,9 @@ ALLOWED_HOSTS = ["*"]
 CONSTANCE_CONFIG = {
     "IIKO_SERVICE_HOST": ("https://api-ru.iiko.services", "IIKO service host"),
     "IIKO_AUTH_TOKEN_LIFETIME": (60 * 30, "IIKO auth token lifetime in seconds"),
+    "CLOUDPAYMENTS_HOST": ("https://api.cloudpayments.ru", ""),
+    "CLOUDPAYMENTS_PUBLIC_KEY": ("pk_2ec019c3a3a24b44996a1a2ca6f8c", ""),
+    "CLOUDPAYMENTS_SECRET_KEY": ("3da278f77c31ca71b652a25a85b65826", ""),
     **ERROR_MESSAGES,
     **CONTACTS,
 }
@@ -33,6 +36,11 @@ CONSTANCE_CONFIG_FIELDSETS = OrderedDict([
     ("IIKO Credentials&settings", (
         "IIKO_SERVICE_HOST",
         "IIKO_AUTH_TOKEN_LIFETIME",
+    )),
+    ("CloudPayments credentials", (
+        "CLOUDPAYMENTS_HOST",
+        "CLOUDPAYMENTS_PUBLIC_KEY",
+        "CLOUDPAYMENTS_SECRET_KEY",
     )),
     ("Error messages", tuple(ERROR_MESSAGES.keys())),
 ])
@@ -76,7 +84,8 @@ LOCAL_APPS = [
     'apps.nomenclature.apps.NomenclatureConfig',
     'apps.translations.apps.TranslationsConfig',
     'apps.promotions.apps.PromotionsConfig',
-    'apps.docs.apps.DocsConfig'
+    'apps.docs.apps.DocsConfig',
+    'apps.payments.apps.PaymentsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

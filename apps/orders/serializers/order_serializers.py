@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.location.models import Address
 from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
-from apps.orders.models import Cart, Lead
+from apps.orders.models import Cart, Lead, Order
 from apps.nomenclature.models import (
     BranchCategory,
     BranchPosition,
@@ -12,6 +12,8 @@ from apps.nomenclature.models import (
 )
 
 from .retrieve_cart_serializers import RetrieveCartSerializer
+
+from ..exceptions import EmptyCartError
 
 
 class LeadAddressSerializer(serializers.ModelSerializer):
@@ -282,3 +284,21 @@ class BranchPositionSerializer(serializers.ModelSerializer):
 
         request = self.context["request"]
         return request.build_absolute_uri(obj.local_position.image.url)
+
+
+class CreateOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = "lead",
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        lead = attrs["lead"]
+
+        if lead.cart is None or not lead.cart.positions.exists():
+            raise EmptyCartError
+
+        return attrs
+
+    def create(self, validated_data):
+        return Order.objects.create_from_lead(self.context["request"].user, validated_data["lead"])

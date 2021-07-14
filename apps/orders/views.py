@@ -11,7 +11,7 @@ from apps.common.mixins import JSONPublicAPIMixin, JSONRendererMixin
 from apps.nomenclature.models import BranchPosition
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 
-from .models import Lead, Cart
+from .models import Order, Lead, Cart
 from .models.orders import RateStar
 from .serializers import (
     ApplyLeadSerializer,
@@ -22,7 +22,8 @@ from .serializers import (
     RetrieveCartSerializer,
     RatedOrderListSerializer,
     RateStarListSerializer,
-    CreateRateOrderSerializer
+    CreateRateOrderSerializer,
+    CreateOrderSerializer,
 )
 
 
@@ -97,6 +98,11 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
         output_serializer = RetrieveCartSerializer(instance)
         # output_serializer.is_valid(raise_exception=True)
         return Response(output_serializer.data)
+
+
+class CreateOrderView(JSONRendererMixin, CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = CreateOrderSerializer
 
 
 class RateStarListView(JSONPublicAPIMixin, ListAPIView):

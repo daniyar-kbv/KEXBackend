@@ -42,4 +42,12 @@ ERROR_MESSAGES = {
     f"{INSTAGRAM_UNKNOWN_ERROR}_{Languages.RUSSIAN}": ("Инстаграм неизвестная ошибка", ""),
     f"{INSTAGRAM_UNKNOWN_ERROR}_{Languages.KAZAKH}": ("Instagram unknown error deimyn sagan", ""),
     f"{INSTAGRAM_UNKNOWN_ERROR}_{Languages.ENGLISH}": ("Instagram unknown error", ""),
+
+    f"{EMPTY_CART}_{Languages.RUSSIAN}": ("Корзина пустая", ""),
+    f"{EMPTY_CART}_{Languages.KAZAKH}": ("Корзина пустая", ""),
+    f"{EMPTY_CART}_{Languages.ENGLISH}": ("Корзина пустая", ""),
+
+    f"{ORDER_ALREADY_PAID}_{Languages.RUSSIAN}": ("Заказ уже оплачен", ""),
+    f"{ORDER_ALREADY_PAID}_{Languages.KAZAKH}": ("Заказ уже оплачен", ""),
+    f"{ORDER_ALREADY_PAID}_{Languages.ENGLISH}": ("Заказ уже оплачен", ""),
 }

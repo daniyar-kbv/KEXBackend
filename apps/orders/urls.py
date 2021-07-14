@@ -7,7 +7,8 @@ from .views import (
     CartRetrieveUpdateView,
     LeadShowView,
     RateStarListView,
-    CreateRateOrderView
+    CreateRateOrderView,
+    CreateOrderView,
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
         name="order-nomenclature-position"
     ),
     path("<uuid:lead_uuid>/cart/", CartRetrieveUpdateView.as_view()),
+    path("create/", CreateOrderView.as_view()),
 ]
