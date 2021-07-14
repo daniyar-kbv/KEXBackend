@@ -41,7 +41,7 @@ class PromotionContestDebutView(PromoTypeMixin, JSONRendererMixin, APIView):
             print(objs)
             resp_body = {
                 "users": [],
-                "participate_url": get_instagram_auth_url(request.path),
+                "participate_url": get_instagram_auth_url(request),
                 "info_url": request.build_absolute_uri(app_name + promotion.slug)
             }
             if objs.exists():
