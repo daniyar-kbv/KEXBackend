@@ -11,6 +11,7 @@ from apps.nomenclature.models import BranchPosition
 class BranchPositionShortSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField(read_only=True)
+    description = serializers.SerializerMethodField(read_only=True)
     category = serializers.UUIDField(source="branch_category_id", read_only=True)
 
     class Meta:
@@ -21,6 +22,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
             "image",
             "price",
             "category",
+            "description",
         )
         extra_kwargs = {
             "price": {"read_only": True}
@@ -38,6 +40,12 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
 
         request = self.context["request"]
         return request.build_absolute_uri(obj.local_position.image.url)
+
+    def get_description(self, obj):
+        if not obj.description:
+            return
+
+        return obj.description.text(lang=self.context.get("language", "ru"))
 
 
 class RetrieveCartPositionModifierSerializer(serializers.ModelSerializer):
