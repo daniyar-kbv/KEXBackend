@@ -8,8 +8,6 @@ from .serializers import CloudPaymentsPaymentSerializer
 if TYPE_CHECKING:
     from apps.payments.models import Payment
 
-from cloudpayments import CloudPayments
-
 
 class PaymentService(BaseCloudPaymentsService):
     endpoint = "/payments/cards/charge"
