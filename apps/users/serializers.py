@@ -5,6 +5,7 @@ from django.contrib.auth.models import Permission
 from apps.location.models import Address
 
 from .models import User, UserAddress
+from ..notifications.firebase import subscribe_to_language_topic
 
 
 class ChangeCurrentAddressSerializer(serializers.ModelSerializer):
@@ -68,7 +69,12 @@ class AccountInfoSerializer(serializers.ModelSerializer):
             "email",
             "mobile_phone",
             "current_address",
+            "language"
         ]
+
+    def validate_language(self, value):
+        subscribe_to_language_topic(value, [self.instance.fb_token])
+        return value
 
 
 class UserViewSerializer(serializers.ModelSerializer):

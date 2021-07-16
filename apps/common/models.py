@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 from apps.translations.models import MultiLanguageChar, MultiLanguageText
 from .managers import MainManager
@@ -112,3 +113,9 @@ class ServiceHistoryModel(MainModel):
 
     class Meta:
         abstract = True
+
+
+class MultipleModelFK(MainModel):
+    content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True)
+    content_object = GenericForeignKey('content_type', 'object_id')

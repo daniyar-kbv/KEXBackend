@@ -76,7 +76,8 @@ LOCAL_APPS = [
     'apps.nomenclature.apps.NomenclatureConfig',
     'apps.translations.apps.TranslationsConfig',
     'apps.promotions.apps.PromotionsConfig',
-    'apps.docs.apps.DocsConfig'
+    'apps.docs.apps.DocsConfig',
+    'apps.notifications.apps.NotificationsConfig'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -199,6 +200,10 @@ INSTAGRAM_REDIRECT_URI = "/auth/instagram/"
 
 MEDIA_URL = os.getenv("MEDIA_URL", "/media/")
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
+
+# FIREBASE CLOUD MESSAGING (FCM)
+GOOGLE_APPLICATION_CREDENTIALS = os.path.join(BASE_DIR, "google-credentials.json") # service account in Firebase Project
+
 
 CKEDITOR_UPLOAD_PATH = "ncrm_helper"
 # CKEDITOR_CONFIGS = {
