@@ -14,6 +14,7 @@ class PaymentTransaction:
 class DebitCard:
     card_masked_number: str = None
     card_expiration_date: str = None
+    card_token: str = None
     card_type: str = None
 
 

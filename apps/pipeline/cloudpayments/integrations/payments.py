@@ -47,6 +47,7 @@ class PaymentBaseService(BaseCloudPaymentsService):
                 status=self.get_status(model),
             ),
             debit_card=entities.DebitCard(
+                card_token=model.get("Token"),
                 card_type=model.get("CardType"),
                 card_expiration_date=model.get("CardExpDate"),
                 card_masked_number=self.get_card_masked_number(model.get("CardLastFour")),
