@@ -295,15 +295,10 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = "lead",
 
-    def validate(self, lead_uuid):
-        lead = Lead.objects.get(uuid=lead_uuid)
-        return lead
-
     def validate(self, attrs):
         attrs = super().validate(attrs)
         lead = Lead.objects.get(uuid=attrs["lead"])
 
-        print("lead ")
         if hasattr(lead, "order"):
             raise OrderAlreadyExistError
         if lead.cart is None or not lead.cart.positions.exists():
@@ -311,7 +306,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
         attrs["lead"] = lead
         return attrs
-
 
     def create(self, validated_data):
         return Order.objects.create_from_lead(

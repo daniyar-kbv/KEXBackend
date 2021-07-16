@@ -12,7 +12,8 @@ class PaymentTypes(TextChoices):
 
 
 class PaymentStatusTypes(TextChoices):
-    NEW = "NEW", ""
-    COMPLETED = 'COMPLETED', ""
-    CANCELLED = 'CANCELLED', ""
-    DECLINED = 'DECLINED', ""
+    NEW = "NEW", "Новый"
+    COMPLETED = 'COMPLETED', "Завершено"
+    CANCELLED = 'CANCELLED', "Отменено"
+    DECLINED = 'DECLINED', "Отказано"
+    AWAITING_AUTHENTICATION = "AWAITING_AUTHENTICATION", "Ожидается 3ds авторизация"
