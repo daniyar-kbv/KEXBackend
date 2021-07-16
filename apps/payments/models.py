@@ -89,8 +89,8 @@ class Payment(TimestampModel):
     )
     cryptogram = models.CharField(max_length=1024)
 
-    pa_req = models.CharField(max_length=512, null=True)
-    pa_res = models.CharField(max_length=512, null=True)
+    pa_req = models.CharField(max_length=1024, null=True)
+    pa_res = models.CharField(max_length=1024, null=True)
     acs_url = models.URLField(max_length=512, null=True)
 
     objects = PaymentsManager()
