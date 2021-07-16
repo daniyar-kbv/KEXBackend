@@ -45,7 +45,7 @@ class DebitCard(UUIDModel, TimestampModel):
     objects = DebitCardsManager()
 
 
-class Payment(TimestampModel):
+class Payment(TimestampModel, UUIDModel):
     order = models.ForeignKey(
         "orders.Order",
         on_delete=models.PROTECT,
@@ -102,23 +102,13 @@ class Payment(TimestampModel):
     @atomic
     def change_status(self, status: str, status_reason: str = None):
         self.status = status
+
+        if self.status == PaymentStatusTypes.COMPLETED:
+            self.order.mark_as_paid()  # noqa
+
         self.status_reason = status_reason
         self.save(update_fields=["status", "status_reason"])
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
-
-    def mark_as_declined(self, status_reason: str):
-        self.change_status(status=PaymentStatusTypes.DECLINED, status_reason=status_reason)
-
-    def mark_as_completed(self):
-        print("mark as completed is called")
-        self.change_status(status=PaymentStatusTypes.COMPLETED)
-        self.order.mark_as_paid()  # noqa
-
-    def mark_as_cancelled(self):
-        self.change_status(status=PaymentStatusTypes.CANCELLED)
-
-    def mark_as_awaiting_authentication(self):
-        self.change_status(status=PaymentStatusTypes.AWAITING_AUTHENTICATION)
 
 
 class PaymentStatusTransition(TimestampModel):
