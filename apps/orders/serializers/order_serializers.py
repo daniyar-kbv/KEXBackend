@@ -13,7 +13,7 @@ from apps.nomenclature.models import (
 
 from .retrieve_cart_serializers import RetrieveCartSerializer
 
-from ..exceptions import EmptyCartError
+from ..exceptions import EmptyCartError, OrderAlreadyExistError
 
 
 class LeadAddressSerializer(serializers.ModelSerializer):
@@ -285,20 +285,36 @@ class BranchPositionSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         return request.build_absolute_uri(obj.local_position.image.url)
 
-
+"""
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjI2NTI5MTIyLCJqdGkiOiJhZGJiMzE1OTExOWY0ZGZhYjE2MjA5ZjA3MTcxODlkNSIsInVzZXJfaWQiOjF9.vfwU-ogi4dXLMxt-5tYXKlVvGWtiM1vLAoxx9Bszn3M
+"""
 class CreateOrderSerializer(serializers.ModelSerializer):
+    lead = serializers.UUIDField(required=True)
+
     class Meta:
         model = Order
         fields = "lead",
 
+    def validate(self, lead_uuid):
+        lead = Lead.objects.get(uuid=lead_uuid)
+        return lead
+
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        lead = attrs["lead"]
+        lead = Lead.objects.get(uuid=attrs["lead"])
 
+        print("lead ")
+        if hasattr(lead, "order"):
+            raise OrderAlreadyExistError
         if lead.cart is None or not lead.cart.positions.exists():
             raise EmptyCartError
 
+        attrs["lead"] = lead
         return attrs
 
+
     def create(self, validated_data):
-        return Order.objects.create_from_lead(self.context["request"].user, validated_data["lead"])
+        return Order.objects.create_from_lead(
+            self.context["request"].user,
+            validated_data["lead"]
+        )

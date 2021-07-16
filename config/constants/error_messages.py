@@ -50,4 +50,9 @@ ERROR_MESSAGES = {
     f"{ORDER_ALREADY_PAID}_{Languages.RUSSIAN}": ("Заказ уже оплачен", ""),
     f"{ORDER_ALREADY_PAID}_{Languages.KAZAKH}": ("Заказ уже оплачен", ""),
     f"{ORDER_ALREADY_PAID}_{Languages.ENGLISH}": ("Заказ уже оплачен", ""),
+
+    f"{ORDER_ALREADY_EXISTS}_{Languages.RUSSIAN}": ("Заказ уже создан", ""),
+    f"{ORDER_ALREADY_EXISTS}_{Languages.KAZAKH}": ("Заказ уже создан", ""),
+    f"{ORDER_ALREADY_EXISTS}_{Languages.ENGLISH}": ("Заказ уже создан", ""),
+
 }
