@@ -21,6 +21,7 @@ class CreateCardPaymentView(JSONRendererMixin, CreateAPIView):
 
 
 class Confirm3DSPaymentView(JSONRendererMixin, UpdateAPIView):
+    allowed_methods = ["PUT"]
     queryset = Payment.objects.all()
     serializer_class = Confirm3DSPaymentSerializer
     lookup_field = "uuid"
