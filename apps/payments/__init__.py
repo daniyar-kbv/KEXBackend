@@ -16,4 +16,3 @@ class PaymentStatusTypes(TextChoices):
     COMPLETED = 'COMPLETED', ""
     CANCELLED = 'CANCELLED', ""
     DECLINED = 'DECLINED', ""
-

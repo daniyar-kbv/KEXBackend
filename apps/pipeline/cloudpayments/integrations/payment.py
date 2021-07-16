@@ -5,6 +5,7 @@ from apps.payments import PaymentStatusTypes
 from .base import BaseCloudPaymentsService
 from .entities import PaymentResponse
 from .serializers import CloudPaymentsPaymentSerializer
+
 if TYPE_CHECKING:
     from apps.payments.models import Payment
 
@@ -48,5 +49,4 @@ class PaymentService(BaseCloudPaymentsService):
             card_masked_number=self.get_card_masked_number(model.get("CardLastFour")),
         ).__dict__
 
-        # print(res)
         return res

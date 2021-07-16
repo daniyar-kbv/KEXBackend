@@ -12,6 +12,19 @@ dda3bfc9-a4ab-4861-a910-7cc39e2c9e88
 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjI2MzczODI4LCJqdGkiOiIyMTdkYTRiMWY2MzE0MGVkYTFjMGFmZWE3OGQ4MThjMSIsInVzZXJfaWQiOjF9.AKP_2KSCXml2DvczwbInw7YDOhf_codH3Z1ROJ1HDfU
 """
 
+
+class DebitCardsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DebitCard
+        fields = (
+            "uuid",
+            "card_holder_name",
+            "card_masked_number",
+            "card_expiration_date",
+            "card_type",
+        )
+
+
 class CreatePaymentSerializer(serializers.ModelSerializer):
     lead = serializers.UUIDField(required=True, write_only=True)
     card_holder_name = serializers.CharField(required=True, write_only=True)

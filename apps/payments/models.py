@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from apps.common.models import TimestampModel, UUIDModel
 
 from . import CurrencyTypes, PaymentTypes, PaymentStatusTypes
-from .managers import PaymentsManager
+from .managers import PaymentsManager, DebitCardsManager
 
 User = get_user_model()
 
@@ -42,6 +42,8 @@ class DebitCard(UUIDModel, TimestampModel):
         default=False,
     )
 
+    objects = DebitCardsManager()
+
 
 class Payment(TimestampModel):
     order = models.ForeignKey(
@@ -53,6 +55,7 @@ class Payment(TimestampModel):
         DebitCard,
         on_delete=models.PROTECT,
         null=True,
+        to_field="uuid",
         related_name="payments",
     )
     status = models.CharField(

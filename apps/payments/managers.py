@@ -4,6 +4,15 @@ from django.db.models.manager import BaseManager
 from . import PaymentStatusTypes
 
 
+class DebitCardsQuerySet(QuerySet):
+    def is_active(self):
+        return self.filter(is_active=True)
+
+
+class DebitCardsManager(BaseManager.from_queryset(DebitCardsQuerySet)):
+    ...
+
+
 class PaymentsQueryset(QuerySet):
     def completed(self):
         return self.filter(status=PaymentStatusTypes.COMPLETED)
