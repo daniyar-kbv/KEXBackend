@@ -89,6 +89,10 @@ class Payment(TimestampModel):
     )
     cryptogram = models.CharField(max_length=1024)
 
+    pa_req = models.CharField(max_length=512, null=True)
+    pa_res = models.CharField(max_length=512, null=True)
+    acs_url = models.URLField(max_length=512, null=True)
+
     objects = PaymentsManager()
 
     @property
@@ -112,6 +116,9 @@ class Payment(TimestampModel):
 
     def mark_as_cancelled(self):
         self.change_status(status=PaymentStatusTypes.CANCELLED)
+
+    def mark_as_awaiting_authentication(self):
+        self.change_status(status=PaymentStatusTypes.AWAITING_AUTHENTICATION)
 
 
 class PaymentStatusTransition(TimestampModel):
