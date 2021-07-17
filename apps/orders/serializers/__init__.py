@@ -4,6 +4,7 @@ from .order_serializers import (
     LeadNomenclatureSerializer,
     BranchPositionSerializer,
     CreateOrderSerializer,
+    OrdersListSerializer,
 )
 from .retrieve_cart_serializers import (
     RetrieveCartSerializer,

@@ -9,9 +9,11 @@ from .views import (
     RateStarListView,
     CreateRateOrderView,
     CreateOrderView,
+    OrdersListView,
 )
 
 urlpatterns = [
+    path("", OrdersListView.as_view()),
     path("apply/", ApplyView.as_view()),
     path('ratestars/', RateStarListView.as_view()),
     path('rates/', CreateRateOrderView.as_view()),

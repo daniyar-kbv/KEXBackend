@@ -285,9 +285,18 @@ class BranchPositionSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         return request.build_absolute_uri(obj.local_position.image.url)
 
-"""
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjI2NTI5MTIyLCJqdGkiOiJhZGJiMzE1OTExOWY0ZGZhYjE2MjA5ZjA3MTcxODlkNSIsInVzZXJfaWQiOjF9.vfwU-ogi4dXLMxt-5tYXKlVvGWtiM1vLAoxx9Bszn3M
-"""
+
+class OrdersListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = (
+            "id",
+            "status",
+            "status_reason",
+            "lead_id",
+        )
+
+
 class CreateOrderSerializer(serializers.ModelSerializer):
     lead = serializers.UUIDField(required=True)
 

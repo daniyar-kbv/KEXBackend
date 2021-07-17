@@ -24,6 +24,7 @@ from .serializers import (
     RateStarListSerializer,
     CreateRateOrderSerializer,
     CreateOrderSerializer,
+    OrdersListSerializer,
 )
 
 
@@ -98,6 +99,14 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
         output_serializer = RetrieveCartSerializer(instance)
         # output_serializer.is_valid(raise_exception=True)
         return Response(output_serializer.data)
+
+
+class OrdersListView(JSONRendererMixin, ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrdersListSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
 
 
 class CreateOrderView(JSONRendererMixin, CreateAPIView):
