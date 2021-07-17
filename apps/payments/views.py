@@ -6,6 +6,7 @@ from .models import Payment, DebitCard
 from .serializers import (
     DebitCardsSerializer,
     CreatePaymentSerializer,
+    CreateCardPaymentSerializer,
     Confirm3DSPaymentSerializer,
 )
 
@@ -17,7 +18,7 @@ class CreatePaymentView(JSONRendererMixin, CreateAPIView):
 
 class CreateCardPaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
-    serializer_class = None
+    serializer_class = CreateCardPaymentSerializer
 
 
 class Confirm3DSPaymentView(JSONRendererMixin, UpdateAPIView):
@@ -25,6 +26,7 @@ class Confirm3DSPaymentView(JSONRendererMixin, UpdateAPIView):
     queryset = Payment.objects.all()
     serializer_class = Confirm3DSPaymentSerializer
     lookup_field = "uuid"
+    lookup_url_kwarg = "payment_uuid"
 
 
 class DebitCardsListView(JSONRendererMixin, ListAPIView):

@@ -19,6 +19,10 @@ class DebitCard(UUIDModel, TimestampModel):
         on_delete=models.CASCADE,
         related_name="debit_cards",
     )
+    card_account_id = models.CharField(
+        max_length=1024,
+        null=True,
+    )
     card_holder_name = models.CharField(
         max_length=256,
     )
@@ -67,6 +71,7 @@ class Payment(TimestampModel, UUIDModel):
     payment_type = models.CharField(
         max_length=256,
         choices=PaymentTypes.choices,
+        default=PaymentTypes.DEBIT_CARD,
     )
     price = models.DecimalField(
         max_digits=12,
@@ -87,7 +92,7 @@ class Payment(TimestampModel, UUIDModel):
     outer_id = models.CharField(
         max_length=512,
     )
-    cryptogram = models.CharField(max_length=1024)
+    cryptogram = models.CharField(max_length=1024, null=True)
 
     pa_req = models.CharField(max_length=1024, null=True)
     pa_res = models.CharField(max_length=1024, null=True)

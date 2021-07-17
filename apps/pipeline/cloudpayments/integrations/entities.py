@@ -12,6 +12,7 @@ class PaymentTransaction:
 
 @dataclass
 class DebitCard:
+    card_account_id: str = None
     card_masked_number: str = None
     card_expiration_date: str = None
     card_token: str = None

@@ -27,6 +27,7 @@ class CreatePaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = (
+            "uuid",
             "lead",
             "pa_req",
             "acs_url",
@@ -38,10 +39,11 @@ class CreatePaymentSerializer(serializers.ModelSerializer):
             "status_reason",
         )
         extra_kwargs = {
+            "uuid": {"read_only": True},
             "status": {"read_only": True},
             "outer_id": {"read_only": True},
-            "status_reason": {"read_only": True},
             "cryptogram": {"write_only": True},
+            "status_reason": {"read_only": True},
             "payment_type": {"write_only": True},
             "pa_req": {"read_only": True, "required": False},
             "acs_url": {"read_only": True, "required": False},
@@ -72,6 +74,55 @@ class CreatePaymentSerializer(serializers.ModelSerializer):
 
         payment = super().create(validated_data)
         make_payment(payment.pk)
+        payment.refresh_from_db()
+
+        return payment
+
+
+class CreateCardPaymentSerializer(serializers.ModelSerializer):
+    lead = serializers.UUIDField(required=True, write_only=True)
+
+    class Meta:
+        model = Payment
+        fields = (
+            "uuid",
+            "lead",
+            "outer_id",
+            "debit_card",
+            "status",
+            "status_reason",
+            "pa_req",
+            "acs_url",
+        )
+        extra_kwargs = {
+            "uuid": {"read_only": True},
+            "status": {"read_only": True},
+            "outer_id": {"read_only": True},
+            "status_reason": {"read_only": True},
+            "pa_req": {"read_only": True, "required": False},
+            "acs_url": {"read_only": True, "required": False},
+        }
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        order = get_object_or_404(Order, lead_id=attrs.pop("lead"))
+
+        if order.payments.completed().exists():
+            raise OrderAlreadyPaidError()
+
+        attrs["order"] = order
+        attrs["price"] = order.cart.price
+
+        return attrs
+
+    def create(self, validated_data):
+        from apps.pipeline.cloudpayments.services import make_card_payment
+
+        request = self.context["request"]
+        validated_data["ip_address"] = request.META["REMOTE_ADDR"]
+
+        payment = super().create(validated_data)
+        make_card_payment(payment.pk)
         payment.refresh_from_db()
 
         return payment
