@@ -132,6 +132,9 @@ class Confirm3DSPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = (
+            "uuid",
+            "acs_url",
+            "pa_req",
             "pa_res",
             "outer_id",
             "status",
@@ -139,6 +142,9 @@ class Confirm3DSPaymentSerializer(serializers.ModelSerializer):
         )
         extra_kwargs = {
             "status": {"read_only": True},
+            "uuid": {"read_only": True},
+            "acs_url": {"read_only": True},
+            "pa_req": {"read_only": True},
             "outer_id": {"read_only": True},
             "status_reason": {"read_only": True},
         }
