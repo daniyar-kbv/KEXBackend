@@ -29,10 +29,10 @@ def save_user_instagram(code: str, user_pk: int, promo_type: str, redirect_uri: 
     )
 
 
-def get_instagram_auth_url(redirect_uri):
+def get_instagram_auth_url(request):
     url = f"https://api.instagram.com/oauth/authorize" \
           f"?client_id={settings.INSTAGRAM_CLIENT_ID}&" \
-          f"redirect_uri={redirect_uri}" \
+          f"redirect_uri={request.build_absolute_uri(request.path + 'instagram/')}" \
           f"&scope=user_profile,user_media&response_type=code"
 
     return url
