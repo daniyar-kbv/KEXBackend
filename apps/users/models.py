@@ -40,10 +40,6 @@ class User(PermissionsMixin, AbstractBaseUser):
 
         return perm in self.get_all_permissions(obj)
 
-    @property
-    def current_address(self):
-        return self.addresses.filter(is_current=True).first()
-
     def set_is_current_false(self, current_pk: int) -> None:
         self.addresses.exclude(pk=current_pk).update(is_current=False)
 
@@ -64,8 +60,15 @@ class User(PermissionsMixin, AbstractBaseUser):
     def get_username(self):
         return self.mobile_phone
 
+    @property
+    def current_address(self):
+        return self.addresses.filter(is_current=True).first() or self.addresses.last()
+
 
 class UserAddress(TimestampModel):
+    class Meta:
+        ordering = "created_at",
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -83,10 +86,5 @@ class UserAddress(TimestampModel):
     local_brand = models.ForeignKey(
         "partners.LocalBrand",
         on_delete=models.PROTECT,
-        null=True,
-    )
-    branch = models.ForeignKey(
-        "partners.Branch",
-        on_delete=models.CASCADE,
         null=True,
     )

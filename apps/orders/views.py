@@ -15,6 +15,7 @@ from .models import Order, Lead, Cart
 from .models.orders import RateStar
 from .serializers import (
     ApplyLeadSerializer,
+    AuthorizedApplySerializer,
     LeadNomenclatureSerializer,
     BranchPositionSerializer,
     UpdateCartSerializer,
@@ -28,10 +29,7 @@ from .serializers import (
 )
 
 
-class ApplyView(JSONPublicAPIMixin, CreateAPIView):
-    serializer_class = ApplyLeadSerializer
-    queryset = Lead.objects.all()  # noqa
-
+class BaseApplyView(CreateAPIView):
     def perform_create(self, serializer):
         lead = serializer.save()
 
@@ -40,6 +38,16 @@ class ApplyView(JSONPublicAPIMixin, CreateAPIView):
         lead.save(update_fields=["branch"])
 
         # find_lead_organization(lead_pk=lead.pk)
+
+
+class ApplyView(JSONPublicAPIMixin, BaseApplyView):
+    serializer_class = ApplyLeadSerializer
+    queryset = Lead.objects.all()
+
+
+class AuthorizedApplyView(JSONRendererMixin, BaseApplyView):
+    serializer_class = AuthorizedApplySerializer
+    queryset = Lead.objects.all()
 
 
 class LeadShowView(JSONPublicAPIMixin, RetrieveAPIView):

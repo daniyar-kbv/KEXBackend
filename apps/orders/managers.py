@@ -13,5 +13,12 @@ class OrdersManager(Manager):
             user=user,
             cart=lead.cart,
         )
+        user.addresses.get_or_create(
+            address=lead.address,
+            defaults={
+                "is_current": True,
+                "local_brand": lead.local_brand,
+            },
+        )
 
         return order

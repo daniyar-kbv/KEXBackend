@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     ApplyView,
+    AuthorizedApplyView,
     BranchPositionView,
     LeadNomenclatureView,
     CartRetrieveUpdateView,
@@ -15,6 +16,7 @@ from .views import (
 urlpatterns = [
     path("", OrdersListView.as_view()),
     path("apply/", ApplyView.as_view()),
+    path("authorized-apply/", AuthorizedApplyView.as_view()),
     path('ratestars/', RateStarListView.as_view()),
     path('rates/', CreateRateOrderView.as_view()),
     path("<uuid:lead_uuid>/show/", LeadShowView.as_view()),
