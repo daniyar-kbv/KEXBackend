@@ -7,6 +7,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from phonenumber_field.modelfields import PhoneNumberField
 
 from apps.common.models import TimestampModel
+from django.conf import settings
+from config.settings import Languages
 
 from .managers import UserManager
 
@@ -16,9 +18,9 @@ class User(PermissionsMixin, AbstractBaseUser):
     name = models.CharField(_("Имя"), max_length=256, null=True)
     email = models.EmailField(null=True)
 
+    language = models.CharField(_("Язык"), max_length=20, choices=Languages.choices, default=settings.DEFAULT_LANGUAGE)
     is_active = models.BooleanField(_("Активный"), default=True)
     is_staff = models.BooleanField(_("Сотрудник"), default=False)
-
     secret_key = models.UUIDField(_("Секретный ключ"), default=uuid.uuid4, unique=True)
 
     created_at = models.DateTimeField(_("Создан"), default=timezone.now)
@@ -39,6 +41,10 @@ class User(PermissionsMixin, AbstractBaseUser):
             return True
 
         return perm in self.get_all_permissions(obj)
+
+    @property
+    def fb_token(self):
+        return self.firebase_token.token
 
     def set_is_current_false(self, current_pk: int) -> None:
         self.addresses.exclude(pk=current_pk).update(is_current=False)
