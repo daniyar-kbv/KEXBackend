@@ -46,9 +46,6 @@ class User(PermissionsMixin, AbstractBaseUser):
     def fb_token(self):
         return self.firebase_token.token
 
-    def set_is_current_false(self, current_pk: int) -> None:
-        self.addresses.exclude(pk=current_pk).update(is_current=False)
-
     def has_module_perms(self, app_label):
         if self.is_superuser:
             return True
@@ -66,7 +63,11 @@ class User(PermissionsMixin, AbstractBaseUser):
     def get_username(self):
         return self.mobile_phone
 
+    def deactivate_addresses(self):
+        self.addresses.update(is_current=False)
+
     def add_new_address(self, address, local_brand) -> None:
+        self.deactivate_addresses()
         self.addresses.get_or_create(
             address=address,
             defaults={
@@ -76,7 +77,9 @@ class User(PermissionsMixin, AbstractBaseUser):
         )
 
     def set_current_address(self, user_address) -> None:
-        ...
+        self.deactivate_addresses()
+        user_address.is_current = True
+        user_address.save(update_fields=["is_current"])
 
     @property
     def current_address(self):

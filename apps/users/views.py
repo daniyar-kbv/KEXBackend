@@ -1,10 +1,9 @@
-from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.generics import (
-    CreateAPIView,
     RetrieveAPIView,
     GenericAPIView,
     UpdateAPIView,
+    ListAPIView,
 )
 
 from apps.common.mixins import JSONRendererMixin
@@ -12,8 +11,8 @@ from apps.common.mixins import JSONRendererMixin
 from .models import UserAddress
 from .serializers import (
     AccountInfoSerializer,
-    AddUserAddressSerializer,
-    ChangeCurrentAddressSerializer,
+    UserAddressListSerializer,
+    UpdateUserAddressSerializer,
 )
 
 
@@ -40,19 +39,18 @@ class AccountUpdateView(JSONRendererMixin, GenericAPIView):
         return Response(serializer.validated_data)
 
 
-class AddUserAddressView(JSONRendererMixin, CreateAPIView):
+class UserAddressMixin(JSONRendererMixin):
     queryset = UserAddress.objects.all()
-    serializer_class = AddUserAddressSerializer
-
-
-class ChangeCurrentAddressView(JSONRendererMixin, UpdateAPIView):
-    http_method_names = ["put"]
-    queryset = UserAddress.objects.all()
-    serializer_class = ChangeCurrentAddressSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(user_id=self.request.user.id)
+        return super().get_queryset().filter(user=self.request.user)  # noqa
 
 
+class UpdateUserAddressView(UserAddressMixin, UpdateAPIView):
+    http_method_names = ["put"]
+    serializer_class = UpdateUserAddressSerializer
 
+
+class UserAddressListView(UserAddressMixin, ListAPIView):
+    serializer_class = UserAddressListSerializer
 

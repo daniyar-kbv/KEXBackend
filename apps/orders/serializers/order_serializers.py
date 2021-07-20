@@ -113,7 +113,7 @@ class AuthorizedApplyWithAddressSerializer(ApplyLeadSerializer):
         user = self.context["request"].user
         validated_data["user"] = user
         lead = super().create(validated_data)
-        user.set_current_address(lead.address, lead.local_brand)
+        user.add_new_address(lead.address, lead.local_brand)
 
         return lead
 

@@ -4,13 +4,13 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     AccountInfoView,
     AccountUpdateView,
-    AddUserAddressView,
-    ChangeCurrentAddressView,
+    UserAddressListView,
+    UpdateUserAddressView,
 )
 
 urlpatterns = [
     path("account-info/", AccountInfoView.as_view()),
     path("account-update/", AccountUpdateView.as_view()),
-    path("add-address/", AddUserAddressView.as_view()),
-    path("set-current/<int:pk>/", ChangeCurrentAddressView.as_view()),
+    path("addresses/", UserAddressListView.as_view()),
+    path("addresses/<int:pk>/", UpdateUserAddressView.as_view()),
 ]
