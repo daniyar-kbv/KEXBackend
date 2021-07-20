@@ -60,9 +60,21 @@ class User(PermissionsMixin, AbstractBaseUser):
     def get_username(self):
         return self.mobile_phone
 
+    def add_new_address(self, address, local_brand) -> None:
+        self.addresses.get_or_create(
+            address=address,
+            defaults={
+                "is_current": True,
+                "local_brand": local_brand,
+            },
+        )
+
+    def set_current_address(self, user_address) -> None:
+        ...
+
     @property
     def current_address(self):
-        return self.addresses.filter(is_current=True).first() or self.addresses.last()
+        return self.addresses.filter(is_current=True).last()
 
 
 class UserAddress(TimestampModel):

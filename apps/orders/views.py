@@ -16,6 +16,7 @@ from .models.orders import RateStar
 from .serializers import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
+    AuthorizedApplyWithAddressSerializer,
     LeadNomenclatureSerializer,
     BranchPositionSerializer,
     UpdateCartSerializer,
@@ -30,6 +31,8 @@ from .serializers import (
 
 
 class BaseApplyView(CreateAPIView):
+    queryset = Lead.objects.all()
+
     def perform_create(self, serializer):
         lead = serializer.save()
 
@@ -42,12 +45,14 @@ class BaseApplyView(CreateAPIView):
 
 class ApplyView(JSONPublicAPIMixin, BaseApplyView):
     serializer_class = ApplyLeadSerializer
-    queryset = Lead.objects.all()
 
 
 class AuthorizedApplyView(JSONRendererMixin, BaseApplyView):
     serializer_class = AuthorizedApplySerializer
-    queryset = Lead.objects.all()
+
+
+class AuthorizedApplyWithAddressView(JSONRendererMixin, BaseApplyView):
+    serializer_class = AuthorizedApplyWithAddressSerializer
 
 
 class LeadShowView(JSONPublicAPIMixin, RetrieveAPIView):

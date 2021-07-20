@@ -1,6 +1,7 @@
 from .order_serializers import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
+    AuthorizedApplyWithAddressSerializer,
     LeadDetailSerializer,
     LeadNomenclatureSerializer,
     BranchPositionSerializer,

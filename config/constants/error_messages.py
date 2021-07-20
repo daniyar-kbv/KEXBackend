@@ -55,4 +55,7 @@ ERROR_MESSAGES = {
     f"{ORDER_ALREADY_EXISTS}_{Languages.KAZAKH}": ("Заказ уже создан", ""),
     f"{ORDER_ALREADY_EXISTS}_{Languages.ENGLISH}": ("Заказ уже создан", ""),
 
+    f"{USER_HAS_NO_ADDRESS}_{Languages.RUSSIAN}": ("USER_HAS_NO_ADDRESS", ""),
+    f"{USER_HAS_NO_ADDRESS}_{Languages.KAZAKH}": ("USER_HAS_NO_ADDRESS", ""),
+    f"{USER_HAS_NO_ADDRESS}_{Languages.ENGLISH}": ("USER_HAS_NO_ADDRESS", ""),
 }

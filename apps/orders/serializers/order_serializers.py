@@ -13,7 +13,11 @@ from apps.nomenclature.models import (
 
 from .retrieve_cart_serializers import RetrieveCartSerializer
 
-from ..exceptions import EmptyCartError, OrderAlreadyExistError
+from ..exceptions import (
+    EmptyCartError,
+    OrderAlreadyExistError,
+    UserHasNoAddressError,
+)
 
 
 class LeadAddressSerializer(serializers.ModelSerializer):
@@ -39,56 +43,22 @@ class LeadAddressSerializer(serializers.ModelSerializer):
 
 
 class AuthorizedApplySerializer(serializers.ModelSerializer):
-    address = LeadAddressSerializer(write_only=True, required=False)
-
     class Meta:
         model = Lead
-        fields = (
-            "uuid",
-            "address",
-            "local_brand",
-        )
-        extra_kwargs = {
-            "uuid": {"read_only": True},
-            "local_brand": {
-                "required": False,
-                "write_only": True
-            },
-        }
+        fields = "uuid",
+        extra_kwargs = {"read_only": True}
 
     def validate(self, attrs):
-        attrs = super().validate(attrs)
+        if not self.context["request"].user.addresses.exists():
+            raise UserHasNoAddressError
 
-        if attrs.get("local_brand") and attrs.get("address"):
-            if not attrs["local_brand"].city == attrs["address"]["city"]:
-                raise BrandNotFound
-            # for testing
-            attrs["local_brand"] = LocalBrand.objects.active().first()
-        else:
-            if not self.context["request"].user.addresses.exists():
-                raise serializers.ValidationError("User not has a address")
-
-        return attrs
+        return super().validate(attrs)
 
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["user"] = user
-
-        if validated_data.get("address") and validated_data.get("local_brand"):
-            validated_data["address"], created = Address.objects.get_or_create(  # noqa
-                **validated_data.pop("address")
-            )
-            user.addresses.get_or_create(
-                address=validated_data["address"],
-                defaults={
-                    "is_current": True,
-                    "local_brand": validated_data["local_brand"],
-                },
-            )
-
-        else:
-            validated_data["address"] = user.current_address.address
-            validated_data["local_brand"] = user.current_address.local_brand
+        validated_data["address"] = user.current_address.address
+        validated_data["local_brand"] = user.current_address.local_brand
 
         lead = super().create(validated_data)
 
@@ -110,7 +80,8 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
             "local_brand",
         )
         extra_kwargs = {
-            "uuid": {"read_only": True}
+            "uuid": {"read_only": True},
+            "local_brand": {"write_only": True}
         }
 
     def validate(self, attrs):
@@ -125,7 +96,7 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        validated_data["address"], created = Address.objects.get_or_create(  # noqa
+        validated_data["address"] = Address.objects.create(  # noqa
             **validated_data.pop("address")
         )
         lead = super().create(validated_data)
@@ -133,6 +104,16 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
         if lead.cart is None:
             lead.cart = Cart.objects.create()
             lead.save(update_fields=["cart"])
+
+        return lead
+
+
+class AuthorizedApplyWithAddressSerializer(ApplyLeadSerializer):
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["user"] = user
+        lead = super().create(validated_data)
+        user.set_current_address(lead.address, lead.local_brand)
 
         return lead
 
