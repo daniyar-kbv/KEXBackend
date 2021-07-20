@@ -35,3 +35,6 @@ xlrd==1.2.0
 
 # dynamic settings
 django-constance[redis]==2.7.0
+
+# firebase
+firebase_admin==5.0.1
