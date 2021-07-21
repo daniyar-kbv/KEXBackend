@@ -12,7 +12,7 @@ from .views import (
     CreateRateOrderView,
     CreateOrderView,
     OrdersListView,
-)
+    CouponDetailView)
 
 urlpatterns = [
     path("", OrdersListView.as_view()),
@@ -30,4 +30,5 @@ urlpatterns = [
     ),
     path("<uuid:lead_uuid>/cart/", CartRetrieveUpdateView.as_view()),
     path("create/", CreateOrderView.as_view()),
+    path("coupons/<str:promocode>/", CouponDetailView.as_view()),
 ]

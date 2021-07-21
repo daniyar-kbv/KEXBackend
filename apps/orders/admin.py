@@ -3,7 +3,7 @@ from django.contrib import admin
 from apps.common.admin import HistoryInline
 
 from .models import Lead
-from .models.orders import RatedOrder, RateStar, RateSample, Order
+from .models.orders import RatedOrder, RateStar, RateSample, Order, CouponGroup, Coupon
 
 
 class LeadAdmin(admin.ModelAdmin):
@@ -23,3 +23,27 @@ class RateStarAdmin(admin.ModelAdmin):
 @admin.register(RatedOrder)
 class RatedOrderAdmin(admin.ModelAdmin):
     filter_horizontal = ['rate_samples']
+
+
+@admin.register(CouponGroup)
+class CouponGroupAdmin(admin.ModelAdmin):
+    list_display = ['name']
+
+
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    list_display = [
+        'group',
+        'promocode',
+        'start_date',
+        'end_date'
+    ]
+    list_filter = ['group']
+    search_fields = ['promocode']
+    fields = [
+        'group',
+        'promocode',
+        'description',
+        'start_date',
+        'end_date'
+    ]

@@ -10,9 +10,10 @@ from rest_framework.generics import (
 from apps.common.mixins import JSONPublicAPIMixin, JSONRendererMixin
 from apps.nomenclature.models import BranchPosition
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
+from .exceptions import CouponNotActive
 
 from .models import Order, Lead, Cart
-from .models.orders import RateStar
+from .models.orders import RateStar, Coupon
 from .serializers import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
@@ -28,6 +29,7 @@ from .serializers import (
     CreateOrderSerializer,
     OrdersListSerializer,
 )
+from .serializers.coupon_serializers import CouponSerializer
 
 
 class BaseApplyView(CreateAPIView):
@@ -134,3 +136,16 @@ class RateStarListView(JSONPublicAPIMixin, ListAPIView):
 
 class CreateRateOrderView(JSONPublicAPIMixin, CreateAPIView):
     serializer_class = CreateRateOrderSerializer
+
+
+class CouponDetailView(JSONPublicAPIMixin, RetrieveAPIView):
+    lookup_field = 'promocode'
+    serializer_class = CouponSerializer
+    queryset = Coupon.objects.all()
+
+    def get_object(self):
+        obj = super().get_object()
+        if obj:
+            if not obj.is_active():
+                raise CouponNotActive
+        return obj
