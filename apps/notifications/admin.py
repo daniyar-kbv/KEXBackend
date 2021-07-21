@@ -1,6 +1,20 @@
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericTabularInline, GenericStackedInline
 
-from .models import Notification, FirebaseToken
+from .models import Notification, FirebaseToken, NotificationTemplate
+
+
+class InlineNotification(GenericStackedInline):
+    verbose_name = "Пуш уведомление для акции"
+    model = Notification
+    min_num = 1
+    max_num = 1
+    fields = (
+        'title',
+        'description'
+    )
+    # ct_fk_field = "config_object_id"
+    # ct_field = "config_content_type"
 
 
 @admin.register(Notification)
@@ -13,6 +27,20 @@ class NotificationAdmin(admin.ModelAdmin):
         'description',
         'push_type',
         'date',
+    )
+
+
+@admin.register(NotificationTemplate)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = [
+        # 'name',
+        'title',
+        'description'
+    ]
+    fields = (
+        # 'name',
+        'title',
+        'description'
     )
 
 

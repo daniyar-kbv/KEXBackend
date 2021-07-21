@@ -23,6 +23,19 @@ class Notification(UUIDModel, AbstractTitleModel, AbstractDescriptionModel, Mult
         verbose_name_plural = "Пуш уведомления"
 
 
+class NotificationTemplate(AbstractTitleModel, AbstractDescriptionModel):
+    push_type = models.CharField(
+        max_length=255,
+        verbose_name="Тип",
+        choices=PushTypes.choices,
+        default=PushTypes.INFO
+    )
+
+    class Meta:
+        verbose_name = "Шаблон уведомления"
+        verbose_name_plural = "Шаблоны уведомлений"
+
+
 class FirebaseToken(models.Model):
     token = models.CharField("Firebase token", max_length=255, blank=True, null=True)
     lead = models.ForeignKey(Lead, verbose_name="Лид", on_delete=models.CASCADE, null=True)
