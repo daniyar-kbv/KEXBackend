@@ -58,4 +58,8 @@ ERROR_MESSAGES = {
     f"{USER_HAS_NO_ADDRESS}_{Languages.RUSSIAN}": ("USER_HAS_NO_ADDRESS", ""),
     f"{USER_HAS_NO_ADDRESS}_{Languages.KAZAKH}": ("USER_HAS_NO_ADDRESS", ""),
     f"{USER_HAS_NO_ADDRESS}_{Languages.ENGLISH}": ("USER_HAS_NO_ADDRESS", ""),
+
+    f"{COUPON_NOT_ACTIVE}_{Languages.RUSSIAN}": ("промокод не действителен", ""),
+    f"{COUPON_NOT_ACTIVE}_{Languages.KAZAKH}": ("promocode kazyr istemeidy", ""),
+    f"{COUPON_NOT_ACTIVE}_{Languages.ENGLISH}": ("coupon not active", ""),
 }
