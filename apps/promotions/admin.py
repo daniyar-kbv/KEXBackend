@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from apps.notifications.admin import InlineNotification
 from apps.promotions.models import Promotion, Participation
 
 
@@ -14,6 +15,7 @@ class PromotionAdmin(admin.ModelAdmin):
     ]
     list_editable = ['priority']
     prepopulated_fields = {"slug": ("template", 'promo_type')}
+    inlines = [InlineNotification]
 
 
 @admin.register(Participation)

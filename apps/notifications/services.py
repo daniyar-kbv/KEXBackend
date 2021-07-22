@@ -12,8 +12,8 @@ def form_notify_data(push: Notification):
 
     notify_data['date'] = push.date
     notify_data['extra'] = {
-        'push_type': push.push_type,
-        'push_type_value': push.content_object.id if push.content_object else ""
+        'push_type': str(push.push_type),
+        'push_type_value': str(push.content_object.id) if push.content_object else ""
     }
 
     return notify_data

@@ -50,6 +50,19 @@ def fcm_send_to_token():
     # [END send_to_token]
 
 
+def send_to_token(fb_token, title, body, extra={}):
+    message = messaging.Message(
+        notification=messaging.Notification(
+            title=str(title),
+            body=str(body),
+        ),
+        token=fb_token,
+        data=extra
+    )
+    response = messaging.send(message)
+    print('Sent message:', response)
+
+
 def fcm_send_to_topic():
     # [START send_to_topic]
     # The topic name can be optionally prefixed with "/topics/".
@@ -57,10 +70,10 @@ def fcm_send_to_topic():
 
     # See documentation on defining a message payload.
     message = messaging.Message(
-        data={
-            'score': '850',
-            'time': '2:45',
-        },
+        notification=messaging.Notification(
+            title='$GOOG up 1.43% on the day',
+            body='$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
+        ),
         topic=topic,
     )
 
@@ -320,6 +333,9 @@ def push_broadcast(notify_data):
 
     response = messaging.send_all(messages)
     print(response.responses)
+    if response.failure_count > 0:
+        print(response.failure_count)
+        print(response.responses[0].__dict__)
     print('{0} messages were sent successfully'.format(response.success_count))
     print("FCM: push_broadcast finished")
 
