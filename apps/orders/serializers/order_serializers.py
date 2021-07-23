@@ -204,6 +204,36 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
         return request.build_absolute_uri(obj.local_position.image.url)
 
 
+class NewNomenclatureCategorySerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    positions = NomenclaturePositionSerializer(source="branch_positions", many=True)
+
+    class Meta:
+        model = BranchCategory
+        fields = (
+            "name",
+            "uuid",
+            "positions",
+        )
+
+    def get_name(self, obj):
+        if not obj.name:
+            return
+
+        return obj.name.text(lang=self.context["language"])
+
+
+class NewLeadNomenclatureSerializer(serializers.ModelSerializer):
+    categories = NewNomenclatureCategorySerializer(source="branch.branch_categories", many=True, read_only=True)
+
+    class Meta:
+        model = Lead
+        fields = (
+            "uuid",
+            "categories",
+        )
+
+
 class LeadNomenclatureSerializer(serializers.ModelSerializer):
     categories = NomenclatureCategorySerializer(source="branch_categories", many=True, read_only=True)
     positions = NomenclaturePositionSerializer(source="branch_positions", many=True, read_only=True)

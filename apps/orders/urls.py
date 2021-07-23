@@ -6,6 +6,7 @@ from .views import (
     AuthorizedApplyWithAddressView,
     BranchPositionView,
     LeadNomenclatureView,
+    NewLeadNomenclatureView,
     CartRetrieveUpdateView,
     LeadShowView,
     RateStarListView,
@@ -22,6 +23,7 @@ urlpatterns = [
     path('ratestars/', RateStarListView.as_view()),
     path('rates/', CreateRateOrderView.as_view()),
     path("<uuid:lead_uuid>/show/", LeadShowView.as_view()),
+    path("<uuid:lead_uuid>/nomenclature-new/", NewLeadNomenclatureView.as_view()),
     path("<uuid:lead_uuid>/nomenclature/", LeadNomenclatureView.as_view(), name="order-nomenclature"),
     path(
         "<uuid:lead_uuid>/nomenclature/<uuid:position_uuid>/",

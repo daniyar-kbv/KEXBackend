@@ -19,6 +19,7 @@ from .serializers import (
     AuthorizedApplySerializer,
     AuthorizedApplyWithAddressSerializer,
     LeadNomenclatureSerializer,
+    NewLeadNomenclatureSerializer,
     BranchPositionSerializer,
     UpdateCartSerializer,
     LeadDetailSerializer,
@@ -62,6 +63,19 @@ class LeadShowView(JSONPublicAPIMixin, RetrieveAPIView):
     queryset = Lead.objects.all()
     lookup_field = "uuid"
     lookup_url_kwarg = "lead_uuid"
+
+
+class NewLeadNomenclatureView(JSONPublicAPIMixin, RetrieveAPIView):
+    serializer_class = NewLeadNomenclatureSerializer
+    queryset = Lead.objects.all()
+    lookup_field = "uuid"
+    lookup_url_kwarg = "lead_uuid"
+
+    def get_serializer_context(self):
+        return {
+            "request": self.request,
+            "language": self.request.META["HTTP_LANGUAGE"],
+        }
 
 
 class LeadNomenclatureView(JSONPublicAPIMixin, RetrieveAPIView):
