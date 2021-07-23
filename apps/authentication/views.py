@@ -27,6 +27,17 @@ from ..promotions.models import Participation, Promotion
 
 User = get_user_model()
 
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
+class Test(GenericAPIView):
+    permission_classes = [AllowAny]
+
+    def post(self,requset, *args, **kwargs):
+        print('request body')
+        print(requset.body)
+        return Response()
+
 
 class RegisterAccountView(
     PublicAPIMixin, JSONRendererMixin, CreateAPIView
