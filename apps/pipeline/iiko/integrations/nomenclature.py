@@ -1,12 +1,6 @@
 from decimal import Decimal
 from typing import TYPE_CHECKING, List, Dict, Tuple
 
-from ..python_entities.positions import (
-    Modifier as PythonModifier,
-    Position as PythonPosition,
-    ModifierGroup as PythonModifierGroup,
-)
-
 from .base import BaseIIKOService
 from .serializers import (
     IIKONomenclatureSerializer,
@@ -43,25 +37,22 @@ class GetBranchNomenclature(BaseIIKOService):
 
     @staticmethod
     def _fetch_modifier_groups(position) -> List[Dict]:
-        modifier_groups = list()
-        print("modifier groups:", modifier_groups)
-
-        for modifier_group in position["groupModifiers"]:
-            modifier_groups.append(PythonModifierGroup(
-                outer_id=modifier_group["id"],
-                min_amount=modifier_group["minAmount"],
-                max_amount=modifier_group["maxAmount"],
-                is_required=bool(modifier_group["required"]),
-                modifiers=[  # noqa
-                    PythonModifier(outer_id=modifier["id"],).__dict__
+        return [
+            {
+                "outer_id": modifier_group["id"],
+                "min_amount": modifier_group["minAmount"],
+                "max_amount": modifier_group["maxAmount"],
+                "is_required": bool(modifier_group["required"]),
+                "modifiers": [
+                    {
+                        "outer_id": modifier["id"]
+                    }
                     for modifier in modifier_group["childModifiers"]
                 ],
-            ).__dict__)
+            } for modifier_group in position.get("groupModifiers", list())
+        ]
 
-        return modifier_groups
-
-    @staticmethod
-    def sort_positions(positions):
+    def sort_positions(self, positions):  # noqa
         return sorted(
             positions,
             key=lambda x: bool(x.get('modifier_groups'))
@@ -79,7 +70,6 @@ class GetBranchNomenclature(BaseIIKOService):
         serializer.save()
 
     def save_position_groups(self, position_groups):
-        print("position groups:", position_groups)
         serializer = IIKOModifierGroupCreateSerializer(
             data=[
                 position_group for position_group in position_groups
@@ -93,6 +83,16 @@ class GetBranchNomenclature(BaseIIKOService):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
+    def filter_products(self, products):  # noqa
+        if not products:
+            return list()
+
+        return list(filter(
+            lambda x: (
+                x['productCategoryId'] or x.get("type") == "Modifier"
+            ), products)
+        )
+
     def prepare_to_save(self, data: dict) -> List:
         positions: List[Dict] = list()
         categories = data.get("productCategories")
@@ -101,24 +101,23 @@ class GetBranchNomenclature(BaseIIKOService):
         if categories is not None:
             self.save_categories(categories)
 
-        print("before save position groups")
         if position_groups is not None:
             self.save_position_groups(position_groups)
-        print("after saving positions")
 
-        for position in data.get("products", list()):
+        products = self.filter_products(data.get("products"))
+
+        for position in products:
             price, is_additional = self._fetch_price_and_is_additional(position)
-
-            positions.append(PythonPosition(
-                price=price,
-                outer_id=position.get('id'),
-                is_additional=is_additional,
-                iiko_name=position.get("name"),
-                iiko_description=position.get("description"),
-                category_outer_id=position.get("productCategoryId"),
-                local_brand=self.instance.local_brand_id, # noqa
-                modifier_groups=self._fetch_modifier_groups(position)  # noqa
-            ).__dict__)
+            positions.append({
+                "price": price,
+                "outer_id": position.get('id'),
+                "is_additional": is_additional,
+                "iiko_name": position.get("name"),
+                "iiko_description": position.get("description"),
+                "category_outer_id": position.get("productCategoryId"),
+                "local_brand": self.instance.local_brand_id, # noqa
+                "modifier_groups": self._fetch_modifier_groups(position)  # noqa
+            })
 
         return self.sort_positions(positions)
 
@@ -130,6 +129,5 @@ class GetBranchNomenclature(BaseIIKOService):
             data=self.prepare_to_save(prepared_data), many=True,
             context={"branch": self.instance}
         )
-
         serializer.is_valid(raise_exception=True)
         serializer.save()

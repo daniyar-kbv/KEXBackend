@@ -6,7 +6,10 @@ from rest_framework import serializers
 from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.partners.models import Branch
-from apps.common.utils import create_multi_language_char
+from apps.common.utils import (
+    create_multi_language_char,
+    create_multi_language_text,
+)
 from apps.nomenclature.models import (
     Category,
     LocalCategory,
@@ -132,23 +135,23 @@ class IIKOCategorySerializer(serializers.ModelSerializer):
             category.name = create_multi_language_char(name)
             category.save(update_fields=["name"])
 
-        local_category, created = LocalCategory.objects.update_or_create(
+        local_category, local_category_created = LocalCategory.objects.get_or_create(
             outer_id=outer_id,
             category=category,
             local_brand_id=branch.local_brand_id,
-            defaults={
-                "name": category.name,
-            }
         )
+        if local_category_created:
+            local_category.name = category.name
+            local_category.save(update_fields=["name"])
 
-        branch_category, created = BranchCategory.objects.update_or_create(
+        branch_category, branch_category_created = BranchCategory.objects.get_or_create(
             outer_id=outer_id,
             local_category=local_category,
             branch_id=branch.id,
-            defaults={
-                "name": category.name,
-            }
         )
+        if branch_category_created:
+            branch_category.name = category.name
+            branch_category.save(update_fields=["name"])
 
         return branch_category
 
@@ -195,28 +198,33 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             validated_data.pop("category_outer_id")
         )
 
-        local_position, created = LocalPosition.objects.update_or_create(  # noqa
+        local_position, local_position_created = LocalPosition.objects.get_or_create(  # noqa
             outer_id=validated_data.get("outer_id"),
-            defaults={
-                "local_brand": validated_data.get("local_brand"),
-                "local_category": local_category,
-            }
+            local_brand=validated_data.get("local_brand"),
         )
+
+        local_position.local_category = local_category
+
         if local_position.name is None and validated_data.get("iiko_name"):
             local_position.name = create_multi_language_char(validated_data["iiko_name"])
-            local_position.save(update_fields=["name"])
 
-        branch_position, created = BranchPosition.objects.update_or_create(  # noqa
+        if local_position.description is None and validated_data.get("iiko_description"):
+            local_position.description = create_multi_language_text(validated_data["iiko_description"])
+
+        local_position.save(update_fields=["local_category", "name", "description"])
+        branch_position, branch_position_created = BranchPosition.objects.get_or_create(  # noqa
             branch=self.context["branch"],
             local_position=local_position,
-            defaults={
-                "name": local_position.name,
-                "outer_id": local_position.outer_id,
-                "iiko_name": validated_data.get("iiko_name"),
-                "iiko_description": validated_data.get("iiko_description"),
-                "is_additional": validated_data.get("is_additional"),
-            }
+            outer_id=local_position.outer_id,
         )
+        branch_position.name = local_position.name
+        branch_position.description = local_position.description
+        branch_position.iiko_name=validated_data.get("iiko_name")
+        branch_position.iiko_description=validated_data.get("iiko_description")
+        branch_position.is_additional=validated_data.get("is_additional")
+        branch_position.save(update_fields=[
+            "name", "description", "iiko_name", "iiko_description", "is_additional"
+        ])
 
         for modifier_group in modifier_groups:
             group = ModifierGroup.objects.get(outer_id=modifier_group["outer_id"])
