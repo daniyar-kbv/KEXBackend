@@ -71,6 +71,7 @@ class PaymentService(PaymentBaseService):
         return self.fetch({
             'Amount': self.instance.price,
             'Currency': self.instance.currency,
+            'AccountId': str(self.instance.uuid),
             'IpAddress': self.instance.ip_address,
             'Name': self.instance.debit_card.card_holder_name,
             'CardCryptogramPacket': self.instance.cryptogram
