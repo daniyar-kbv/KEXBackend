@@ -82,10 +82,6 @@ class CardPaymentService(PaymentBaseService):
             'Token': self.instance.debit_card.card_token,
         })
 
-    def finalize_response(self, response):
-        print(response)
-        return super().finalize_response(response)
-
 
 class Confirm3DSService(PaymentBaseService):
     endpoint = "/payments/cards/post3ds"

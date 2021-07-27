@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from apps.payments import PaymentStatusTypes
 from apps.payments.models import Payment, DebitCard
 
 from .declined_codes import REASON_CODES
