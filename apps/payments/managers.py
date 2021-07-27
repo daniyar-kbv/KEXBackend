@@ -5,8 +5,11 @@ from . import PaymentStatusTypes
 
 
 class DebitCardsQuerySet(QuerySet):
-    def is_active(self):
-        return self.filter(is_active=True)
+    def active(self):
+        return self.filter(card_token__isnull=False)
+
+    def delete(self):
+        return super().delete()
 
 
 class DebitCardsManager(BaseManager.from_queryset(DebitCardsQuerySet)):

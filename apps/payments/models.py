@@ -12,19 +12,20 @@ User = get_user_model()
 
 class DebitCard(UUIDModel, TimestampModel):
     class Meta:
-        ordering = ("created_at",)
+        ordering = ("-updated_at",)
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="debit_cards",
     )
+    card_holder_name = models.CharField(
+        max_length=256,
+        null=True,
+    )
     card_account_id = models.CharField(
         max_length=1024,
         null=True,
-    )
-    card_holder_name = models.CharField(
-        max_length=256,
     )
     card_masked_number = models.CharField(
         max_length=256,
@@ -42,14 +43,20 @@ class DebitCard(UUIDModel, TimestampModel):
         max_length=256,
         null=True,
     )
-    is_active = models.BooleanField(
-        default=False,
-    )
 
     objects = DebitCardsManager()
 
+    def delete(self, using=None, keep_parents=False):
+        self.card_token = None
+        self.save(update_fields=["card_token"])
+
 
 class Payment(TimestampModel, UUIDModel):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="payments",
+    )
     order = models.ForeignKey(
         "orders.Order",
         on_delete=models.PROTECT,
@@ -93,6 +100,14 @@ class Payment(TimestampModel, UUIDModel):
         max_length=512,
     )
     cryptogram = models.CharField(max_length=1024, null=True)
+
+    keep_card = models.BooleanField(
+        default=False
+    )
+    card_holder_name = models.CharField(
+        max_length=256,
+        null=True,
+    )
 
     pa_req = models.CharField(max_length=1024, null=True)
     pa_res = models.CharField(max_length=1024, null=True)

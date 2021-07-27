@@ -1,4 +1,5 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import CreateAPIView, UpdateAPIView
 
 from apps.common.views import JSONRendererMixin
 
@@ -29,11 +30,14 @@ class Confirm3DSPaymentView(JSONRendererMixin, UpdateAPIView):
     lookup_url_kwarg = "payment_uuid"
 
 
-class DebitCardsListView(JSONRendererMixin, ListAPIView):
-    queryset = DebitCard.objects.is_active()
+class DebitCardsListViewSet(
+    JSONRendererMixin,
+    ModelViewSet,
+):
+    lookup_field = "uuid"
+    queryset = DebitCard.objects.all()
     serializer_class = DebitCardsSerializer
+    http_method_names = ["retrieve", "get", "put", "delete"]
 
     def get_queryset(self):
-        return self.queryset.filter(
-            user=self.request.user
-        )
+        return self.request.user.get_all_debit_cards

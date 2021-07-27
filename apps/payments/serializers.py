@@ -2,8 +2,8 @@ from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from apps.orders.models import Order
+from apps.pipeline.cloudpayments.services import make_payment
 
-from . import PaymentTypes
 from .models import Payment, DebitCard
 from .exceptions import OrderAlreadyPaidError
 
@@ -18,11 +18,19 @@ class DebitCardsSerializer(serializers.ModelSerializer):
             "card_expiration_date",
             "card_type",
         )
+        extra_kwargs = {
+            "uuid": {"read_only": True},
+            "card_holder_name": {"read_only": True},
+            "card_masked_number": {"read_only": True},
+            "card_expiration_date": {"read_only": True},
+            "card_type": {"read_only": True},
+        }
 
 
 class CreatePaymentSerializer(serializers.ModelSerializer):
-    lead = serializers.UUIDField(required=True, write_only=True)
-    card_holder_name = serializers.CharField(required=True, write_only=True)
+    lead = serializers.UUIDField(source="order", required=True, write_only=True)
+    keep_card = serializers.BooleanField(default=False, write_only=True)
+    card_holder_name = serializers.CharField(required=False, write_only=True)
 
     class Meta:
         model = Payment
@@ -32,6 +40,7 @@ class CreatePaymentSerializer(serializers.ModelSerializer):
             "pa_req",
             "acs_url",
             "outer_id",
+            "keep_card",
             "payment_type",
             "card_holder_name",
             "cryptogram",
@@ -39,38 +48,32 @@ class CreatePaymentSerializer(serializers.ModelSerializer):
             "status_reason",
         )
         extra_kwargs = {
-            "uuid": {"read_only": True},
-            "status": {"read_only": True},
-            "outer_id": {"read_only": True},
+            "card_holder_name": {"required": False},
             "cryptogram": {"write_only": True},
-            "status_reason": {"read_only": True},
             "payment_type": {"write_only": True},
+            "status_reason": {"read_only": True},
+            "outer_id": {"read_only": True},
+            "status": {"read_only": True},
+            "uuid": {"read_only": True},
             "pa_req": {"read_only": True, "required": False},
             "acs_url": {"read_only": True, "required": False},
         }
 
+    def validate_lead(self, value):
+        return get_object_or_404(Order, lead_id=value)
+
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        order = get_object_or_404(Order, lead_id=attrs.pop("lead"))
-
-        if order.payments.completed().exists():
+        if attrs["order"].payments.completed().exists():
             raise OrderAlreadyPaidError()
-
-        attrs["order"] = order
-        attrs["price"] = order.cart.price
 
         return attrs
 
     def create(self, validated_data):
-        from apps.pipeline.cloudpayments.services import make_payment
-
         request = self.context["request"]
-
+        validated_data["user"] = request.user
         validated_data["ip_address"] = request.META["REMOTE_ADDR"]
-        validated_data["debit_card"] = DebitCard.objects.create(
-            card_holder_name=validated_data.pop("card_holder_name"),
-            user=request.user,
-        )
+        validated_data["price"] = validated_data["order"].cart.price
 
         payment = super().create(validated_data)
         make_payment(payment.pk)

@@ -14,6 +14,10 @@ from .managers import UserManager
 
 
 class User(PermissionsMixin, AbstractBaseUser):
+    class Meta:
+        verbose_name = _("Учетная запись")
+        verbose_name_plural = _("Учетная запись")
+
     mobile_phone = PhoneNumberField(_("Моб. телефон"), unique=True)
     name = models.CharField(_("Имя"), max_length=256, null=True)
     email = models.EmailField(null=True)
@@ -30,21 +34,15 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     objects = UserManager()
 
-    def clean(self):
-        pass
+    def __str__(self):
+        return f"{self._meta.verbose_name} {str(self.pk)} ({self.mobile_phone})"
 
     def has_perm(self, perm, obj=None):
         if not self.is_active:
             return False
-
         if self.is_superuser:
             return True
-
         return perm in self.get_all_permissions(obj)
-
-    @property
-    def fb_token(self):
-        return self.firebase_token.token
 
     def has_module_perms(self, app_label):
         if self.is_superuser:
@@ -52,13 +50,6 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.is_active and any(
             perm[: perm.index(".")] == app_label for perm in self.get_all_permissions()
         )
-
-    class Meta:
-        verbose_name = _("Учетная запись")
-        verbose_name_plural = _("Учетная запись")
-
-    def __str__(self):
-        return f"{self._meta.verbose_name} {str(self.pk)} ({self.mobile_phone})"
 
     def get_username(self):
         return self.mobile_phone
@@ -84,6 +75,18 @@ class User(PermissionsMixin, AbstractBaseUser):
     @property
     def current_address(self):
         return self.addresses.filter(is_current=True).last()
+
+    @property
+    def get_all_debit_cards(self):
+        return self.debit_cards.active()
+
+    @property
+    def current_debit_card(self):
+        return self.debit_cards.first()
+
+    @property
+    def fb_token(self):
+        return self.firebase_token.token
 
 
 class UserAddress(TimestampModel):
