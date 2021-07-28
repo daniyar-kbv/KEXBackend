@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from apps.orders.models import Lead, Order
-from apps.users.serializers import ShortAddressSerializer
+from apps.location.serializers import AddressSerializer
 from apps.partners.serializers import SquareImageBrandSerializer
 from apps.nomenclature.models import (
     BranchPosition,
@@ -107,7 +107,7 @@ class BranchPositionSerializer(serializers.ModelSerializer):
 
 class OrdersListSerializer(serializers.ModelSerializer):
     cart = RetrieveCartSerializer()
-    address = ShortAddressSerializer(source="lead.address")
+    address = AddressSerializer(source="lead.address")
     brand = SquareImageBrandSerializer(source="lead.local_brand.brand")
     price = serializers.CharField(source="completed_payment.price", required=False)
     created_at = serializers.DateTimeField(source="completed_payment.created_at", required=False)

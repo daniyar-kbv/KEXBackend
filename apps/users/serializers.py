@@ -1,24 +1,9 @@
 from rest_framework import serializers
 
-from apps.location.models import Address
+from apps.location.serializers import AddressSerializer
 
 from .models import User, UserAddress
 from ..notifications.firebase import subscribe_to_language_topic
-
-
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = "__all__"
-
-
-class ShortAddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = [
-            'street',
-            'building'
-        ]
 
 
 class UserAddressListSerializer(serializers.ModelSerializer):
@@ -44,21 +29,8 @@ class UpdateUserAddressSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class UserAddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = "__all__"
-
-    extra_kwargs = {
-        "country": {"required": True},
-        "city": {"required": True},
-        "longitude": {"required": True},
-        "latitude": {"required": True},
-    }
-
-
 class AccountInfoSerializer(serializers.ModelSerializer):
-    current_address = UserAddressSerializer(required=False)
+    current_address = AddressSerializer(required=False)
 
     class Meta:
         model = User
