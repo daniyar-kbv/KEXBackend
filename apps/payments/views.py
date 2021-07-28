@@ -1,5 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView, UpdateAPIView
+from django.shortcuts import render
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
+from rest_framework.views import APIView
 
 from apps.common.views import JSONRendererMixin
 
@@ -10,6 +13,7 @@ from .serializers import (
     CreateCardPaymentSerializer,
     Confirm3DSPaymentSerializer,
 )
+from apps.common.mixins import PublicAPIMixin
 
 
 class CreatePaymentView(JSONRendererMixin, CreateAPIView):
@@ -41,3 +45,9 @@ class DebitCardsListViewSet(
 
     def get_queryset(self):
         return self.request.user.get_all_debit_cards
+
+
+class TestPaymentRenderView(PublicAPIMixin, APIView):
+
+    def get(self, request):
+        return render(request, 'payments/create_payment.html')
