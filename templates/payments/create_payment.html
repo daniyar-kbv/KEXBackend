@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Payment by Checkout Script</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            background: #4C8BF4;
+        }
+        .payment-block {
+            background: white;
+            width: 300px;
+            padding: 15px;
+            text-align: center;
+            margin: auto;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+        form {
+            display: inline-block;
+        }
+        form input {
+            display: block;
+            margin: 8px 15px;
+            padding: 7px 10px;
+            font-size: 12pt;
+        }
+        .form-row {
+            display: flex;
+        }
+        .expDateMonth {
+            width: 30px;
+        }
+        .expDateYear {
+            width: 30px;
+            margin: 8px 8px;
+        }
+        .cvv {
+            width: 40px;
+        }
+        .paybtn {
+            background: #4C8BF4;
+            border: none;
+            padding: 15px;
+            margin: 8px 15px;
+            width: 100%;
+            color: white;
+            border-radius: 10px;
+            transition: 0.3s background;
+        }
+        .paybtn:hover {
+            background: #3271CF;
+        }
+        .cryptogram-block {
+            display: none;
+            padding: 30px;
+            border-radius: 10px;
+            background: white;
+            word-wrap: break-word;
+            margin: auto;
+            margin-top: 50px;
+            width: 700px;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-block">
+        <form id="paymentFormSample" autocomplete="off">
+            <div class="form-row">
+                <input class="cardNumber" type="text" data-cp="cardNumber" placeholder="cardNumber">
+            </div>
+            <div class="form-row">
+                <input class="expDateMonth" type="text" data-cp="expDateMonth" placeholder="MM">
+                <input class="expDateYear" type="text" data-cp="expDateYear" placeholder="YY">
+                <input class="cvv" type="text" data-cp="cvv" placeholder="CVV">
+            </div>
+            <div class="form-row">
+                <input class="name" type="text" data-cp="name" placeholder="name">
+            </div>
+            <div class="form-row">
+                <button class="paybtn" type="button" onclick="createCryptogram()">Оплатить 100 р.</button>
+            </div>
+        </form>
+    </div>
+    <div class="cryptogram-block"></div>
+    <script src="https://widget.cloudpayments.ru/bundles/checkout"></script>
+    <script>
+        this.createCryptogram = function () {
+            var result = checkout.createCryptogramPacket();
+
+            if (result.success) {
+                // сформирована криптограмма
+                console.log(result.packet);
+                $('.cryptogram-block').show();
+                $('.cryptogram-block').text(result.packet);
+            }
+            else {
+                // найдены ошибки в введённых данных, объект `result.messages` формата:
+                // { name: "В имени держателя карты слишком много символов", cardNumber: "Неправильный номер карты" }
+                // где `name`, `cardNumber` соответствуют значениям атрибутов `<input ... data-cp="cardNumber">`
+               for (var msgName in result.messages) {
+                   console.log(result.messages[msgName]);
+               }
+            }
+        };
+
+        $(function () {
+            /* Создание checkout */
+            checkout = new cp.Checkout(
+            // public id из личного кабинета
+            "pk_2ec019c3a3a24b44996a1a2ca6f8c",
+            // тег, содержащий поля данных карты
+            document.getElementById("paymentFormSample"));
+        });
+    </script>
+</body>
+</html>
