@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 class PaymentBaseService(BaseCloudPaymentsService):
     save_serializer = CloudPaymentsPaymentSerializer
+    instance: 'Payment'
 
     _status_mapping = {
         "Completed": PaymentStatusTypes.COMPLETED,
@@ -33,12 +34,12 @@ class PaymentBaseService(BaseCloudPaymentsService):
         model = data.get("Model", {})
 
         return {
-            "rrn": model.get("Rrn"),
-            "outer_id": model.get("TransactionId"),
-            "reason_code": model.get("ReasonCode"),
             "status": self.get_status(model),
-            "acs_url": model.get("AcsUrl"),
-            "pa_req": model.get("PaReq"),
+            "reason_code": model.get("ReasonCode"),
+            "rrn": model.get("Rrn", self.instance.rrn),
+            "pa_req": model.get("PaReq", self.instance.pa_req),
+            "acs_url": model.get("AcsUrl", self.instance.acs_url),
+            "outer_id": model.get("TransactionId", self.instance.outer_id),
             "debit_card": {
                 "card_token": model.get("Token"),
                 "card_type": model.get("CardType"),
@@ -56,7 +57,6 @@ class PaymentBaseService(BaseCloudPaymentsService):
 
 class PaymentService(PaymentBaseService):
     endpoint = "/payments/cards/charge"
-    instance: 'Payment'
 
     def run_service(self):
         return self.fetch({
@@ -71,7 +71,6 @@ class PaymentService(PaymentBaseService):
 
 class CardPaymentService(PaymentBaseService):
     endpoint = "/payments/tokens/charge"
-    instance: 'Payment'
 
     def run_service(self):
         return self.fetch(json={
@@ -85,7 +84,6 @@ class CardPaymentService(PaymentBaseService):
 
 class Confirm3DSService(PaymentBaseService):
     endpoint = "/payments/cards/post3ds"
-    instance: 'Payment'
 
     def run_service(self):
         return self.fetch({

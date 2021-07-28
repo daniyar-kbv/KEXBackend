@@ -36,7 +36,9 @@ class CloudPaymentsPaymentSerializer(serializers.ModelSerializer):
         )
 
     def register_debit_card(self, debit_card, payment):  # noqa
-        print("debit_card:", debit_card)
+        if payment.debit_card is not None:
+            return payment.debit_card
+
         if not payment.keep_card or debit_card is None or debit_card.get("card_token") is None:
             return
 
