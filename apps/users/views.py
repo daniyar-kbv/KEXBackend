@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.generics import (
     RetrieveAPIView,
     GenericAPIView,
-    UpdateAPIView,
+    DestroyAPIView,
     ListAPIView,
 )
 
@@ -46,7 +46,7 @@ class UserAddressMixin(JSONRendererMixin):
         return super().get_queryset().filter(user=self.request.user)  # noqa
 
 
-class UpdateUserAddressView(UserAddressMixin, UpdateAPIView):
+class UpdateUserAddressView(UserAddressMixin, DestroyAPIView):
     http_method_names = ["put"]
     serializer_class = UpdateUserAddressSerializer
 

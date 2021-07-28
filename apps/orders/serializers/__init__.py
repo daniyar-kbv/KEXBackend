@@ -1,10 +1,12 @@
-from .order_serializers import (
+from .lead_serializer import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
     AuthorizedApplyWithAddressSerializer,
     LeadDetailSerializer,
     LeadNomenclatureSerializer,
     NewLeadNomenclatureSerializer,
+)
+from .order_serializers import (
     BranchPositionSerializer,
     CreateOrderSerializer,
     OrdersListSerializer,
