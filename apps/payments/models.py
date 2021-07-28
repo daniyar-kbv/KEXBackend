@@ -66,6 +66,7 @@ class Payment(TimestampModel, UUIDModel):
         DebitCard,
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
         to_field="uuid",
         related_name="payments",
     )
@@ -114,6 +115,10 @@ class Payment(TimestampModel, UUIDModel):
     acs_url = models.URLField(max_length=512, null=True)
 
     objects = PaymentsManager()
+
+    class Meta:
+        verbose_name = "Платеж"
+        verbose_name_plural = "Платежи"
 
     @property
     def is_completed(self):

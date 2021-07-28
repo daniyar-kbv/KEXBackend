@@ -131,7 +131,7 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
 
 
 class OrdersListView(JSONRendererMixin, ListAPIView):
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().select_related('lead', 'cart').prefetch_related('payments').order_by('-created_at')
     serializer_class = OrdersListSerializer
 
     def get_queryset(self):

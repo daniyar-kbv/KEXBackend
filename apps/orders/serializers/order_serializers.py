@@ -18,6 +18,9 @@ from ..exceptions import (
     OrderAlreadyExistError,
     UserHasNoAddressError,
 )
+from ...partners.serializers import BrandSerializer, SquareImageBrandSerializer
+from ...payments import PaymentStatusTypes
+from ...users.serializers import AddressSerializer, ShortAddressSerializer
 
 
 class LeadAddressSerializer(serializers.ModelSerializer):
@@ -359,14 +362,36 @@ class BranchPositionSerializer(serializers.ModelSerializer):
 
 
 class OrdersListSerializer(serializers.ModelSerializer):
+    brand = SquareImageBrandSerializer(source="lead.local_brand.brand")
+    address = ShortAddressSerializer(source="lead.address")
+    created_at = serializers.SerializerMethodField()
+    payment_type = serializers.SerializerMethodField()
+    cart = RetrieveCartSerializer()
+    total_sum = serializers.SerializerMethodField()
+
     class Meta:
         model = Order
         fields = (
             "id",
+            "brand",
+            "address",
+            "cart",
+            "total_sum",
+            "created_at",
             "status",
+            "payment_type",
             "status_reason",
             "lead_id",
         )
+
+    def get_payment_type(self, obj):
+        return obj.payment.payment_type
+
+    def get_created_at(self, obj):
+        return obj.payment.created_at
+
+    def get_total_sum(self, obj):
+        return obj.payment.price
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):

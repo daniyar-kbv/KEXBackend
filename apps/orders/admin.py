@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from apps.common.admin import HistoryInline
 
-from .models import Lead
+from .models import Lead, Cart
 from .models.orders import RatedOrder, RateStar, RateSample, Order, CouponGroup, Coupon
 
 
@@ -13,6 +13,7 @@ class LeadAdmin(admin.ModelAdmin):
 admin.site.register(Lead, LeadAdmin)
 admin.site.register(RateSample)
 admin.site.register(Order)
+admin.site.register(Cart)
 
 
 @admin.register(RateStar)

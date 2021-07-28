@@ -12,6 +12,15 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ShortAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = [
+            'street',
+            'building'
+        ]
+
+
 class UserAddressListSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
 

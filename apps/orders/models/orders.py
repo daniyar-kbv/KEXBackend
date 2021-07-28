@@ -16,6 +16,7 @@ from apps.common.models import (
 
 from apps.orders import OrderStatuses
 from apps.orders.managers import OrdersManager
+from apps.payments import PaymentStatusTypes
 from apps.translations.models import MultiLanguageChar, MultiLanguageText
 
 User = get_user_model()
@@ -124,6 +125,12 @@ class Order(
 
     def mark_as_paid(self):
         self.change_status(status=OrderStatuses.PAID)
+
+    @property
+    def payment(self):
+        if self.payments.filter(status=PaymentStatusTypes.COMPLETED).exists():
+            return self.payments.get(status=PaymentStatusTypes.COMPLETED)
+        return None
 
 
 class OrderStatusTransition(TimestampModel):
