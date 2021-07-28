@@ -3,15 +3,21 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from . import PromotionTypes
-from apps.translations.models import MultiLanguageFile
+from apps.translations.models import MultiLanguageFile, MultiLanguageText
 from apps.docs.models import TemplateModel
+from apps.common.models import AbstractDescriptionModel
+from ..partners.models import LocalBrand
 
 User = get_user_model()
 
 
-class Promotion(TemplateModel):
+class Promotion(TemplateModel, AbstractDescriptionModel):
     image = models.ForeignKey(MultiLanguageFile, verbose_name="Картинка", on_delete=models.CASCADE)
     promo_type = models.CharField("Тип Акции", max_length=20, choices=PromotionTypes.choices)
+    description = models.ForeignKey(
+        MultiLanguageText, verbose_name=_("Текстовое описание (для сайта)"), on_delete=models.CASCADE, null=True
+    )
+    local_brand = models.ManyToManyField(LocalBrand, verbose_name=_("Локальный бренд"), blank=True)
     # contest_type = models.CharField("Тип Конкурса", max_length=20, choices=PromotionTypes.choices)
 
     class Meta:

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.common.mixins import PublicAPIMixin, JSONPublicAPIMixin, JSONRendererMixin
+from apps.orders.models import Lead
 from apps.promotions import PromotionTypes
 from apps.promotions.models import Promotion, Participation
 from apps.promotions.services import get_instagram_auth_url, save_user_instagram
@@ -22,17 +23,20 @@ class PromoTypeMixin:
 class PromotionContestRenderView(PromoTypeMixin, PublicAPIMixin, APIView):
     queryset = Promotion.objects.all()
 
-    def get(self, request):
+    def get(self, request, lead_uuid):
         return render(request, 'promotions/contest.html', {'promo_type': self.promo_type})
 
 
 class PromotionContestDebutView(PromoTypeMixin, JSONRendererMixin, APIView):
     queryset = Participation.objects.all()
 
-    def get(self, request):
+    def get(self, request, lead_uuid):
         app_name = '/promotions/'
         period = request.GET.get('period')
-        promotion = Promotion.objects.filter(promo_type__iexact=self.promo_type).first()
+        promotion = Promotion.objects.filter(
+            promo_type__iexact=self.promo_type,
+            local_brand__in=[Lead.objects.get(uuid=self.kwargs.get('lead_uuid')).local_brand]
+        ).first()
         if promotion:
             if not period:
                 objs = self.queryset.filter(promotion=promotion)

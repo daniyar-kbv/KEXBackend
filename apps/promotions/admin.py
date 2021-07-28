@@ -16,6 +16,7 @@ class PromotionAdmin(admin.ModelAdmin):
     list_editable = ['priority']
     prepopulated_fields = {"slug": ("template", 'promo_type')}
     inlines = [InlineNotification]
+    filter_horizontal = ['local_brand']
 
 
 @admin.register(Participation)
