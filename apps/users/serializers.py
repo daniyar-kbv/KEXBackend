@@ -6,7 +6,7 @@ from .models import User, UserAddress
 from ..notifications.firebase import subscribe_to_language_topic
 
 
-class UserAddressListSerializer(serializers.ModelSerializer):
+class UserAddressSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
 
     class Meta:
@@ -30,7 +30,7 @@ class UpdateUserAddressSerializer(serializers.ModelSerializer):
 
 
 class AccountInfoSerializer(serializers.ModelSerializer):
-    current_address = AddressSerializer(required=False)
+    current_address = UserAddressSerializer(required=False)
 
     class Meta:
         model = User

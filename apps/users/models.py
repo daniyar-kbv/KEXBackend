@@ -54,27 +54,20 @@ class User(PermissionsMixin, AbstractBaseUser):
     def get_username(self):
         return self.mobile_phone
 
-    def deactivate_addresses(self):
-        self.addresses.update(is_current=False)
-
     def add_new_address(self, address, local_brand) -> None:
-        self.deactivate_addresses()
         self.addresses.get_or_create(
             address=address,
             defaults={
-                "is_current": True,
                 "local_brand": local_brand,
             },
         )
 
     def set_current_address(self, user_address) -> None:
-        self.deactivate_addresses()
-        user_address.is_current = True
         user_address.save(update_fields=["is_current"])
 
     @property
     def current_address(self):
-        return self.addresses.filter(is_current=True).last()
+        return self.addresses.first()
 
     @property
     def get_all_debit_cards(self):
@@ -91,7 +84,7 @@ class User(PermissionsMixin, AbstractBaseUser):
 
 class UserAddress(TimestampModel):
     class Meta:
-        ordering = "created_at",
+        ordering = ("-updated_at",)
 
     user = models.ForeignKey(
         User,
@@ -102,10 +95,6 @@ class UserAddress(TimestampModel):
         "location.Address",
         on_delete=models.CASCADE,
         null=True,
-    )
-    is_current = models.BooleanField(
-        _("Текущий адрес"),
-        default=False,
     )
     local_brand = models.ForeignKey(
         "partners.LocalBrand",

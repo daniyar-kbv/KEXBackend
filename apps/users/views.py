@@ -11,7 +11,7 @@ from apps.common.mixins import JSONRendererMixin
 from .models import UserAddress
 from .serializers import (
     AccountInfoSerializer,
-    UserAddressListSerializer,
+    UserAddressSerializer,
     UpdateUserAddressSerializer,
 )
 
@@ -52,5 +52,5 @@ class UpdateUserAddressView(UserAddressMixin, DestroyAPIView):
 
 
 class UserAddressListView(UserAddressMixin, ListAPIView):
-    serializer_class = UserAddressListSerializer
+    serializer_class = UserAddressSerializer
 

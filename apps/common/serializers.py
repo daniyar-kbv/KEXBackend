@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-# from .models import TestCountry
-
 
 class AbstractNameSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -10,7 +8,12 @@ class AbstractNameSerializer(serializers.ModelSerializer):
         abstract = True
 
     def get_name(self, obj):
-        return getattr(obj.name, self.context['request'].headers.get('language'))
+        try:
+            language = self.context['request'].headers.get('language')
+        except Exception:
+            language = "ru"
+
+        return getattr(obj.name, language)
 
 
 class AbstractTitleSerializer(serializers.ModelSerializer):
