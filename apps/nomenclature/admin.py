@@ -83,3 +83,15 @@ class BranchPositionInline(ReadChangeOnlyTabularInline):
         "iiko_name",
         "branch_category",
     )
+
+
+@admin.register(LocalPosition)
+class LocalPositionAdmin(admin.ModelAdmin):
+    list_filter = "local_brand",
+    readonly_fields = (
+        "name",
+        "description",
+        "local_category",
+        "local_brand",
+        "outer_id",
+    )
