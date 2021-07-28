@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from apps.common.serializers import AbstractImageSerializer, AbstractNameSerializer
+from apps.common.serializers import AbstractImageSerializer, AbstractNameSerializer, AbstractDescriptionSerializer
 from apps.promotions.models import Promotion, Participation
 
 
-class PromotionListSerializer(AbstractNameSerializer, AbstractImageSerializer):
+class PromotionListSerializer(AbstractNameSerializer, AbstractImageSerializer, AbstractDescriptionSerializer):
     link = serializers.CharField(required=False)
 
     class Meta:
@@ -12,8 +12,9 @@ class PromotionListSerializer(AbstractNameSerializer, AbstractImageSerializer):
         fields = [
             'priority',
             'id',
+            'promo_type',
             'name',
-            # 'promotion_type',
+            'description',
             'image',
             'slug',
             'link',
