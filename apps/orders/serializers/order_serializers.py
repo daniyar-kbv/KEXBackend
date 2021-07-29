@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 
 from apps.orders.models import Lead, Order
 from apps.location.serializers import AddressSerializer
@@ -136,20 +137,21 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = "lead",
 
+    def validate_lead(self, value):
+        return get_object_or_404(Lead, uuid=value)
+
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        lead = Lead.objects.get(uuid=attrs["lead"])
 
-        if hasattr(lead, "order"):
-            raise OrderAlreadyExistError
-        if lead.cart is None or not lead.cart.positions.exists():
+        # if hasattr(lead, "order"):
+        #     raise OrderAlreadyExistError
+        if attrs["lead"].cart is None or not attrs["lead"].cart.positions.exists():
             raise EmptyCartError
 
-        attrs["lead"] = lead
         return attrs
 
     def create(self, validated_data):
-        return Order.objects.create_from_lead(
+        return Order.objects.get_or_create_from_lead(
             self.context["request"].user,
             validated_data["lead"]
         )

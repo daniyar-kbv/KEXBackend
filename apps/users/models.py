@@ -63,7 +63,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         )
 
     def set_current_address(self, user_address) -> None:
-        user_address.save(update_fields=["is_current"])
+        user_address.save()
 
     @property
     def current_address(self):
