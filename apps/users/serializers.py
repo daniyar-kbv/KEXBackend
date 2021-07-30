@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.location.serializers import AddressSerializer
 from apps.partners.serializers import SquareImageBrandSerializer
+from apps.payments.serializers import DebitCardsSerializer
 
 from .models import User, UserAddress
 from ..notifications.firebase import subscribe_to_language_topic
@@ -9,7 +10,6 @@ from ..notifications.firebase import subscribe_to_language_topic
 
 class UserAddressSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
-    is_current = serializers.BooleanField()
     local_brand = SquareImageBrandSerializer(source="local_brand.brand", read_only=True)
 
     class Meta:
@@ -33,7 +33,8 @@ class UpdateUserAddressSerializer(serializers.ModelSerializer):
 
 
 class AccountInfoSerializer(serializers.ModelSerializer):
-    current_address = UserAddressSerializer(required=False)
+    current_address = serializers.IntegerField(source="current_address_pk", required=False, read_only=True)
+    current_debit_card = serializers.IntegerField(source="current_debit_card_pk", required=False, read_only=True)
 
     class Meta:
         model = User
@@ -42,8 +43,13 @@ class AccountInfoSerializer(serializers.ModelSerializer):
             "email",
             "mobile_phone",
             "current_address",
+            "current_debit_card",
+            "last_payment_type",
             "language"
         ]
+        extra_kwargs = {
+            "last_payment_type": {"read_only": True, "required": False}
+        }
 
     def validate_language(self, value):
         subscribe_to_language_topic(value, [self.instance.fb_token])

@@ -75,6 +75,11 @@ class User(PermissionsMixin, AbstractBaseUser):
             return self.addresses.first().pk
 
     @property
+    def last_payment_type(self):
+        if self.payments.exists():
+            return self.payments.last().payment_type
+
+    @property
     def get_all_debit_cards(self):
         return self.debit_cards.active()
 
