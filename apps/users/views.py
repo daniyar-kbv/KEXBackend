@@ -1,10 +1,6 @@
 from rest_framework.response import Response
-from rest_framework.generics import (
-    RetrieveAPIView,
-    GenericAPIView,
-    DestroyAPIView,
-    ListAPIView,
-)
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import RetrieveAPIView, GenericAPIView
 
 from apps.common.mixins import JSONRendererMixin
 
@@ -39,18 +35,15 @@ class AccountUpdateView(JSONRendererMixin, GenericAPIView):
         return Response(serializer.validated_data)
 
 
-class UserAddressMixin(JSONRendererMixin):
+class UserAddressViewSet(JSONRendererMixin, ModelViewSet):
     queryset = UserAddress.objects.all()
+    http_method_names = ["put", "get", "delete"]
 
     def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)  # noqa
+        return super().get_queryset().filter(user=self.request.user)
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return UserAddressSerializer
 
-class UpdateUserAddressView(UserAddressMixin, DestroyAPIView):
-    http_method_names = ["put"]
-    serializer_class = UpdateUserAddressSerializer
-
-
-class UserAddressListView(UserAddressMixin, ListAPIView):
-    serializer_class = UserAddressSerializer
-
+        return UpdateUserAddressSerializer
