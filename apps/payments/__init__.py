@@ -6,6 +6,7 @@ class CurrencyTypes(TextChoices):
 
 
 class PaymentTypes(TextChoices):
+    CASH = "CASH", "Оплата наличными"
     DEBIT_CARD = "DEBIT_CARD", "Оплата дебетовой картой"
     GOOGLE_PAY = "GOOGLE_PAY", "Оплата через GooglePay"
     APPLE_PAY = "APPLE_PAY", "Оплата через ApplePay"
