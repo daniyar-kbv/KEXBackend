@@ -11,10 +11,13 @@ from .exceptions import OrderAlreadyPaidError
 
 
 class DebitCardsSerializer(serializers.ModelSerializer):
+    is_current = serializers.BooleanField(read_only=True, required=False)
+
     class Meta:
         model = DebitCard
         fields = (
             "uuid",
+            "is_current",
             "card_holder_name",
             "card_masked_number",
             "card_expiration_date",

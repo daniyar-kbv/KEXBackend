@@ -69,6 +69,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     def current_address(self):
         return self.addresses.first()
 
+    @property
     def current_address_pk(self):
         if self.addresses.exists():
             return self.addresses.first().pk
@@ -80,6 +81,11 @@ class User(PermissionsMixin, AbstractBaseUser):
     @property
     def current_debit_card(self):
         return self.debit_cards.first()
+
+    @property
+    def current_debit_card_pk(self):
+        if self.debit_cards.exists():
+            return self.debit_cards.first().pk
 
     @property
     def fb_token(self):

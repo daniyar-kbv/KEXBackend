@@ -1,7 +1,7 @@
+from django.shortcuts import render
+from django.db.models import Value, When, Case, BooleanField
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView, UpdateAPIView
-from django.shortcuts import render
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
 from rest_framework.views import APIView
 
 from apps.common.views import JSONRendererMixin
@@ -44,7 +44,15 @@ class DebitCardsListViewSet(
     http_method_names = ["retrieve", "get", "put", "delete"]
 
     def get_queryset(self):
-        return self.request.user.get_all_debit_cards
+        return super().get_queryset() \
+            .filter(user=self.request.user) \
+            .annotate(
+                is_current=Case(
+                    When(pk=self.request.user.current_debit_card_pk, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField()
+                )
+            )
 
 
 class TestPaymentRenderView(PublicAPIMixin, APIView):

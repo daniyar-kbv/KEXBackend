@@ -44,7 +44,7 @@ class UserAddressViewSet(JSONRendererMixin, ModelViewSet):
         return super().get_queryset()\
             .filter(user=self.request.user)\
             .annotate(is_current=Case(
-                When(pk=self.request.user.current_address_pk(), then=Value(True)),
+                When(pk=self.request.user.current_address_pk, then=Value(True)),
                 default=Value(False),
                 output_field=BooleanField()
                 )
