@@ -69,6 +69,10 @@ class User(PermissionsMixin, AbstractBaseUser):
     def current_address(self):
         return self.addresses.first()
 
+    def current_address_pk(self):
+        if self.addresses.exists():
+            return self.addresses.first().pk
+
     @property
     def get_all_debit_cards(self):
         return self.debit_cards.active()

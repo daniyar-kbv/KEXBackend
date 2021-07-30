@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import RetrieveAPIView, GenericAPIView
+from django.db.models import When, Case, Value, BooleanField
 
 from apps.common.mixins import JSONRendererMixin
 
@@ -40,7 +41,14 @@ class UserAddressViewSet(JSONRendererMixin, ModelViewSet):
     http_method_names = ["put", "get", "delete"]
 
     def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
+        return super().get_queryset()\
+            .filter(user=self.request.user)\
+            .annotate(is_current=Case(
+                When(pk=self.request.user.current_address_pk(), then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+                )
+            )
 
     def get_serializer_class(self):
         if self.action == "list":

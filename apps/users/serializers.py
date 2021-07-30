@@ -8,6 +8,7 @@ from ..notifications.firebase import subscribe_to_language_topic
 
 class UserAddressSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
+    is_current = serializers.BooleanField()
 
     class Meta:
         model = UserAddress
