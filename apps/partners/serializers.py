@@ -46,6 +46,7 @@ class SquareImageBrandSerializer(AbstractNameSerializer):
     class Meta:
         model = Brand
         fields = (
+            "id",
             "name",
             "image"
         )

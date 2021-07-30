@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.location.serializers import AddressSerializer
+from apps.partners.serializers import SquareImageBrandSerializer
 
 from .models import User, UserAddress
 from ..notifications.firebase import subscribe_to_language_topic
@@ -9,6 +10,7 @@ from ..notifications.firebase import subscribe_to_language_topic
 class UserAddressSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
     is_current = serializers.BooleanField()
+    local_brand = SquareImageBrandSerializer(source="local_brand.brand", read_only=True)
 
     class Meta:
         model = UserAddress
