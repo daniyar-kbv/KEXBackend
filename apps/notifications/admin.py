@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline, GenericStackedInline
 
 from .models import Notification, FirebaseToken, NotificationTemplate
+from apps.common.admin import AbstractTitleModelForm, AbstractDescriptionModelForm
 
 
 class InlineNotification(GenericStackedInline):
@@ -30,8 +31,14 @@ class NotificationAdmin(admin.ModelAdmin):
     )
 
 
+class NotificationTemplateForm(AbstractTitleModelForm, AbstractDescriptionModelForm):
+    class Meta:
+        model = NotificationTemplate
+        fields = '__all__'
+
+
 @admin.register(NotificationTemplate)
-class NotificationAdmin(admin.ModelAdmin):
+class NotificationTemplateAdmin(admin.ModelAdmin):
     list_display = [
         # 'name',
         'title',
@@ -42,6 +49,7 @@ class NotificationAdmin(admin.ModelAdmin):
         'title',
         'description'
     )
+    form = NotificationTemplateForm
 
 
 @admin.register(FirebaseToken)

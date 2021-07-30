@@ -11,5 +11,6 @@ class DocumentAdmin(admin.ModelAdmin):
         'slug',
     ]
     list_editable = ['priority']
+    ordering = ['-priority']
     # prepopulated_fields = {"slug": ("template", 'type')}
     # exclude = ('slug',)
