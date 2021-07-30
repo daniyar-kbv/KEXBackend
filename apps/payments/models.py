@@ -100,7 +100,7 @@ class Payment(TimestampModel, UUIDModel):
     outer_id = models.CharField(
         max_length=512,
     )
-    cryptogram = models.CharField(max_length=1024, null=True)
+    cryptogram = models.CharField(max_length=4096, null=True)
 
     keep_card = models.BooleanField(
         default=False
@@ -108,6 +108,7 @@ class Payment(TimestampModel, UUIDModel):
     card_holder_name = models.CharField(
         max_length=256,
         null=True,
+        blank = True
     )
 
     pa_req = models.CharField(max_length=1024, null=True)

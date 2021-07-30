@@ -64,7 +64,7 @@ class CreatePaymentMixin(serializers.ModelSerializer):
 
 class CreatePaymentSerializer(CreatePaymentMixin):
     keep_card = serializers.BooleanField(default=False, write_only=True)
-    card_holder_name = serializers.CharField(required=False, write_only=True)
+    card_holder_name = serializers.CharField(required=False, write_only=True, allow_blank=True)
 
     def make_payment(self, payment_pk):
         make_payment(payment_pk)
