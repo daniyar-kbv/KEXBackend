@@ -17,7 +17,7 @@ class CitySerializer(AbstractNameSerializer):
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    country = CountrySerializer()
+    country = CountrySerializer(source="city.country")
     city = CitySerializer()
 
     class Meta:
