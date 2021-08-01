@@ -85,12 +85,12 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     @property
     def current_debit_card(self):
-        return self.debit_cards.first()
+        return self.debit_cards.active().first()
 
     @property
     def current_debit_card_pk(self):
-        if self.debit_cards.exists():
-            return self.debit_cards.first().pk
+        if self.debit_cards.active().exists():
+            return self.debit_cards.active().first().pk
 
     @property
     def fb_token(self):

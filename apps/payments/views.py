@@ -39,7 +39,7 @@ class DebitCardsListViewSet(
     ModelViewSet,
 ):
     lookup_field = "uuid"
-    queryset = DebitCard.objects.all()
+    queryset = DebitCard.objects.active()
     serializer_class = DebitCardsSerializer
     http_method_names = ["retrieve", "get", "put", "delete"]
 
