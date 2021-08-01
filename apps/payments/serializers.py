@@ -1,11 +1,10 @@
-from abc import ABC, abstractmethod
-
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from apps.orders.models import Order
 from apps.pipeline.cloudpayments.services import make_payment, make_card_payment
 
+from . import PaymentTypes, PaymentStatusTypes
 from .models import Payment, DebitCard
 from .exceptions import OrderAlreadyPaidError
 
@@ -59,7 +58,12 @@ class CreatePaymentMixin(serializers.ModelSerializer):
         validated_data["price"] = validated_data["order"].cart.price
 
         payment = super().create(validated_data)
-        self.make_payment(payment.pk)
+
+        if not payment.payment_type == PaymentTypes.CASH:
+            self.make_payment(payment.pk)
+        else:
+            payment.change_status(PaymentStatusTypes.COMPLETED)
+
         payment.refresh_from_db()
 
         return payment
@@ -98,6 +102,15 @@ class CreatePaymentSerializer(CreatePaymentMixin):
             "pa_req": {"read_only": True, "required": False},
             "acs_url": {"read_only": True, "required": False},
         }
+
+    def validate(self, attrs):
+        if attrs["order"].payments.completed().exists():
+            raise OrderAlreadyPaidError()
+
+        if attrs["payment_type"] == PaymentTypes.CASH:
+            return attrs
+
+        return super().validate(attrs)
 
 
 class CreateCardPaymentSerializer(CreatePaymentMixin):
