@@ -59,8 +59,8 @@ class PaymentService(PaymentBaseService):
     endpoint = "/payments/cards/charge"
 
     def run_service(self):
-        return self.fetch({
-            'Amount': self.instance.price,
+        return self.fetch(json={
+            'Amount': str(self.instance.price),
             'Currency': self.instance.currency,
             'AccountId': str(self.instance.user.secret_key),
             'IpAddress': self.instance.ip_address,
@@ -86,7 +86,7 @@ class Confirm3DSService(PaymentBaseService):
     endpoint = "/payments/cards/post3ds"
 
     def run_service(self):
-        return self.fetch({
+        return self.fetch(json={
             'TransactionId': self.instance.outer_id,
             'PaRes': self.instance.pa_res,
         })
