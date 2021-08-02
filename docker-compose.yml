@@ -16,6 +16,25 @@ services:
       - RABBIT_HOST=rabbitmq
       - DB_HOST=postgres
       - REDIS_HOST=redis
+    networks:
+      - traefik-public
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.portainer.portainer-data == true
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.portainer-http.rule=Host(`${DOMAIN?Variable not set}`)
+        - traefik.http.routers.portainer-http.entrypoints=http
+        - traefik.http.routers.portainer-http.middlewares=https-redirect
+        - traefik.http.routers.portainer-https.rule=Host(`${DOMAIN?Variable not set}`)
+        - traefik.http.routers.portainer-https.entrypoints=https
+        - traefik.http.routers.portainer-https.tls=true
+        - traefik.http.routers.portainer-https.tls.certresolver=le
+        - traefik.http.services.portainer.loadbalancer.server.port=9000
     ports:
       - "8000:8000"
     depends_on:
@@ -74,3 +93,7 @@ services:
       - redis
   redis:
     image: redis
+
+networks:
+  traefik-public:
+    external: true
