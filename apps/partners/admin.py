@@ -74,6 +74,7 @@ class BrandAdmin(admin.ModelAdmin):
     inlines = [BrandImageInline, CategoryInline, LocalBrandInline]
     list_editable = ["priority"]
     list_display = ['name', "id", "priority"]
+    ordering = ['priority']
 
 
 @admin.register(LocalBrand)

@@ -28,9 +28,6 @@
       body{
         overflow: hidden;
       }
-      #content-main{
-        position: relative;
-      }
       .object-tools{
         margin-top:0;
         margin-left: -10px !important;
@@ -52,9 +49,10 @@
         border-bottom: 1px solid #e2e2e2;
         height: 10%;
       }
-      .results {
-        overflow-y: scroll;
-        max-height: {% if messages %}80%{% else %}90%{% endif %};
+      #changelist-form .results {
+        overflow-x: hidden !important;
+        /*max-height: {% if messages %}80%{% else %}100%{% endif %};*/
+        max-height: 100%;
       }
       .paginator{
         border: none !important;
@@ -66,6 +64,7 @@
       }
       #changelist-filter{
         position: absolute;
+        top: 0;
         right: -250px;
         transition: right 0.3s ease;
         height: 100%;
@@ -103,8 +102,24 @@
     a.filter-el-close:hover{
         color: black;
     }
-
+    #content {
+        padding: 0;
+    }
+    .save-edited-cl {
+        padding: 10px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+    .admin-actions-custom {
+        padding: 0 10px;
+    }
     </style>
+    <script>
+        if ($('.constance').length > 0){
+            $('.main > .content').css({"overflow-y": "scroll"});
+        }
+    </script>
 {% endif %}
 {% endblock %}
 
@@ -158,7 +173,6 @@
             {% block result_list %}
             {% if action_form and actions_on_top and cl.show_admin_actions %}
             <div class="admin-actions-custom">
-                {% block pagination %}{% pagination cl %}{% endblock %}
                 {% block object-tools %}
                 <ul class="object-tools">
                     {% block object-tools-items %}
@@ -166,6 +180,7 @@
                     {% endblock %}
                 </ul>
                 {% endblock %}
+                {% block pagination %}{% pagination cl %}{% endblock %}
                 {% admin_actions %}
             </div>
             {% else %}

@@ -79,7 +79,10 @@
             position: relative;
         }
         .messagelist{
-            position: relative;
+            position: absolute;
+            left: 0;
+            right: 0;
+            z-index: 10;
         }
         button.close{
             position: absolute;
@@ -115,6 +118,9 @@
         }
         #content.colM {
             padding: 0;
+        }
+        .constance #changelist {
+            padding: 30px;
         }
     </style>
 </head>
@@ -180,11 +186,13 @@
           {% if messages %}
             <ul class="messagelist">
                 {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    <span>{{ message|capfirst }}</span>
+                    <button type="button" class="close">
+                      <span>&times;</span>
+                    </button>
+                </li>
                 {% endfor %}
-                <button type="button" class="close">
-                  <span>&times;</span>
-                </button>
             </ul>
           {% endif %}
         {% endblock messages %}
@@ -217,7 +225,7 @@
     });
     $('.close').click(function(e){
         $('.messagelist').css({"display": "none"});
-        $('.results').css({"max-height":"90%"});
+        $('.results').css({"max-height":"100%"});
     });
     $('.submit-row input').on('click', function() {
         $('.progress .lds-ring').show();
