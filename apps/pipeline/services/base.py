@@ -1,4 +1,5 @@
 import time
+import traceback
 from copy import deepcopy
 from abc import ABC, abstractmethod
 from typing import Optional, Type, Tuple, Union, Any
@@ -134,6 +135,7 @@ class BaseService(ABC):
 
         except Exception as exc:
             print(f"Exception({self.__class__.__name__}): {exc.__class__} {exc}")
+            print(traceback.format_exc())
             self.status = ServiceStatuses.REQUEST_ERROR
 
         else:

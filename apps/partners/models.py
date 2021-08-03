@@ -117,6 +117,9 @@ class Branch(AbstractNameModel):
     is_active = models.BooleanField(
         _("Активна"), default=False
     )
+    is_alive = models.BooleanField(
+        _("Доступен в системе IIKO"), editable=False, default=False
+    )
 
     start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
