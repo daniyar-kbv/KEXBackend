@@ -8,6 +8,7 @@ from django.db.transaction import atomic
 from apps.partners.models import LocalBrand, Branch
 from ..integrations.branches import GetBranches
 from ..integrations.nomenclature import GetBranchNomenclature
+from ..integrations.terminals import GetLocalBrandTerminals
 
 
 @celery_app.task(name="iiko.update_brand_organizations")  # noqa
@@ -21,6 +22,7 @@ def update_brand_branches() -> None:
         with atomic():
             local_brand.deactivate_branches()
             GetBranches(instance=local_brand).run()
+            GetLocalBrandTerminals(instance=local_brand).run()
 
 
 @celery_app.task(name="iiko.update_brand_nomenclatures") # noqa

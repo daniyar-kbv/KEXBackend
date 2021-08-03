@@ -111,6 +111,9 @@ class Branch(AbstractNameModel):
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
     )
+    terminal_id = models.UUIDField(
+        _("TerminalUUID в системе IIKO"), null=True,
+    )
     is_active = models.BooleanField(
         _("Активна"), default=False
     )
