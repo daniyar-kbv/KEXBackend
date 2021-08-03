@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.contrib import admin
 from django.utils.html import format_html
 
-from apps.common.admin import ReadChangeOnlyTabularInline
+from apps.common.admin import ReadChangeOnlyTabularInline, AbstractNameModelForm
 from apps.nomenclature.admin import (
     CategoryInline, LocalCategoryInline, BranchCategoryInline,
     LocalPositionInline, BranchPositionInline,
@@ -69,12 +69,25 @@ class LocalBrandInline(LocalBrandInlineBase):
     )
 
 
+class BrandForm(AbstractNameModelForm):
+    class Meta:
+        model = Brand
+        exclude = ('name', )
+
+
+class BranchForm(AbstractNameModelForm):
+    class Meta:
+        model = Branch
+        exclude = ('name', )
+
+
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     inlines = [BrandImageInline, CategoryInline, LocalBrandInline]
     list_editable = ["priority"]
     list_display = ['name', "id", "priority"]
     ordering = ['priority']
+    form = BrandForm
 
 
 @admin.register(LocalBrand)
@@ -94,3 +107,4 @@ class BranchAdmin(admin.ModelAdmin):
         BranchCategoryInline,
         # BranchPositionInline,
     ]
+    form = BranchForm

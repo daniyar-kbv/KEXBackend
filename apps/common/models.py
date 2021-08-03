@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-from apps.translations.models import MultiLanguageChar, MultiLanguageText
+from apps.translations.models import MultiLanguageChar, MultiLanguageText, MultiLanguageTextEditor, MultiLanguageFile
 from .managers import MainManager
 
 
@@ -66,6 +66,42 @@ class AbstractDescriptionModel(MainModel):
     def __str__(self):
         if self.description is not None:
             return self.description.ru
+
+        return "Не задано"
+
+
+class AbstractTemplateModel(MainModel):
+    template = models.ForeignKey(
+        MultiLanguageTextEditor,
+        verbose_name="HTML шаблон",
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        if self.template is not None:
+            return f"Шаблон #{self.id}"
+
+        return "Не задано"
+
+
+class AbstractImageModel(MainModel):
+    image = models.ForeignKey(
+        MultiLanguageFile,
+        verbose_name="Картинка",
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        if self.image is not None:
+            return f"Картинка #{self.id}"
 
         return "Не задано"
 

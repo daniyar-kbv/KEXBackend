@@ -75,9 +75,14 @@ class MultiLanguageFile(models.Model):
     file_kk = models.FileField("Файл (каз)", upload_to='', blank=True, null=True)
     file_en = models.FileField("Файл (англ)", upload_to='', blank=True, null=True)
 
+    def set_all_langs(self, lang_dict: dict) -> None:
+        for lang, value in lang_dict.items():
+            setattr(self, f"file_{lang}", value)
+        self.save()
+
     @property
     def ru(self):
-        return self.file_ru.url
+        return self.file_ru
 
     @ru.setter
     def ru(self, value):
@@ -86,7 +91,7 @@ class MultiLanguageFile(models.Model):
 
     @property
     def kk(self):
-        return self.file_kk.url
+        return self.file_kk
 
     @kk.setter
     def kk(self, value):
@@ -95,7 +100,7 @@ class MultiLanguageFile(models.Model):
 
     @property
     def en(self):
-        return self.file_en.url
+        return self.file_en
 
     @en.setter
     def en(self, value):
@@ -103,4 +108,6 @@ class MultiLanguageFile(models.Model):
         self.save()
 
     def __str__(self):
-        return self.file_ru.name
+        if self.file_ru:
+            return self.file_ru.name
+        return "No name"

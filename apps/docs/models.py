@@ -1,12 +1,11 @@
 from django.db import models
 
-from apps.common.models import AbstractNameModel
+from apps.common.models import AbstractNameModel, AbstractTemplateModel
 from apps.translations.models import MultiLanguageTextEditor
 from .services import slugify
 
 
-class TemplateModel(AbstractNameModel):
-    template = models.ForeignKey(MultiLanguageTextEditor, verbose_name="HTML шаблон", on_delete=models.CASCADE)
+class TemplateModel(AbstractNameModel, AbstractTemplateModel):
     priority = models.IntegerField("Позиция в очереди", default=0)
     slug = models.SlugField("Читабельная ссылка", unique=True)
 

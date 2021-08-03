@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from apps.common.admin import ReadChangeOnlyTabularInline, ReadChangeOnlyStackedInline
+from apps.common.admin import ReadChangeOnlyTabularInline, ReadChangeOnlyStackedInline, AbstractNameModelForm, \
+    AbstractDescriptionModelForm
 
 from .models import (
     Category, LocalCategory, BranchCategory,
@@ -85,13 +86,20 @@ class BranchPositionInline(ReadChangeOnlyTabularInline):
     )
 
 
+class LocalPositionForm(AbstractNameModelForm, AbstractDescriptionModelForm):
+    class Meta:
+        model = LocalPosition
+        exclude = ('name', 'description')
+
+
 @admin.register(LocalPosition)
 class LocalPositionAdmin(admin.ModelAdmin):
     list_filter = "local_brand",
     readonly_fields = (
-        "name",
-        "description",
+        # "name",
+        # "description",
         "local_category",
         "local_brand",
         "outer_id",
     )
+    form = LocalPositionForm
