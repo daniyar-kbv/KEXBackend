@@ -30,7 +30,8 @@ class GetBranchNomenclature(BaseIIKOService):
     def _fetch_price_and_is_additional(position: Dict) -> Tuple[Decimal, bool]:
         try:
             size_price = position["sizePrices"][0]["price"]
-            return Decimal(size_price["currentPrice"]), bool(size_price["isIncludedInMenu"])
+            is_additional = bool(size_price["isIncludedInMenu"]) and position["type"] == "Modifier"
+            return Decimal(size_price["currentPrice"]), is_additional
         except Exception as exc:
             print("Error while fetching position price:", exc)
             return Decimal(0), False

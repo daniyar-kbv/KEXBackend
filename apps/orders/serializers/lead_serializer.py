@@ -202,7 +202,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
 
 class NewNomenclatureCategorySerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
-    positions = NomenclaturePositionSerializer(source="branch_positions", many=True)
+    positions = NomenclaturePositionSerializer(source="branch_positions.main_positions", many=True)
 
     class Meta:
         model = BranchCategory

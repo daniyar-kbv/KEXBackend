@@ -105,7 +105,7 @@ class AdditionalBranchPositionListView(JSONPublicAPIMixin, LanguageToContextMixi
     Get Additional nomenclature for Lead
     """
     serializer_class = NomenclaturePositionSerializer
-    queryset = BranchPosition.objects.all()
+    queryset = BranchPosition.objects.additional_positions()
 
     def get_queryset(self):
         lead = get_object_or_404(Lead, uuid=self.kwargs.get('lead_uuid'))

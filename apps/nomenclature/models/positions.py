@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
+from apps.nomenclature.managers import BranchPositionManager
 from apps.common.models import (
     AbstractDescriptionModel,
     AbstractNameModel,
@@ -97,6 +98,8 @@ class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
         default=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
+
+    objects = BranchPositionManager()
 
 
 class ModifierGroup(UUIDModel, AbstractNameModel):
