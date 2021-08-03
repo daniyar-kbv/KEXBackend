@@ -12,13 +12,13 @@ from apps.nomenclature.models import BranchPosition
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 from .exceptions import CouponNotActive
 
-from .models import Order, Lead, Cart
-from .models.orders import RateStar, Coupon
+from .models import Order, Lead, Cart, RateStar, Coupon
 from .serializers import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
     AuthorizedApplyWithAddressSerializer,
     LeadNomenclatureSerializer,
+    NomenclaturePositionSerializer,
     NewLeadNomenclatureSerializer,
     BranchPositionSerializer,
     UpdateCartSerializer,
@@ -29,8 +29,22 @@ from .serializers import (
     CreateRateOrderSerializer,
     CreateOrderSerializer,
     OrdersListSerializer,
+    CouponSerializer
 )
-from .serializers.coupon_serializers import CouponSerializer
+
+
+class LeadLookUpMixin:
+    queryset = Lead.objects.all()
+    lookup_field = "uuid"
+    lookup_url_kwarg = "lead_uuid"
+
+
+class LanguageToContextMixin:
+    def get_serializer_context(self):
+        return {
+            "request": self.request,  # noqa
+            "language": self.request.META["HTTP_LANGUAGE"],  # noqa
+        }
 
 
 class BaseApplyView(CreateAPIView):
@@ -58,52 +72,47 @@ class AuthorizedApplyWithAddressView(JSONRendererMixin, BaseApplyView):
     serializer_class = AuthorizedApplyWithAddressSerializer
 
 
-class LeadShowView(JSONPublicAPIMixin, RetrieveAPIView):
+class LeadShowView(JSONPublicAPIMixin, LeadLookUpMixin, RetrieveAPIView):
     serializer_class = LeadDetailSerializer
-    queryset = Lead.objects.all()
-    lookup_field = "uuid"
-    lookup_url_kwarg = "lead_uuid"
 
 
-class NewLeadNomenclatureView(JSONPublicAPIMixin, RetrieveAPIView):
+class OrdersListView(JSONRendererMixin, ListAPIView):
+    queryset = Order.objects.all().select_related('lead', 'cart').prefetch_related('payments').order_by('-created_at')
+    serializer_class = OrdersListSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+
+class NewLeadNomenclatureView(JSONPublicAPIMixin, LanguageToContextMixin, LeadLookUpMixin, RetrieveAPIView):
     serializer_class = NewLeadNomenclatureSerializer
-    queryset = Lead.objects.all()
-    lookup_field = "uuid"
-    lookup_url_kwarg = "lead_uuid"
-
-    def get_serializer_context(self):
-        return {
-            "request": self.request,
-            "language": self.request.META["HTTP_LANGUAGE"],
-        }
 
 
-class LeadNomenclatureView(JSONPublicAPIMixin, RetrieveAPIView):
+class LeadNomenclatureView(JSONPublicAPIMixin, LanguageToContextMixin, LeadLookUpMixin, RetrieveAPIView):
     serializer_class = LeadNomenclatureSerializer
-    queryset = Lead.objects.all()
-    lookup_field = "uuid"
-    lookup_url_kwarg = "lead_uuid"
-
-    def get_serializer_context(self):
-        return {
-            "request": self.request,
-            "language": self.request.META["HTTP_LANGUAGE"],
-        }
 
 
-class BranchPositionView(JSONPublicAPIMixin, RetrieveAPIView):
+class BranchPositionRetrieveView(JSONPublicAPIMixin, LanguageToContextMixin, RetrieveAPIView):
     serializer_class = BranchPositionSerializer
     queryset = BranchPosition.objects.all()
 
     def get_object(self):
-        print("kwargs:", self.kwargs)
         return get_object_or_404(BranchPosition, uuid=self.kwargs["position_uuid"])
 
-    def get_serializer_context(self):
-        return {
-            "request": self.request,
-            "language": self.request.META["HTTP_LANGUAGE"],
-        }
+
+class AdditionalBranchPositionListView(JSONPublicAPIMixin, LanguageToContextMixin, ListAPIView):
+    """
+    Get Additional nomenclature for Lead
+    """
+    serializer_class = NomenclaturePositionSerializer
+    queryset = BranchPosition.objects.all()
+
+    def get_queryset(self):
+        lead = get_object_or_404(Lead, uuid=self.kwargs.get('lead_uuid'))
+        return self.queryset.filter(
+            branch_id=lead.branch_id,
+            is_additional=True,
+        )
 
 
 class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
@@ -111,7 +120,10 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
     serializer_class = UpdateCartSerializer
 
     def get_object(self):
-        return get_object_or_404(Cart, lead__uuid=self.kwargs.get("lead_uuid"))
+        return get_object_or_404(
+            Cart,
+            lead__uuid=self.kwargs.get("lead_uuid")
+        )
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -128,14 +140,6 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
         output_serializer = RetrieveCartSerializer(instance)
         # output_serializer.is_valid(raise_exception=True)
         return Response(output_serializer.data)
-
-
-class OrdersListView(JSONRendererMixin, ListAPIView):
-    queryset = Order.objects.all().select_related('lead', 'cart').prefetch_related('payments').order_by('-created_at')
-    serializer_class = OrdersListSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
 
 
 class CreateOrderView(JSONRendererMixin, CreateAPIView):

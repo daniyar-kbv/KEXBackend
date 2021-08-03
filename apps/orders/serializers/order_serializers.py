@@ -12,10 +12,7 @@ from apps.nomenclature.models import (
 
 from .retrieve_cart_serializers import RetrieveCartSerializer
 
-from ..exceptions import (
-    EmptyCartError,
-    OrderAlreadyExistError,
-)
+from ..exceptions import EmptyCartError
 
 
 class ModifierSerializer(serializers.ModelSerializer):
@@ -143,8 +140,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         attrs = super().validate(attrs)
 
-        # if hasattr(lead, "order"):
-        #     raise OrderAlreadyExistError
         if attrs["lead"].cart is None or not attrs["lead"].cart.positions.exists():
             raise EmptyCartError
 

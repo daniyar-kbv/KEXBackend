@@ -126,7 +126,7 @@ class IIKOCategorySerializer(serializers.ModelSerializer):
             validated_data["iiko_name"],
         )
 
-        category, created = Category.objects.get_or_create(
+        category, _ = Category.objects.get_or_create(
             outer_id=outer_id,
             brand_id=branch.local_brand.brand_id,
         )
@@ -135,21 +135,23 @@ class IIKOCategorySerializer(serializers.ModelSerializer):
             category.name = create_multi_language_char(name)
             category.save(update_fields=["name"])
 
-        local_category, local_category_created = LocalCategory.objects.get_or_create(
+        local_category, _ = LocalCategory.objects.get_or_create(
             outer_id=outer_id,
             category=category,
-            local_brand_id=branch.local_brand_id,
+            defaults={"local_brand_id": branch.local_brand_id},
         )
-        if local_category_created:
+
+        if local_category.name is None:
             local_category.name = category.name
             local_category.save(update_fields=["name"])
 
-        branch_category, branch_category_created = BranchCategory.objects.get_or_create(
+        branch_category, _ = BranchCategory.objects.get_or_create(
             outer_id=outer_id,
             local_category=local_category,
-            branch_id=branch.id,
+            defaults={"branch_id": branch.id},
         )
-        if branch_category_created:
+
+        if branch_category.name is None:
             branch_category.name = category.name
             branch_category.save(update_fields=["name"])
 

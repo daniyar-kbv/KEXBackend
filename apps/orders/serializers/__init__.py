@@ -4,6 +4,7 @@ from .lead_serializer import (
     AuthorizedApplyWithAddressSerializer,
     LeadDetailSerializer,
     LeadNomenclatureSerializer,
+    NomenclaturePositionSerializer,
     NewLeadNomenclatureSerializer,
 )
 from .order_serializers import (
@@ -21,4 +22,7 @@ from .rate_serializers import (
     RateStarListSerializer,
     RatedOrderListSerializer,
     CreateRateOrderSerializer,
+)
+from .coupon_serializers import (
+    CouponSerializer,
 )
