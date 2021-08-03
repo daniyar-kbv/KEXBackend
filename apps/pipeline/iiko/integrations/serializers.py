@@ -171,6 +171,7 @@ class IIKOModifierGroupSerializer(serializers.Serializer):
 
 
 class IIKONomenclatureSerializer(serializers.ModelSerializer):
+    price = serializers.DecimalField(max_digits=12, decimal_places=2)
     iiko_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     iiko_description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     modifier_groups = IIKOModifierGroupSerializer(many=True, required=False, allow_null=True)
@@ -220,13 +221,12 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             outer_id=local_position.outer_id,
         )
         branch_position.name = local_position.name
+        branch_position.price = validated_data.get("price")
         branch_position.description = local_position.description
         branch_position.iiko_name=validated_data.get("iiko_name")
         branch_position.iiko_description=validated_data.get("iiko_description")
         branch_position.is_additional=validated_data.get("is_additional")
-        branch_position.save(update_fields=[
-            "name", "description", "iiko_name", "iiko_description", "is_additional"
-        ])
+        branch_position.save()
 
         for modifier_group in modifier_groups:
             group = ModifierGroup.objects.get(outer_id=modifier_group["outer_id"])
