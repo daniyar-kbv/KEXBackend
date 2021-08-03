@@ -22,6 +22,7 @@ class Cart(TimestampModel):
 
         return Decimal('0.00')
 
+
 class CartPosition(models.Model):
     class Meta:
         verbose_name = _("Товар корзины")

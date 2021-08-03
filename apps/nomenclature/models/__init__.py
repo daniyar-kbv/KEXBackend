@@ -5,6 +5,7 @@ from .categories import (
 )
 from .positions import (
     ModifierGroup,
+    PositionModifierGroup,
     LocalPosition,
     BranchPosition,
     BranchPositionModifier,

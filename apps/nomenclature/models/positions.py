@@ -109,12 +109,23 @@ class ModifierGroup(UUIDModel, AbstractNameModel):
         related_name="modifier_groups",
         null=True,
     )
-    positions = models.ManyToManyField(
-        BranchPosition,
-        related_name="modifier_groups",
-    )
     iiko_name = models.CharField(
         max_length=255,
+    )
+
+
+class PositionModifierGroup(models.Model):
+    modifier_group = models.ForeignKey(
+        ModifierGroup,
+        to_field="uuid",
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="position_modifier_groups",
+    )
+    branch_position = models.ForeignKey(
+        BranchPosition,
+        on_delete=models.CASCADE,
+        related_name="position_modifier_groups",
     )
     min_amount = models.PositiveSmallIntegerField(
         default=0
@@ -125,30 +136,21 @@ class ModifierGroup(UUIDModel, AbstractNameModel):
     is_required = models.BooleanField(
         default=False,
     )
-    outer_id = models.UUIDField(
-        null=True,
-    )
 
 
 class BranchPositionModifier(models.Model):
     class Meta:
         verbose_name = _("Modifier")
         verbose_name_plural = _("Modifiers")
-        unique_together = ("main_position", "modifier")
+        unique_together = ("modifier", "position_modifier_group")
 
-    main_position = models.ForeignKey(
-        BranchPosition,
-        on_delete=models.PROTECT,
-        to_field="uuid", null=True,
-        related_name="modifiers",
-    )
     modifier = models.ForeignKey(
         BranchPosition,
         on_delete=models.PROTECT,
         to_field="uuid", null=True,
     )
-    modifier_group = models.ForeignKey(
-        ModifierGroup,
+    position_modifier_group = models.ForeignKey(
+        PositionModifierGroup,
         on_delete=models.SET_NULL,
         related_name="modifiers",
         null=True,

@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import List, Dict
 
 from rest_framework import serializers
@@ -17,6 +16,7 @@ from apps.nomenclature.models import (
     LocalPosition,
     BranchPosition,
     ModifierGroup,
+    PositionModifierGroup,
     BranchPositionModifier,
 )
 
@@ -82,7 +82,7 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
 
 
 class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(source="outer_id", required=True, write_only=True)
+    id = serializers.UUIDField(source="uuid", required=True, write_only=True)
     name = serializers.CharField(source="iiko_name")
 
     class Meta:
@@ -90,15 +90,15 @@ class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "min_amount",
-            "max_amount",
         )
 
     def create(self, validated_data):
         instance, created = ModifierGroup.objects.get_or_create(
-            outer_id=validated_data["outer_id"],
+            uuid=validated_data["uuid"],
             local_brand_id=self.context["local_brand_id"],
         )
+        instance.iiko_name = validated_data["iiko_name"]
+        instance.save(update_fields=["iiko_name"])
 
         if instance.name is None:
             instance.name = create_multi_language_char(validated_data["iiko_name"])
@@ -166,7 +166,7 @@ class IIKOModifierGroupSerializer(serializers.Serializer):
     outer_id = serializers.CharField(required=True)
     min_amount = serializers.IntegerField(required=False, default=0)
     max_amount = serializers.IntegerField(required=False, default=1)
-    required = serializers.BooleanField(default=False)
+    is_required = serializers.BooleanField(default=False)
     modifiers = IIKOModifierSerializer(many=True, required=False, allow_null=True)
 
 
@@ -229,17 +229,23 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         branch_position.save()
 
         for modifier_group in modifier_groups:
-            group = ModifierGroup.objects.get(outer_id=modifier_group["outer_id"])
-            branch_position.modifier_groups.add(group)
+            position_modifier_group, _ = PositionModifierGroup.objects.update_or_create(
+                modifier_group_id=modifier_group["outer_id"],
+                branch_position_id=branch_position.id,
+                defaults={
+                    "is_required": modifier_group["is_required"],
+                    "min_amount": modifier_group["min_amount"],
+                    "max_amount": modifier_group["max_amount"],
+                }
+            )
 
             for modifier in modifier_group["modifiers"] or list():
                 BranchPositionModifier.objects.update_or_create(
-                    main_position_id=branch_position.uuid,
                     modifier=BranchPosition.objects.get(
                         outer_id=modifier["outer_id"],
                     ),
                     defaults={
-                        "modifier_group": group,
+                        "position_modifier_group": position_modifier_group,
                     }
                 )
 

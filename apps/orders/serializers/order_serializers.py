@@ -6,7 +6,7 @@ from apps.location.serializers import AddressSerializer
 from apps.partners.serializers import SquareImageBrandSerializer
 from apps.nomenclature.models import (
     BranchPosition,
-    ModifierGroup,
+    PositionModifierGroup,
     BranchPositionModifier,
 )
 
@@ -45,10 +45,11 @@ class ModifierSerializer(serializers.ModelSerializer):
 
 class ModifierGroupSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    uuid = serializers.UUIDField(source="modifier_group.uuid")
     modifiers = ModifierSerializer(many=True, required=False)
 
     class Meta:
-        model = ModifierGroup
+        model = PositionModifierGroup
         fields = (
             "uuid",
             "name",
@@ -59,17 +60,17 @@ class ModifierGroupSerializer(serializers.ModelSerializer):
         )
 
     def get_name(self, obj):
-        if not obj.name:
+        if not obj.modifier_group.name:
             return
 
-        return obj.name.text(lang=self.context["language"])
+        return obj.modifier_group.name.text(lang=self.context["language"])
 
 
 class BranchPositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
-    modifier_groups = ModifierGroupSerializer(many=True, required=False)
+    modifier_groups = ModifierGroupSerializer(source="position_modifier_groups", many=True, required=False)
 
     class Meta:
         model = BranchPosition
