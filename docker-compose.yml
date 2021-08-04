@@ -81,7 +81,6 @@ services:
     environment:
       # REQUIRED: Should be equal to the service name prefixed by "tasks." when
       # deployed inside an overlay network
-      AGENT_CLUSTER_ADDR: tasks.agent
       AGENT_PORT: 9001
       LOG_LEVEL: debug
 #    ports:
@@ -92,11 +91,12 @@ services:
 
   portainer:
     image: portainer/portainer:alpine
-    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    command: -H tcp://portainer-agent:9001 --tlsskipverify
     ports:
       - "9000:9000"
     volumes:
       - portainer_data:/data
     depends_on:
       - rest_server
+      - portainer-agent
     restart: always
