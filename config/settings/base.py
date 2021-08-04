@@ -165,15 +165,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "https://www.dev.kexbrands.kz",
-    "http://www.dev.kexbrands.kz",
-    "https://dev.kexbrands.kz",
-    "http://dev.kexbrands.kz",
-    "https://kexbrands.kz",
-    "http://localhost:8080",
-    "http://127.0.0.1:9000",
-]
 
 
 # Internationalization
