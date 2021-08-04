@@ -12,7 +12,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
-      - media:/app/media
+      - media:/media
     environment:
       - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
