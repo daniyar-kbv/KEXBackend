@@ -77,8 +77,9 @@ services:
     image: redis
 
   portainer:
-    image: portainer/portainer:alpine
+    image: portainer_agent
     command: -H tcp://portainer:9001 --tlsskipverify
+    restart: always
     ports:
       - "9001:9001"
     volumes:
