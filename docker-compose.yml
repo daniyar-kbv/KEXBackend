@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   postgres:
+  media:
   portainer_data:
 
 services:
@@ -11,6 +12,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
+      - media:/app/media
     environment:
       - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
