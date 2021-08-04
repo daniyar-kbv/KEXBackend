@@ -88,7 +88,7 @@ LOCAL_APPS = [
     'apps.promotions.apps.PromotionsConfig',
     'apps.docs.apps.DocsConfig',
     'apps.payments.apps.PaymentsConfig',
-    'apps.notifications.apps.NotificationsConfig'
+    'apps.notifications.apps.NotificationsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -97,10 +97,10 @@ AUTH_USER_MODEL = "users.User"
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'apps.translations.middleware.LanguageHeaderMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
