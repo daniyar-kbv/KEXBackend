@@ -78,7 +78,7 @@ services:
 
   portainer:
     image: portainer/portainer:alpine
-#    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    command: -H tcp://localhost:9001 --tlsskipverify
     ports:
       - "9001:9001"
     volumes:
