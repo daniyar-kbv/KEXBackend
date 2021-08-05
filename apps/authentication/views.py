@@ -86,7 +86,7 @@ class OTPResendView(PublicAPIMixin, JSONRendererMixin, GenericAPIView):
     """
     serializer_class = OTPResendSerializer
 
-    def post(self, request, *args, **kwargs): # noqa
+    def post(self, request, *args, **kwargs):  # noqa
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         send_otp(serializer.validated_data['mobile_phone'])
