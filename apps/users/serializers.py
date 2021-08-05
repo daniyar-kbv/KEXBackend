@@ -53,7 +53,8 @@ class AccountInfoSerializer(serializers.ModelSerializer):
         }
 
     def validate_language(self, value):
-        subscribe_to_language_topic(value, [self.instance.fb_token])
+        if self.instance.fb_token:
+            subscribe_to_language_topic(value, [self.instance.fb_token])
         return value
 
 
