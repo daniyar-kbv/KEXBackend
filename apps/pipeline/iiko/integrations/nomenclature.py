@@ -1,6 +1,8 @@
 from decimal import Decimal
 from typing import TYPE_CHECKING, List, Dict, Tuple
 
+from apps.nomenclature.models import PositionTypes
+
 from .base import BaseIIKOService
 from .serializers import (
     IIKONomenclatureSerializer,
@@ -17,6 +19,11 @@ class GetBranchNomenclature(BaseIIKOService):
     endpoint = "/api/1/nomenclature"
     instance: 'Branch' = None
     save_serializer = IIKONomenclatureSerializer
+
+    position_types = {
+        "Dish": PositionTypes.DISH,
+        "Modifier": PositionTypes.MODIFIER,
+    }
 
     def get_local_brand_pk(self):
         return self.instance.local_brand_id  # noqa
@@ -111,6 +118,7 @@ class GetBranchNomenclature(BaseIIKOService):
             price, is_additional = self._fetch_price_and_is_additional(position)
             positions.append({
                 "price": price,
+                "position_type": self.position_types[position.get("type")],
                 "outer_id": position.get('id'),
                 "is_additional": is_additional,
                 "iiko_name": position.get("name"),

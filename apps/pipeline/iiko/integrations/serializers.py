@@ -171,6 +171,7 @@ class IIKOModifierGroupSerializer(serializers.Serializer):
 
 
 class IIKONomenclatureSerializer(serializers.ModelSerializer):
+    position_type = serializers.CharField()
     price = serializers.DecimalField(max_digits=12, decimal_places=2)
     iiko_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     iiko_description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
@@ -215,6 +216,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             local_position.description = create_multi_language_text(validated_data["iiko_description"])
 
         local_position.save(update_fields=["local_category", "name", "description"])
+
         branch_position, branch_position_created = BranchPosition.objects.get_or_create(  # noqa
             branch=self.context["branch"],
             local_position=local_position,
@@ -224,6 +226,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         branch_position.price = validated_data.get("price")
         branch_position.description = local_position.description
         branch_position.iiko_name=validated_data.get("iiko_name")
+        branch_position.position_type = validated_data.get("position_type")
         branch_position.iiko_description=validated_data.get("iiko_description")
         branch_position.is_additional=validated_data.get("is_additional")
         branch_position.save()

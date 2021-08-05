@@ -4,10 +4,10 @@ from django.db.models.manager import BaseManager
 
 class BranchPositionQuerySet(QuerySet):
     def additional_positions(self):
-        return self.filter(is_additional=True)
+        return self.filter(is_additional=True, position_type="MODIFIER")
 
     def main_positions(self):
-        return self.filter(is_additional=False)
+        return self.filter(position_type="DISH")
 
 
 class BranchPositionManager(BaseManager.from_queryset(BranchPositionQuerySet)):

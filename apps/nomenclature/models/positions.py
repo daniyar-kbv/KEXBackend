@@ -18,6 +18,11 @@ from apps.common.models import (
 #     ...
 
 
+class PositionTypes(models.TextChoices):
+    DISH = "DISH", "Основное блюдо"
+    MODIFIER = "MODIFIER", "Дополнительное блюдо"
+
+
 class LocalPosition(AbstractNameModel, AbstractDescriptionModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
@@ -85,6 +90,11 @@ class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
         decimal_places=2,
         max_digits=12,
         default=Decimal(0),
+    )
+    position_type = models.CharField(
+        max_length=256,
+        choices=PositionTypes.choices,
+        default=PositionTypes.DISH,
     )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
