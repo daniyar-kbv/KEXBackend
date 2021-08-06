@@ -19,12 +19,10 @@ from .serializers import (
     AuthorizedApplyWithAddressSerializer,
     LeadNomenclatureSerializer,
     NomenclaturePositionSerializer,
-    NewLeadNomenclatureSerializer,
     BranchPositionSerializer,
     UpdateCartSerializer,
     LeadDetailSerializer,
     RetrieveCartSerializer,
-    RatedOrderListSerializer,
     RateStarListSerializer,
     CreateRateOrderSerializer,
     CreateOrderSerializer,
@@ -82,10 +80,6 @@ class OrdersListView(JSONRendererMixin, ListAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
-
-
-class NewLeadNomenclatureView(JSONPublicAPIMixin, LanguageToContextMixin, LeadLookUpMixin, RetrieveAPIView):
-    serializer_class = NewLeadNomenclatureSerializer
 
 
 class LeadNomenclatureView(JSONPublicAPIMixin, LanguageToContextMixin, LeadLookUpMixin, RetrieveAPIView):

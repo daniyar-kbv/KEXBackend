@@ -146,23 +146,6 @@ class LeadDetailSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(image.image.url)
 
 
-class NomenclatureCategorySerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = BranchCategory
-        fields = (
-            "name",
-            "uuid"
-        )
-
-    def get_name(self, obj):
-        if not obj.name:
-            return
-
-        return obj.name.text(lang=self.context["language"])
-
-
 class NomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
@@ -200,7 +183,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
         return request.build_absolute_uri(obj.local_position.image.url)
 
 
-class NewNomenclatureCategorySerializer(serializers.ModelSerializer):
+class NomenclatureCategorySerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     positions = NomenclaturePositionSerializer(source="branch_positions.main_positions", many=True)
 
@@ -219,49 +202,12 @@ class NewNomenclatureCategorySerializer(serializers.ModelSerializer):
         return obj.name.text(lang=self.context["language"])
 
 
-class NewLeadNomenclatureSerializer(serializers.ModelSerializer):
-    categories = NewNomenclatureCategorySerializer(source="branch.branch_categories", many=True, read_only=True)
-
-    class Meta:
-        model = Lead
-        fields = (
-            "uuid",
-            "categories",
-        )
-
-
 class LeadNomenclatureSerializer(serializers.ModelSerializer):
-    categories = NomenclatureCategorySerializer(source="branch_categories", many=True, read_only=True)
-    positions = NomenclaturePositionSerializer(source="branch_positions", many=True, read_only=True)
+    categories = NomenclatureCategorySerializer(source="branch.branch_categories", many=True, read_only=True)
 
     class Meta:
         model = Lead
         fields = (
             "uuid",
             "categories",
-            "positions",
         )
-        extra_kwargs = {
-            "uuid": {"read_only": True}
-        }
-
-    def to_representation(self, instance):
-        # todo: add select relates
-        data = super().to_representation(instance)
-        data["categories"] = NomenclatureCategorySerializer(
-            instance=instance.branch.branch_categories.filter(
-                name__isnull=False,
-                is_active=True,
-            ),
-            many=True, context=self.context,
-        ).data
-        data["positions"] = NomenclaturePositionSerializer(
-            instance=instance.branch.branch_positions.filter(
-                branch_category__isnull=False,
-                name__isnull=False,
-            ),
-            many=True, context=self.context,
-        ).data
-
-        return data
-
