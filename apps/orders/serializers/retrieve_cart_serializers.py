@@ -35,6 +35,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
         return obj.name.text(lang=self.context.get("language", "ru"))
 
     def get_image(self, obj):
+        return
         if not obj.local_position.image:
             return
 
