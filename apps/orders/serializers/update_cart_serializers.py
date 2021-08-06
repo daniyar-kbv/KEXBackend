@@ -1,10 +1,18 @@
+from typing import TYPE_CHECKING
+
 from rest_framework import serializers
+
 from apps.orders.models import (
     Cart,
     CartPosition,
     CartPositionModifier,
     CartPositionModifierGroup,
 )
+
+from ..exceptions import InvalidBranchError, BranchNotActiveError, TerminalNotActiveError
+
+if TYPE_CHECKING:
+    from apps.partners.models import Branch
 
 
 class UpdateCartPositionModifierSerializer(serializers.ModelSerializer):
@@ -54,6 +62,20 @@ class UpdateCartSerializer(serializers.ModelSerializer):
         fields = (
             "positions",
         )
+
+    def validate_branch(self, branch: 'Branch'):
+        if branch is None:
+            raise InvalidBranchError
+
+        if not branch.is_active:
+            raise BranchNotActiveError
+
+        if not branch.is_alive:
+            raise TerminalNotActiveError
+
+    def validate(self, attrs):
+        self.validate_branch(self.context.get("branch"))
+        return super().validate(attrs)
 
     def update(self, instance, validated_data):
         instance.positions.all().delete()

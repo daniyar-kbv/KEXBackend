@@ -119,20 +119,22 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
             lead__uuid=self.kwargs.get("lead_uuid")
         )
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["branch"] = self.get_object().lead.branch
+
+        return context
+
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data, partial=False)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
         if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
         output_serializer = RetrieveCartSerializer(instance)
-        # output_serializer.is_valid(raise_exception=True)
         return Response(output_serializer.data)
 
 
