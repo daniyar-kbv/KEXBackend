@@ -5,14 +5,13 @@ from django.utils.translation import gettext_lazy as _
 from . import PromotionTypes
 from apps.translations.models import MultiLanguageFile, MultiLanguageText
 from apps.docs.models import TemplateModel
-from apps.common.models import AbstractDescriptionModel
+from apps.common.models import AbstractDescriptionModel, AbstractImageModel
 from ..partners.models import LocalBrand
 
 User = get_user_model()
 
 
-class Promotion(TemplateModel, AbstractDescriptionModel):
-    image = models.ForeignKey(MultiLanguageFile, verbose_name="Картинка", on_delete=models.CASCADE)
+class Promotion(TemplateModel, AbstractImageModel):
     promo_type = models.CharField("Тип Акции", max_length=20, choices=PromotionTypes.choices)
     description = models.ForeignKey(
         MultiLanguageText, verbose_name=_("Текстовое описание (для сайта)"), on_delete=models.CASCADE, null=True

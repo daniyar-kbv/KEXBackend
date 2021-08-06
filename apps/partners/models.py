@@ -19,6 +19,7 @@ class Brand(AbstractNameModel):
         default=1,
     )
 
+
 class BrandImage(MainModel):
     class Meta:
         verbose_name = _("Brand Image")
