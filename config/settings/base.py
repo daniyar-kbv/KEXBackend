@@ -15,7 +15,7 @@ SECRET_KEY = '8e@ww05^%&0n^9x1vi#&3_a0%nfvd72#=yn@=hbkc6fdsw$t0c'
 # OTP settings
 HOTP_KEY = base64.b32encode(SECRET_KEY.encode("utf-8"))
 OTP_LENGTH = 4
-OTP_VALIDITY_PERIOD = 5  # in minutes
+OTP_VALIDITY_PERIOD = 1.5  # in minutes
 
 DEBUG = True
 
