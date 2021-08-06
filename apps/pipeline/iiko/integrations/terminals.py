@@ -51,12 +51,12 @@ class CheckLocalBrandOrganizationsLiveness(BaseIIKOService):
 
     def get_branches_list(self):
         return list(
-            str(i) for i in self.instance.branches.active().values_list('outer_id', flat=True)  # noqa
+            str(i) for i in self.instance.branches.all().values_list('outer_id', flat=True)  # noqa
         )
 
     def get_terminals_list(self):
         return list(
-            str(i) for i in self.instance.branches.active().values_list("terminal_id", flat=True)  # noqa
+            str(i) for i in self.instance.branches.all().values_list("terminal_id", flat=True)  # noqa
         )
 
     def run_service(self) -> Any:

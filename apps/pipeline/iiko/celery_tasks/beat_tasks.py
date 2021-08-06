@@ -1,7 +1,3 @@
-"""
-Only for cron, not for import
-"""
-
 from config import celery_app
 from django.db.transaction import atomic
 
@@ -28,5 +24,5 @@ def update_brand_nomenclatures():
 
 @celery_app.task(name="iiko.check_brand_organizations_liveness")  # noqa
 def check_brand_organizations_liveness() -> None:
-    for local_brand in LocalBrand.objects.active():
+    for local_brand in LocalBrand.objects.all():
         CheckLocalBrandOrganizationsLiveness(instance=local_brand).run()
