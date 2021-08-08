@@ -209,6 +209,45 @@
             async>
     </script>
     <script type="text/javascript">
+        if ($('[name=push_type]').length > 0){
+            if ($('[name=push_type]').val() == "INFO"){
+                $('.field-ref_object').css({'display': 'none'});
+            }
+        }
+        $('[name=push_type]').change(function(e){
+            if (this.value != "INFO") {
+                $('.field-ref_object').css({'display': 'block'});
+                if (this.value == "PROMOTION"){
+                    $.get('/notifications/promotion-queryset/').done(function(resp){
+                        $('#id_ref_object').empty();
+                        $('#id_ref_object').append("<option>---------</option>");
+                        console.log(resp);
+                        for (obj of resp.data) {
+                            $('#id_ref_object').append(`<option value='${obj.id}'>${obj.name}</option>`);
+                        }
+                    });
+                } else {
+                    $.get('/notifications/order-queryset').done(function(resp){
+                        $('#id_ref_object').empty();
+                        $('#id_ref_object').append("<option>---------</option>");
+                        console.log(resp);
+                        for (obj of resp.data) {
+                            $('#id_ref_object').append(`<option value='${obj.id}'>${obj.name}</option>`);
+                        }
+                    });
+                }
+            } else {
+                $('.field-ref_object').css({'display': 'none'});
+            }
+        });
+        function set_selection(resp){
+            $('#id_ref_object').empty();
+            $('#id_ref_object').append("<option>---------</option>");
+            console.log(resp.responseJSON);
+            for (obj of resp.responseJSON.data) {
+                $('#id_ref_object').append(`<option value='${obj.id}'>${obj.name}</option>`);
+            }
+        }
         // ======= Calculating network speed =======
         var userImageLink="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20200714180638/CIP_Launch-banner.png";
         var time_start, end_time;
