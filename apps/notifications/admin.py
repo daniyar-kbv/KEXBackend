@@ -1,8 +1,12 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline, GenericStackedInline
 
+from . import PushTypes
 from .models import Notification, FirebaseToken, NotificationTemplate
 from apps.common.admin import AbstractTitleModelForm, AbstractDescriptionModelForm
+from ..orders.models import Order
+from ..promotions.models import Promotion
 
 
 class InlineNotification(GenericStackedInline):
@@ -18,17 +22,68 @@ class InlineNotification(GenericStackedInline):
     # ct_field = "config_content_type"
 
 
+class NotificationForm(AbstractTitleModelForm, AbstractDescriptionModelForm):
+    ref_object = forms.IntegerField(label="Связанный объект", required=False)
+
+    class Meta:
+        fields = (
+            'title_ru',
+            'title_kk',
+            'title_en',
+            'description_ru',
+            'description_kk',
+            'description_en',
+            'uuid',
+            'date',
+            'push_type',
+            'ref_object'
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(NotificationForm, self).__init__(*args, **kwargs)
+        idict = self.instance.__dict__
+        print('instance dict: ', idict)
+        ref_object = self.instance.content_object
+        # print("ref_object: ", ref_object)
+        queryset = ref_object._meta.model.objects.all() if ref_object else None
+        initial = ref_object.id if ref_object else None
+        # print("queryset: ", queryset)
+        self.fields['ref_object'] = forms.ModelChoiceField(
+            label="Связанный объект",
+            required=False,
+            queryset=queryset,
+            initial=initial
+        )
+
+    def save(self, commit=True):
+        obj = super(NotificationForm, self).save(commit=False)
+
+        ref_oid = self.cleaned_data['ref_object']
+        print('ref_oid in save: ', ref_oid)
+        if ref_oid:
+            ref_oid = ref_oid.id
+            if obj.push_type == PushTypes.PROMOTION:
+                obj.content_object = Promotion.objects.get(id=ref_oid)
+            elif obj.push_type == PushTypes.ORDER_STATUS_UPDATE or obj.push_type == PushTypes.ORDER_RATE:
+                obj.content_object = Order.objects.get(id=ref_oid)
+
+        if commit:
+            obj.save()
+        return obj
+
+
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ['uuid', 'title', 'push_type', 'date']
     readonly_fields = ['uuid']
-    fields = (
-        'uuid',
-        'title',
-        'description',
-        'push_type',
-        'date',
-    )
+    form = NotificationForm
+    # fields = (
+    #     'uuid',
+    #     'title',
+    #     'description',
+    #     'push_type',
+    #     'date',
+    # )
 
 
 class NotificationTemplateForm(AbstractTitleModelForm, AbstractDescriptionModelForm):

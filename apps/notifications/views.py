@@ -8,6 +8,8 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView
 from apps.common.mixins import JSONPublicAPIMixin, JSONRendererMixin
 from apps.notifications.models import FirebaseToken
 from apps.notifications.serializers import CreateFirebaseTokenSerializer
+from apps.orders.models import Order
+from apps.promotions.models import Promotion
 
 
 class CreateFirebaseTokenView(JSONPublicAPIMixin, CreateAPIView):
@@ -43,3 +45,14 @@ class UpdateFirebaseTokenView(JSONRendererMixin, UpdateAPIView):
         fbtoken.save()
 
         return Response({})
+
+
+class OrderQuerysetView(JSONPublicAPIMixin, APIView):
+    def get(self, request):
+        return Response([{'id': o.id, 'name': str(o)} for o in Order.objects.all()], status.HTTP_200_OK)
+
+
+class PromotionQuerysetView(JSONPublicAPIMixin, APIView):
+    def get(self, request):
+        return Response([{'id': p.id, 'name': str(p)} for p in Promotion.objects.all()], status.HTTP_200_OK)
+
