@@ -207,6 +207,7 @@
 <script>
   $(document).ready(function(){
     document.querySelector('select[name=action]').value = 'delete_selected';
+    $('[value=delete_selected]').text($('[value=delete_selected]').text().split(' ')[0]);
     $('#changelist-filter').show();
   });
 
