@@ -41,17 +41,13 @@ class NotificationForm(AbstractTitleModelForm, AbstractDescriptionModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NotificationForm, self).__init__(*args, **kwargs)
-        idict = self.instance.__dict__
-        print('instance dict: ', idict)
-        ref_object = self.instance.content_object
-        # print("ref_object: ", ref_object)
+        ref_object = self.instance.content_object if self.instance else None
         queryset = ref_object._meta.model.objects.all() if ref_object else None
         initial = ref_object.id if ref_object else None
-        # print("queryset: ", queryset)
         self.fields['ref_object'] = forms.ModelChoiceField(
             label="Связанный объект",
             required=False,
-            queryset=queryset,
+            queryset=queryset or Promotion.objects.all(),
             initial=initial
         )
 
@@ -89,36 +85,35 @@ class NotificationAdmin(admin.ModelAdmin):
 class NotificationTemplateForm(AbstractTitleModelForm, AbstractDescriptionModelForm):
     class Meta:
         model = NotificationTemplate
-        fields = '__all__'
+        fields = (
+            'push_type',
+            'title_ru',
+            'title_kk',
+            'title_en',
+            'description_ru',
+            'description_kk',
+            'description_en',
+        )
 
 
 @admin.register(NotificationTemplate)
 class NotificationTemplateAdmin(admin.ModelAdmin):
     list_display = [
-        # 'name',
+        'push_type',
         'title',
         'description'
     ]
-    fields = (
-        # 'name',
-        'title',
-        'description'
-    )
     form = NotificationTemplateForm
 
 
 @admin.register(FirebaseToken)
 class FirebaseTokenAdmin(admin.ModelAdmin):
-    list_display = ['lead_uuid', 'user', 'fbtoken']
+    list_display = ['user', 'fbtoken']
     readonly_fields = ['token']
     fields = (
-        'lead',
         'token',
         'user'
     )
-
-    def lead_uuid(self, obj):
-        return obj.lead.uuid
 
     def fbtoken(self, obj):
         if obj.token:

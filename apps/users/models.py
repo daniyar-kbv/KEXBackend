@@ -94,7 +94,11 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     @property
     def fb_token(self):
-        return self.firebase_token.token if self.firebase_token else None
+        return self.fb_tokens[-1] if self.fb_tokens else None
+
+    @property
+    def fb_tokens(self):
+        return [fb.token for fb in self.firebase_tokens.all()]
 
 
 class UserAddress(TimestampModel):

@@ -38,14 +38,13 @@ class NotificationTemplate(AbstractTitleModel, AbstractDescriptionModel):
 
 class FirebaseToken(models.Model):
     token = models.CharField("Firebase token", max_length=255, blank=True, null=True)
-    lead = models.ForeignKey(Lead, verbose_name="Лид", on_delete=models.CASCADE, null=True)
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User,
         verbose_name="Пользователь",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="firebase_token"
+        related_name="firebase_tokens"
     )
 
     class Meta:
