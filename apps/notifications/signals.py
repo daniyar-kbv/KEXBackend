@@ -29,7 +29,7 @@ def save_notification_signal(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=FirebaseToken)
-def save_lead_signal(sender, instance, **kwargs):
+def save_fbtoken_signal(sender, instance, **kwargs):
     if instance.user:
          language = instance.user.language
     else:

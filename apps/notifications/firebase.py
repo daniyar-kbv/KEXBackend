@@ -361,12 +361,15 @@ def fcm_send_multicast():
     # [END send_multicast]
 
 
-def push_multicast(user_tokens, notify_data, extra_data=None):
+def push_multicast(user_tokens, title, body, extra_data=None):
     # Create a list containing up to 500 registration tokens.
     if not isinstance(user_tokens, list):
         user_tokens = [user_tokens]
     message = messaging.MulticastMessage(
-        notification=messaging.Notification(**notify_data),
+        notification=messaging.Notification(
+            title=str(title),
+            body=str(body)
+        ),
         data=extra_data,
         tokens=user_tokens,
     )

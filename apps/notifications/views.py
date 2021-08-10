@@ -12,36 +12,25 @@ from apps.orders.models import Order
 from apps.promotions.models import Promotion
 
 
-class CreateFirebaseTokenView(JSONPublicAPIMixin, CreateAPIView):
+class FirebaseTokenSaveView(JSONPublicAPIMixin, CreateAPIView):
     queryset = FirebaseToken.objects.all()
     serializer_class = CreateFirebaseTokenSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user if self.request.user.is_authenticated else None)
 
-class AddUserToFirebaseTokenView(JSONRendererMixin, UpdateAPIView):
+
+class FirebaseTokenUpdateView(JSONPublicAPIMixin, UpdateAPIView):
     queryset = FirebaseToken.objects.all()
 
     def get_object(self):
-        return get_object_or_404(FirebaseToken, lead__uuid=self.kwargs.get("lead_uuid"))
+        return get_object_or_404(FirebaseToken, token=self.request.data.get("old_firebase_token"))
 
     def update(self, request, *args, **kwargs):
         fbtoken = self.get_object()
-        fbtoken.user = request.user
-        fbtoken.save()
-
-        return Response({})
-
-
-class UpdateFirebaseTokenView(JSONRendererMixin, UpdateAPIView):
-    queryset = FirebaseToken.objects.all()
-
-    def get_object(self):
-        return get_object_or_404(FirebaseToken, user=self.request.user)
-
-    def update(self, request, *args, **kwargs):
-        fbtoken = self.get_object()
-        if not request.data.get('firebase_token'):
-            raise ValueError("firebase_token key not provided")
-        fbtoken.token = request.data.get('firebase_token')
+        if request.user.is_authenticated:
+            fbtoken.user = request.user
+        fbtoken.token = request.data.get('new_firebase_token')
         fbtoken.save()
 
         return Response({})
@@ -55,4 +44,3 @@ class OrderQuerysetView(JSONPublicAPIMixin, APIView):
 class PromotionQuerysetView(JSONPublicAPIMixin, APIView):
     def get(self, request):
         return Response([{'id': p.id, 'name': str(p)} for p in Promotion.objects.all()], status.HTTP_200_OK)
-
