@@ -29,6 +29,7 @@ django-ckeditor==5.9.0
 zeep==3.4.0
 num2words==0.5.10
 pyexcelerate==0.8.0
+cryptography==3.4.7
 
 # xlsx files
 xlrd==1.2.0
