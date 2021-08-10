@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from . import PromotionTypes
@@ -17,6 +18,9 @@ class Promotion(TemplateModel, AbstractImageModel):
         MultiLanguageText, verbose_name=_("Текстовое описание (для сайта)"), on_delete=models.CASCADE, null=True
     )
     local_brand = models.ManyToManyField(LocalBrand, verbose_name=_("Локальный бренд"), blank=True)
+    web_url = models.URLField("Ссылка на веб-сайт", null=True, blank=True)
+    start_date = models.DateField("Дата начала", null=True, default=timezone.now)
+    end_date = models.DateField("Дата завершения", null=True, default=timezone.now)
     # contest_type = models.CharField("Тип Конкурса", max_length=20, choices=PromotionTypes.choices)
 
     class Meta:

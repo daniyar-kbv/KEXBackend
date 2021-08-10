@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
 
+from . import PromotionTypes
 from .models import Promotion
 from apps.common.mixins import PublicAPIMixin, JSONPublicAPIMixin
 from .serializers import PromotionListSerializer
@@ -43,7 +44,10 @@ class PromotionListView(JSONPublicAPIMixin, ListAPIView):
         )
 
         for promo in queryset:
-            link = self.request.build_absolute_uri(app_name + promo.slug)
+            if promo.promo_type == PromotionTypes.ARTICLE:
+                link = self.request.build_absolute_uri(app_name + promo.slug)
+            else:
+                link = promo.web_url
             setattr(promo, 'link', link)
 
         return queryset

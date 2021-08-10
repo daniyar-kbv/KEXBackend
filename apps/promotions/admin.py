@@ -15,6 +15,19 @@ class PromotionForm(
     class Meta:
         model = Promotion
         exclude = ('name', 'description', 'image')
+        # fields = (
+        #     'name_ru', 'name_kk', 'name_en',
+        #     'description_ru', 'description_kk', 'description_en',
+        #     'image_ru', 'image_kk', 'image_en',
+        #     'template_ru', 'template_kk', 'template_en',
+        #     'priority',
+        #     'web_url',
+        #     'slug',
+        #     'promo_type',
+        #     'local_brand',
+        #     'start_date',
+        #     'end_date'
+        # )
 
 
 @admin.register(Promotion)
@@ -24,6 +37,7 @@ class PromotionAdmin(admin.ModelAdmin):
         'promo_type',
         'image',
         'priority',
+        # 'web_url',
         # 'slug',
     ]
     list_editable = ['priority']
