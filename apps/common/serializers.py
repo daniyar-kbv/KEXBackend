@@ -43,7 +43,7 @@ class AbstractImageSerializer(serializers.ModelSerializer):
         abstract = True
 
     def get_image(self, obj):
-        return self.context['request'].build_absolute_uri(
-            getattr(obj.image, self.context['request'].headers.get('language')).url
-        )
-
+        image = getattr(obj.image, self.context['request'].headers.get('language'))
+        if image:
+            return self.context['request'].build_absolute_uri(image.url)
+        return None
