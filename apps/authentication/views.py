@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 
+from rest_framework_simplejwt.views import TokenRefreshView as DRFTokenRefreshView
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.views import APIView
@@ -92,3 +93,7 @@ class OTPResendView(PublicAPIMixin, JSONRendererMixin, GenericAPIView):
         send_otp(serializer.validated_data['mobile_phone'])
 
         return Response(data={})
+
+
+class TokenRefreshView(JSONPublicAPIMixin, DRFTokenRefreshView):
+    pass
