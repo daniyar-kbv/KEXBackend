@@ -15,7 +15,7 @@ from apps.common.mixins import PublicAPIMixin, JSONPublicAPIMixin, JSONRendererM
 from apps.orders.models import Lead
 from apps.promotions import PromotionTypes
 from apps.promotions.models import Promotion, Participation
-from apps.promotions.services import get_instagram_auth_url, save_user_instagram
+from apps.promotions.services import get_instagram_auth_url, get_instagram_username
 
 
 class PromoTypeMixin:
@@ -90,9 +90,11 @@ class InstagramAuthView(PromoTypeMixin, JSONPublicAPIMixin, APIView):
     """
 
     def get(self, request, lead_uuid, encoded_user):  # noqa
+        url = self.promotion.web_url
         instagram_code = request.GET.get('code')
-        user = decrypt_and_get_user(encoded_user)
+        # user = decrypt_and_get_user(encoded_user)
         if instagram_code:
             code = instagram_code.split('#')[0]
-            save_user_instagram(code, user.pk, self.promo_type, request.path)
-        return redirect(self.promotion.web_url)
+            username = get_instagram_username(code, self.promo_type, request.path)
+            url += f"?username={username}"
+        return redirect(url)

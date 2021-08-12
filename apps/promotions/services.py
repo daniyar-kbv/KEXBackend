@@ -9,7 +9,7 @@ from apps.common.encryption import encrypt_user
 User = get_user_model()
 
 
-def save_user_instagram(code: str, user_pk: int, promo_type: str, redirect_uri: str):
+def get_instagram_username(code: str, user_pk: int, promo_type: str, redirect_uri: str):
     access_token = GetAccessTokenByCode(instance=InstagramCode(code), redirect_uri=redirect_uri).run()
 
     if not access_token:
@@ -19,14 +19,7 @@ def save_user_instagram(code: str, user_pk: int, promo_type: str, redirect_uri: 
 
     if not username:
         raise InstagramUnknownError
-
-    user = User.objects.get(pk=user_pk)
-    promotion = Promotion.objects.get(promo_type=promo_type)
-    Participation.objects.create(
-        user=user,
-        promotion=promotion,
-        instagram_username=username
-    )
+    return username
 
 
 def get_instagram_auth_url(request):
