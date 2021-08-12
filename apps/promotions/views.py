@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
@@ -32,10 +32,18 @@ class PromotionRenderView(PublicAPIMixin, APIView):
         return render(request, 'docs/template_page.html', {'content': content})
 
 
-class PromotionListView(JSONPublicAPIMixin, ListAPIView):
+class PromotionMixin(JSONPublicAPIMixin, GenericAPIView):
     queryset = Promotion.objects.all()
     serializer_class = PromotionListSerializer
 
+    def get_link(self, promo, app_name):
+        if promo.promo_type == PromotionTypes.ARTICLE:
+            return self.request.build_absolute_uri(app_name + promo.slug)
+        else:
+            return promo.web_url
+
+
+class PromotionListView(PromotionMixin, ListAPIView):
     def get_queryset(self):
         app_name = self.request.path
         print("app_name: ", app_name)
@@ -44,11 +52,16 @@ class PromotionListView(JSONPublicAPIMixin, ListAPIView):
         )
 
         for promo in queryset:
-            if promo.promo_type == PromotionTypes.ARTICLE:
-                link = self.request.build_absolute_uri(app_name + promo.slug)
-            else:
-                link = promo.web_url
-            setattr(promo, 'link', link)
+            setattr(promo, 'link', self.get_link(promo, app_name))
 
         return queryset
 
+
+class PromotionDetailView(PromotionMixin, RetrieveAPIView):
+    lookup_field = 'pk'
+
+    def get_object(self):
+        obj = super().get_object()
+        app_name = self.request.path.replace(f'{self.kwargs.get("pk")}/', '')
+        setattr(obj, 'link', self.get_link(obj, app_name))
+        return obj
