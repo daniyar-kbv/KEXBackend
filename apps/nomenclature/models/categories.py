@@ -6,26 +6,6 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from apps.common.models import AbstractNameModel, UUIDModel
 
 
-class Category(AbstractNameModel):
-    class Meta:
-        verbose_name = _("Категория")
-        verbose_name_plural = _("Категории")
-
-    brand = models.ForeignKey(  # noqa
-        "partners.Brand",
-        verbose_name=_("Бренд"),
-        on_delete=models.PROTECT,
-        null=True,
-        related_name="categories",
-    )
-    is_active = models.BooleanField(
-        default=False
-    )
-    outer_id = models.UUIDField(
-        _("UUID в системе IIKO"), null=True,  # noqa
-    )
-
-
 class LocalCategory(AbstractNameModel):
     class Meta:
         verbose_name = _("Локальная категория")
@@ -37,12 +17,6 @@ class LocalCategory(AbstractNameModel):
         null=True,
         related_name="local_categories",
         verbose_name=_("Локальный бренд"),
-    )
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.PROTECT,
-        null=True,
-        verbose_name=_("Категория")
     )
     is_active = models.BooleanField(
         default=True,

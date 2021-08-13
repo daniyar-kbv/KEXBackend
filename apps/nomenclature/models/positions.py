@@ -11,13 +11,6 @@ from apps.common.models import (
 )
 
 
-# class Position(UUIDModel, AbstractNameModel):
-#     """
-#     reserved
-#     """
-#     ...
-
-
 class PositionTypes(models.TextChoices):
     DISH = "DISH", "Основное блюдо"
     MODIFIER = "MODIFIER", "Дополнительное блюдо"

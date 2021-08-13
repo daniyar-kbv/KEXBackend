@@ -10,7 +10,6 @@ from apps.common.utils import (
     create_multi_language_text,
 )
 from apps.nomenclature.models import (
-    Category,
     LocalCategory,
     BranchCategory,
     LocalPosition,

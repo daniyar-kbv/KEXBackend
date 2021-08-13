@@ -4,18 +4,9 @@ from apps.common.admin import ReadChangeOnlyTabularInline, ReadChangeOnlyStacked
     AbstractDescriptionModelForm
 
 from .models import (
-    Category, LocalCategory, BranchCategory,
+    LocalCategory, BranchCategory,
     LocalPosition, BranchPosition,
 )
-
-
-class CategoryInline(admin.TabularInline):
-    model = Category
-    classes = ("collapse",)
-    extra = 0
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 class LocalCategoryInline(ReadChangeOnlyTabularInline):

@@ -9,7 +9,6 @@ def run_background_tasks():
 
 def add_random_categories():
     from apps.partners.models import Brand
-    from apps.nomenclature.models import Category
     from apps.translations.models import MultiLanguageChar
 
     category_names = [

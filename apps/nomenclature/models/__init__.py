@@ -1,5 +1,4 @@
 from .categories import (
-    Category,
     LocalCategory,
     BranchCategory,
 )
