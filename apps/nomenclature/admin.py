@@ -5,7 +5,7 @@ from apps.common.admin import ReadChangeOnlyTabularInline, ReadChangeOnlyStacked
 
 from .models import (
     Category, BranchCategory,
-    LocalPosition, BranchPosition,
+    Position, BranchPosition,
 )
 
 
@@ -36,7 +36,7 @@ class BranchCategoryInline(ReadChangeOnlyTabularInline):
 
 
 class LocalPositionInline(ReadChangeOnlyStackedInline):
-    model = LocalPosition
+    model = Position
     extra = 0
     classes = ("collapse",)
     fields = (
@@ -79,11 +79,11 @@ class BranchPositionInline(ReadChangeOnlyTabularInline):
 
 class LocalPositionForm(AbstractNameModelForm, AbstractDescriptionModelForm):
     class Meta:
-        model = LocalPosition
+        model = Position
         exclude = ('name', 'description')
 
 
-@admin.register(LocalPosition)
+@admin.register(Position)
 class LocalPositionAdmin(admin.ModelAdmin):
     list_filter = "local_brand",
     readonly_fields = (

@@ -16,7 +16,7 @@ class PositionTypes(models.TextChoices):
     MODIFIER = "MODIFIER", "Дополнительное блюдо"
 
 
-class LocalPosition(AbstractNameModel, AbstractDescriptionModel):
+class Position(AbstractNameModel, AbstractDescriptionModel):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
@@ -52,10 +52,10 @@ class LocalPosition(AbstractNameModel, AbstractDescriptionModel):
 
 class BranchPosition(UUIDModel, AbstractNameModel, AbstractDescriptionModel):
     class Meta:
-        unique_together = ("local_position", "branch")
+        unique_together = ("position", "branch")
 
-    local_position = models.ForeignKey(
-        "nomenclature.LocalPosition",
+    position = models.ForeignKey(
+        "nomenclature.Position",
         on_delete=models.CASCADE,
         related_name="branch_positions",
     )

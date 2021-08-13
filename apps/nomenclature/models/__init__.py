@@ -6,7 +6,7 @@ from .positions import (
     PositionTypes,
     ModifierGroup,
     PositionModifierGroup,
-    LocalPosition,
+    Position,
     BranchPosition,
     BranchPositionModifier,
 )

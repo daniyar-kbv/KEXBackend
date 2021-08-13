@@ -35,11 +35,11 @@ class ModifierSerializer(serializers.ModelSerializer):
         return obj.modifier.name.text(lang=self.context["language"])
 
     def get_image(self, obj):
-        if not obj.modifier.local_position.image:
+        if not obj.modifier.position.image:
             return
 
         return self.context["request"].build_absolute_uri(
-            obj.modifier.local_position.image.url
+            obj.modifier.position.image.url
         )
 
 
@@ -97,11 +97,11 @@ class BranchPositionSerializer(serializers.ModelSerializer):
         return obj.description.text(lang=self.context["language"])
 
     def get_image(self, obj):
-        if not obj.local_position.image:
+        if not obj.position.image:
             return
 
         request = self.context["request"]
-        return request.build_absolute_uri(obj.local_position.image.url)
+        return request.build_absolute_uri(obj.position.image.url)
 
 
 class OrdersListSerializer(serializers.ModelSerializer):

@@ -12,7 +12,7 @@ from apps.common.utils import (
 from apps.nomenclature.models import (
     Category,
     BranchCategory,
-    LocalPosition,
+    Position,
     BranchPosition,
     ModifierGroup,
     PositionModifierGroup,
@@ -179,7 +179,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
     is_additional = serializers.BooleanField(required=False, allow_null=True)
 
     class Meta:
-        model = LocalPosition
+        model = Position
         fields = "__all__"
 
     def validate(self, attrs):
@@ -201,7 +201,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             validated_data.pop("category_outer_id")
         )
 
-        local_position, local_position_created = LocalPosition.objects.get_or_create(  # noqa
+        local_position, local_position_created = Position.objects.get_or_create(  # noqa
             outer_id=validated_data.get("outer_id"),
             local_brand=validated_data.get("local_brand"),
         )

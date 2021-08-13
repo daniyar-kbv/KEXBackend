@@ -1,12 +1,10 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import (
-    LocalPosition
-)
+from .models import Position, BranchCategory
 
 
-@receiver(post_save, sender=LocalPosition)
+@receiver(post_save, sender=Position)
 def update_local_position(sender, instance, created, **kwargs):
     if created:
         return
