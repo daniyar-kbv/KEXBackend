@@ -1,5 +1,5 @@
 from .categories import (
-    LocalCategory,
+    Category,
     BranchCategory,
 )
 from .positions import (

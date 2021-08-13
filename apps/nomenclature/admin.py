@@ -4,13 +4,13 @@ from apps.common.admin import ReadChangeOnlyTabularInline, ReadChangeOnlyStacked
     AbstractDescriptionModelForm
 
 from .models import (
-    LocalCategory, BranchCategory,
+    Category, BranchCategory,
     LocalPosition, BranchPosition,
 )
 
 
-class LocalCategoryInline(ReadChangeOnlyTabularInline):
-    model = LocalCategory
+class CategoryInline(ReadChangeOnlyTabularInline):
+    model = Category
     extra = 0
     classes = ("collapse",)
     fields = (
@@ -89,7 +89,7 @@ class LocalPositionAdmin(admin.ModelAdmin):
     readonly_fields = (
         # "name",
         # "description",
-        "local_category",
+        "category",
         "local_brand",
         "outer_id",
     )

@@ -4,7 +4,7 @@ from django.utils.html import format_html
 
 from apps.common.admin import ReadChangeOnlyTabularInline, AbstractNameModelForm
 from apps.nomenclature.admin import (
-    LocalCategoryInline, BranchCategoryInline,
+    CategoryInline, BranchCategoryInline,
     LocalPositionInline, BranchPositionInline,
 )
 
@@ -93,7 +93,7 @@ class BrandAdmin(admin.ModelAdmin):
 @admin.register(LocalBrand)
 class LocalBrandAdmin(admin.ModelAdmin):
     inlines = [
-        LocalCategoryInline,
+        CategoryInline,
         # LocalPositionInline,
         BranchInline,
     ]

@@ -10,7 +10,7 @@ from apps.common.utils import (
     create_multi_language_text,
 )
 from apps.nomenclature.models import (
-    LocalCategory,
+    Category,
     BranchCategory,
     LocalPosition,
     BranchPosition,
@@ -134,7 +134,7 @@ class IIKOCategorySerializer(serializers.ModelSerializer):
             category.name = create_multi_language_char(name)
             category.save(update_fields=["name"])
 
-        local_category, _ = LocalCategory.objects.get_or_create(
+        local_category, _ = Category.objects.get_or_create(
             outer_id=outer_id,
             category=category,
             defaults={"local_brand_id": branch.local_brand_id},
@@ -191,7 +191,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             return None, None
 
         return (
-            LocalCategory.objects.filter(outer_id=outer_id).first(),
+            Category.objects.filter(outer_id=outer_id).first(),
             BranchCategory.objects.filter(outer_id=outer_id).first(),
         )
 

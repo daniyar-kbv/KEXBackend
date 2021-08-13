@@ -1,12 +1,10 @@
-from decimal import Decimal
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, UUIDModel
 
 
-class LocalCategory(AbstractNameModel):
+class Category(AbstractNameModel):
     class Meta:
         verbose_name = _("Локальная категория")
         verbose_name_plural = _("Локальные категории")
@@ -15,7 +13,7 @@ class LocalCategory(AbstractNameModel):
         "partners.LocalBrand",
         on_delete=models.PROTECT,
         null=True,
-        related_name="local_categories",
+        related_name="categories",
         verbose_name=_("Локальный бренд"),
     )
     is_active = models.BooleanField(
@@ -38,15 +36,13 @@ class BranchCategory(UUIDModel, AbstractNameModel):
         related_name="branch_categories",
         verbose_name=_("Филиал"),
     )
-    local_category = models.ForeignKey(
-        LocalCategory,
+    category = models.ForeignKey(
+        Category,
         on_delete=models.PROTECT,
         null=True,
         verbose_name=_("Локальная категория"),
+        related_name="branch_categories",
     )
     is_active = models.BooleanField(
         default=True
-    )
-    outer_id = models.UUIDField(
-        _("UUID в системе IIKO"), null=True,  # noqa
     )

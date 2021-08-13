@@ -26,8 +26,8 @@ class LocalPosition(AbstractNameModel, AbstractDescriptionModel):
         on_delete=models.PROTECT,
         related_name="local_positions",
     )
-    local_category = models.ForeignKey(
-        "nomenclature.LocalCategory",
+    category = models.ForeignKey(
+        "nomenclature.Category",
         on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name="local_positions"
