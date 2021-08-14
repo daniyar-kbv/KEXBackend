@@ -4,11 +4,12 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.common.models import UUIDModel, AbstractNameModel
 from apps.common.utils import create_multi_language_char
+from apps.common.models import UUIDModel, AbstractNameModel
+from apps.nomenclature.managers import PositionModifierGroupManager
 
 if TYPE_CHECKING:
-    from apps.partners.models import LocalBrand, Branch
+    from apps.partners.models import LocalBrand
 
 
 class ModifierGroup(UUIDModel, AbstractNameModel):
@@ -59,6 +60,12 @@ class PositionModifierGroup(models.Model):
     is_required = models.BooleanField(
         default=False,
     )
+
+    objects = PositionModifierGroupManager()
+
+    @property
+    def name(self):
+        return self.modifier_group.name
 
 
 class PositionModifier(models.Model):
