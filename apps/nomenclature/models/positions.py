@@ -75,7 +75,7 @@ class BranchPosition(UUIDModel):
         unique_together = ("position", "branch")
 
     position = models.ForeignKey(
-        "nomenclature.Position",
+        Position,
         on_delete=models.CASCADE,
         related_name="branch_positions",
     )
@@ -102,6 +102,14 @@ class BranchPosition(UUIDModel):
     )
 
     objects = BranchPositionManager()
+
+    @property
+    def name(self):
+        return self.position.name
+
+    @property
+    def description(self):
+        return self.position.description
 
     @property
     def image(self):

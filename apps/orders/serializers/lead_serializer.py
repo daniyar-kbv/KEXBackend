@@ -203,7 +203,7 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
 
 
 class LeadNomenclatureSerializer(serializers.ModelSerializer):
-    categories = NomenclatureCategorySerializer(source="branch.branch_categories", many=True, read_only=True)
+    categories = NomenclatureCategorySerializer(source="branch.branch_categories.active", many=True, read_only=True)
 
     class Meta:
         model = Lead

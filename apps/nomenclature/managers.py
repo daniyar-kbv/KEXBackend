@@ -20,12 +20,16 @@ class BranchPositionManager(BaseManager.from_queryset(BranchPositionQuerySet)):
 
 class BranchCategoryQuerySet(QuerySet):
     def active(self):
-        return self.filter(is_active=True, category__is_active=True)
+        return self.filter(
+            is_active=True, category__is_active=True, branch_positions__isnull=False,
+        ).distinct()
 
 
 class BranchCategoryManager(BaseManager.from_queryset(BranchCategoryQuerySet)):
     def get_queryset(self):
-        return super(BranchCategoryManager, self).get_queryset().select_related('category')
+        return super(BranchCategoryManager, self).get_queryset()\
+            .select_related('category')\
+            .prefetch_related('branch_positions')
 
 
 class PositionModifierGroupQuerySet(QuerySet):
