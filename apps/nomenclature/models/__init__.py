@@ -4,9 +4,11 @@ from .categories import (
 )
 from .positions import (
     PositionTypes,
-    ModifierGroup,
-    PositionModifierGroup,
     Position,
     BranchPosition,
-    BranchPositionModifier,
+)
+from .modifiers import (
+    ModifierGroup,
+    PositionModifierGroup,
+    PositionModifier,
 )

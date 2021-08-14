@@ -1,7 +1,15 @@
+from uuid import UUID
+from typing import TYPE_CHECKING
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
+from apps.nomenclature.managers import BranchCategoryManager
+from apps.common.utils import create_multi_language_char
 from apps.common.models import AbstractNameModel, UUIDModel
+
+if TYPE_CHECKING:
+    from apps.partners.models import LocalBrand, Branch
 
 
 class Category(AbstractNameModel):
@@ -23,8 +31,27 @@ class Category(AbstractNameModel):
         _("UUID в системе IIKO"), null=True,  # noqa
     )
 
+    @classmethod
+    def register_category(cls, local_brand: 'LocalBrand', outer_id: UUID, iiko_name: str):
+        category, created = cls.objects.get_or_create(
+            outer_id=outer_id,
+            local_brand=local_brand,
+        )
 
-class BranchCategory(UUIDModel, AbstractNameModel):
+        if category.name is None:
+            category.name = create_multi_language_char(iiko_name)
+            category.save(update_fields=["name"])
+
+        for branch in local_brand.branches.active():
+            BranchCategory.register_branch_category(
+                branch=branch,
+                category=category,
+            )
+
+        return category
+
+
+class BranchCategory(UUIDModel):
     class Meta:
         verbose_name = _("Категория филиала")
         verbose_name_plural = _("Категории филиалов")
@@ -46,3 +73,18 @@ class BranchCategory(UUIDModel, AbstractNameModel):
     is_active = models.BooleanField(
         default=True
     )
+
+    objects = BranchCategoryManager()
+
+    @property
+    def name(self):
+        return self.category.name
+
+    @classmethod
+    def register_branch_category(cls, branch: 'Branch', category: Category):
+        branch_category, created = cls.objects.get_or_create(
+            category=category,
+            branch=branch,
+        )
+
+        return branch_category

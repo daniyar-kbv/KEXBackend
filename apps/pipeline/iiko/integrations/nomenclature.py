@@ -11,13 +11,13 @@ from .serializers import (
 )
 
 if TYPE_CHECKING:
-    from apps.partners.models import Branch
+    from apps.partners.models import LocalBrand
 
 
 class GetBranchNomenclature(BaseIIKOService):
     """Получение меню организации"""
     endpoint = "/api/1/nomenclature"
-    instance: 'Branch' = None
+    instance: 'LocalBrand' = None
     save_serializer = IIKONomenclatureSerializer
 
     position_types = {
@@ -25,12 +25,15 @@ class GetBranchNomenclature(BaseIIKOService):
         "Modifier": PositionTypes.MODIFIER,
     }
 
-    def get_local_brand_pk(self):
-        return self.instance.local_brand_id  # noqa
+    def get_random_active_organization_outer_id(self):
+        random_branch = self.instance.branches.active().first()
+
+        if random_branch is not None:
+            return str(random_branch.outer_id)
 
     def run_service(self):
         return self.fetch(json={
-            "organizationId": str(self.instance.outer_id)
+            "organizationId": self.get_random_active_organization_outer_id()
         })
 
     @staticmethod
@@ -71,7 +74,7 @@ class GetBranchNomenclature(BaseIIKOService):
             data=categories,
             many=True,
             context={
-                "branch": self.instance,
+                "local_brand": self.instance,
             }
         )
         serializer.is_valid(raise_exception=True)
@@ -85,7 +88,7 @@ class GetBranchNomenclature(BaseIIKOService):
             ],
             many=True,
             context={
-                "local_brand_id": self.instance.local_brand_id,  # noqa
+                "local_brand": self.instance
             }
         )
         serializer.is_valid(raise_exception=True)
@@ -124,8 +127,8 @@ class GetBranchNomenclature(BaseIIKOService):
                 "iiko_name": position.get("name"),
                 "iiko_description": position.get("description"),
                 "category_outer_id": position.get("productCategoryId"),
-                "local_brand": self.instance.local_brand_id, # noqa
-                "modifier_groups": self._fetch_modifier_groups(position)  # noqa
+                "modifier_groups": self._fetch_modifier_groups(position),
+                "local_brand": self.instance.pk,
             })
 
         return self.sort_positions(positions)
@@ -136,7 +139,6 @@ class GetBranchNomenclature(BaseIIKOService):
     def save(self, prepared_data):
         serializer = self.save_serializer(
             data=self.prepare_to_save(prepared_data), many=True,
-            context={"branch": self.instance}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()

@@ -7,7 +7,7 @@ from apps.partners.serializers import SquareImageBrandSerializer
 from apps.nomenclature.models import (
     BranchPosition,
     PositionModifierGroup,
-    BranchPositionModifier,
+    PositionModifier,
 )
 
 from .retrieve_cart_serializers import RetrieveCartSerializer
@@ -21,7 +21,7 @@ class ModifierSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
 
     class Meta:
-        model = BranchPositionModifier
+        model = PositionModifier
         fields = (
             "uuid",
             "name",

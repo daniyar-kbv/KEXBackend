@@ -15,8 +15,6 @@ from apps.nomenclature.models import (
     Position,
     BranchPosition,
     ModifierGroup,
-    PositionModifierGroup,
-    BranchPositionModifier,
 )
 
 
@@ -81,8 +79,8 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
 
 
 class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(source="uuid", required=True, write_only=True)
-    name = serializers.CharField(source="iiko_name")
+    id = serializers.UUIDField(source="outer_id", required=True, write_only=True)
+    name = serializers.CharField()
 
     class Meta:
         model = ModifierGroup
@@ -92,69 +90,30 @@ class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        instance, created = ModifierGroup.objects.get_or_create(
-            uuid=validated_data["uuid"],
-            local_brand_id=self.context["local_brand_id"],
+        return ModifierGroup.register_modifier_group(
+            local_brand=self.context["local_brand"],
+            outer_id=validated_data["outer_id"],
+            iiko_name=validated_data["name"]
         )
-        instance.iiko_name = validated_data["iiko_name"]
-        instance.save(update_fields=["iiko_name"])
-
-        if instance.name is None:
-            instance.name = create_multi_language_char(validated_data["iiko_name"])
-            instance.save(update_fields=["name"])
-
-        return instance
 
 
 class IIKOCategorySerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="outer_id", required=True, write_only=True)
-    name = serializers.CharField(source="iiko_name")
+    name = serializers.CharField()
 
     class Meta:
-        model = BranchCategory
+        model = Category
         fields = (
             "id",
             "name",
         )
 
     def create(self, validated_data):
-        branch = self.context["branch"]
-
-        outer_id, name = (
-            validated_data["outer_id"],
-            validated_data["iiko_name"],
+        return Category.register_category(
+            local_brand=self.context["local_brand"],
+            outer_id=validated_data["outer_id"],
+            iiko_name=validated_data["name"],
         )
-
-        category, _ = Category.objects.get_or_create(
-            outer_id=outer_id,
-            brand_id=branch.local_brand.brand_id,
-        )
-
-        if category.name is None:
-            category.name = create_multi_language_char(name)
-            category.save(update_fields=["name"])
-
-        local_category, _ = Category.objects.get_or_create(
-            outer_id=outer_id,
-            category=category,
-            defaults={"local_brand_id": branch.local_brand_id},
-        )
-
-        if local_category.name is None:
-            local_category.name = category.name
-            local_category.save(update_fields=["name"])
-
-        branch_category, _ = BranchCategory.objects.get_or_create(
-            outer_id=outer_id,
-            local_category=local_category,
-            defaults={"branch_id": branch.id},
-        )
-
-        if branch_category.name is None:
-            branch_category.name = category.name
-            branch_category.save(update_fields=["name"])
-
-        return branch_category
 
 
 class IIKOModifierSerializer(serializers.Serializer):  # noqa
@@ -175,8 +134,8 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
     iiko_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     iiko_description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     modifier_groups = IIKOModifierGroupSerializer(many=True, required=False, allow_null=True)
-    category_outer_id = serializers.UUIDField(required=False, allow_null=True, write_only=True)
-    is_additional = serializers.BooleanField(required=False, allow_null=True)
+    category_outer_id = serializers.UUIDField(required=True, allow_null=True, write_only=True)
+    is_additional = serializers.BooleanField(required=True, allow_null=True)
 
     class Meta:
         model = Position
@@ -185,70 +144,41 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         return super().validate(attrs)
 
-    @staticmethod
-    def get_local_branch_categories(outer_id):
-        if outer_id is None:
-            return None, None
+    def get_category(self, outer_id):
+        return Category.objects.filter(outer_id=outer_id).first()
 
-        return (
-            Category.objects.filter(outer_id=outer_id).first(),
-            BranchCategory.objects.filter(outer_id=outer_id).first(),
-        )
+    def get_branch_category(self, outer_id, branch_id):
+        return BranchCategory.objects.filter(
+            category__outer_id=outer_id,
+            branch_id=branch_id,
+        ).first()
 
     def create(self, validated_data):
-        modifier_groups: List[Dict] = validated_data.pop("modifier_groups") or list()
-        local_category, branch_category = self.get_local_branch_categories(
-            validated_data.pop("category_outer_id")
+        position, created = Position.objects.get_or_create(
+            outer_id=validated_data["outer_id"],
+            local_brand=validated_data["local_brand"],
         )
+        position.price = validated_data["price"]
+        position.is_additional = validated_data["is_additional"]
+        position.position_type = validated_data["position_type"]
+        position.category = self.get_category(validated_data["category_outer_id"])
 
-        local_position, local_position_created = Position.objects.get_or_create(  # noqa
-            outer_id=validated_data.get("outer_id"),
-            local_brand=validated_data.get("local_brand"),
-        )
+        if validated_data["iiko_name"] and position.name is None:
+            position.name = create_multi_language_char(validated_data["iiko_name"])
 
-        local_position.local_category = local_category
+        if validated_data["iiko_description"] and position.description is None:
+            position.description = create_multi_language_text(validated_data["iiko_description"])
 
-        if local_position.name is None and validated_data.get("iiko_name"):
-            local_position.name = create_multi_language_char(validated_data["iiko_name"])
+        position.save()
 
-        if local_position.description is None and validated_data.get("iiko_description"):
-            local_position.description = create_multi_language_text(validated_data["iiko_description"])
-
-        local_position.save(update_fields=["local_category", "name", "description"])
-
-        branch_position, branch_position_created = BranchPosition.objects.get_or_create(  # noqa
-            branch=self.context["branch"],
-            local_position=local_position,
-            outer_id=local_position.outer_id,
-        )
-        branch_position.name = local_position.name
-        branch_position.price = validated_data.get("price")
-        branch_position.description = local_position.description
-        branch_position.iiko_name=validated_data.get("iiko_name")
-        branch_position.position_type = validated_data.get("position_type")
-        branch_position.iiko_description=validated_data.get("iiko_description")
-        branch_position.is_additional=validated_data.get("is_additional")
-        branch_position.save()
-
-        for modifier_group in modifier_groups:
-            position_modifier_group, _ = PositionModifierGroup.objects.update_or_create(
-                modifier_group_id=modifier_group["outer_id"],
-                branch_position_id=branch_position.id,
-                defaults={
-                    "is_required": modifier_group["is_required"],
-                    "min_amount": modifier_group["min_amount"],
-                    "max_amount": modifier_group["max_amount"],
-                }
+        for branch in validated_data["local_brand"].branches.all():
+            BranchPosition.register_branch_position(
+                branch=branch,
+                position=position,
+                modifier_groups=validated_data["modifier_groups"],
+                branch_category=self.get_branch_category(
+                    validated_data["category_outer_id"], branch.id
+                ),
             )
 
-            for modifier in modifier_group["modifiers"] or list():
-                BranchPositionModifier.objects.update_or_create(
-                    modifier=BranchPosition.objects.get(
-                        outer_id=modifier["outer_id"],
-                    ),
-                    defaults={
-                        "position_modifier_group": position_modifier_group,
-                    }
-                )
-
-        return local_position
+        return position
