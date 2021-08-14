@@ -10,6 +10,7 @@ from .order_serializers import (
     BranchPositionSerializer,
     CreateOrderSerializer,
     OrdersListSerializer,
+    OrderStatusSerializer,
 )
 from .retrieve_cart_serializers import (
     RetrieveCartSerializer,

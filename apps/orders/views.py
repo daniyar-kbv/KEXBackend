@@ -27,6 +27,7 @@ from .serializers import (
     CreateRateOrderSerializer,
     CreateOrderSerializer,
     OrdersListSerializer,
+    OrderStatusSerializer,
     CouponSerializer
 )
 
@@ -136,6 +137,13 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
 
         output_serializer = RetrieveCartSerializer(instance)
         return Response(output_serializer.data)
+
+
+class OrderStatusView(JSONRendererMixin, RetrieveAPIView):
+    queryset = Order.objects.all()
+    lookup_field = "lead_id"
+    lookup_url_kwarg = "lead_uuid"
+    serializer_class = OrderStatusSerializer
 
 
 class CreateOrderView(JSONRendererMixin, CreateAPIView):
