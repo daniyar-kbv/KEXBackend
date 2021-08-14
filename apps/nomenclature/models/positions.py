@@ -103,6 +103,26 @@ class BranchPosition(UUIDModel):
 
     objects = BranchPositionManager()
 
+    @property
+    def image(self):
+        return self.position.image
+
+    @property
+    def price(self):
+        return self.position.price
+
+    @property
+    def is_additional(self):
+        return self.position.is_additional
+
+    @property
+    def position_type(self):
+        return self.position.position_type
+
+    @property
+    def outer_id(self):
+        return self.position.outer_id
+
     @classmethod
     def register_branch_position(cls, branch: 'Branch', branch_category: 'BranchCategory', position: Position, modifier_groups: List['ModifierGroup'] = None):
         from apps.nomenclature.models import ModifierGroup, PositionModifierGroup, PositionModifier
