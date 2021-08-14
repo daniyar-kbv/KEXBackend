@@ -63,6 +63,9 @@ class Address(models.Model):
     latitude = models.DecimalField(_("Широта"), max_digits=12, decimal_places=8, null=True)
     comment = models.TextField(_("Комментарий к адресу"), null=True, blank=True)
 
+    def full_address(self):
+        return ', '.join([i for i in self.__dict__.values() if isinstance(i, str)])
+
     def __str__(self):
         if self.street:
             return f"{str(self.street)} {str(self.building or '')}"

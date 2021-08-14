@@ -33,6 +33,7 @@ class AddressSerializer(serializers.ModelSerializer):
             "corpus",
             "flat",
             "comment",
+            "full_address",
         )
 
     extra_kwargs = {
