@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.location.models import Address
+from apps.location.serializers import AddressSerializer
 from apps.orders.models import Cart, Lead
 from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
@@ -115,7 +116,7 @@ class AuthorizedApplyWithAddressSerializer(ApplyLeadSerializer):
 
 
 class LeadDetailSerializer(serializers.ModelSerializer):
-    address = LeadAddressSerializer(required=False)
+    address = AddressSerializer(required=False)
     brand_name = serializers.SerializerMethodField(required=False)
     brand_image = serializers.SerializerMethodField(required=False)
     cart = RetrieveCartSerializer(required=False)
