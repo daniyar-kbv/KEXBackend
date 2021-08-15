@@ -30,13 +30,22 @@ class RegisterAccountSerializer(serializers.ModelSerializer):
         return user
 
 
+class CustomTokenObtainPairSerializer(BaseTokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token["device_uuid"] = str(user.device_uuid)
+
+        return token
+
+
 class TokenObtainPairSerializer(serializers.Serializer): # noqa
     def validate(self, attrs):
         user = self.context["user"]
-        refresh = BaseTokenObtainPairSerializer.get_token(user)
+        user.update_device_uuid()
+        refresh = CustomTokenObtainPairSerializer.get_token(user)
 
         return {
-            "secret_key": user.secret_key,
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }

@@ -26,6 +26,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     is_active = models.BooleanField(_("Активный"), default=True)
     is_staff = models.BooleanField(_("Сотрудник"), default=False)
     secret_key = models.UUIDField(_("Секретный ключ"), default=uuid.uuid4, unique=True)
+    device_uuid = models.UUIDField(_("UUID устройства"), default=uuid.uuid4, unique=True)
 
     created_at = models.DateTimeField(_("Создан"), default=timezone.now)
     updated_at = models.DateTimeField(_("Обновлен"), auto_now=True)
@@ -36,6 +37,10 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def __str__(self):
         return f"{self._meta.verbose_name} {str(self.pk)} ({self.mobile_phone})"
+
+    def update_device_uuid(self):
+        self.device_uuid = uuid.uuid4()
+        self.save(update_fields=["device_uuid"])
 
     def has_perm(self, perm, obj=None):
         if not self.is_active:
