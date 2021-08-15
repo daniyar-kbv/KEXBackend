@@ -1,7 +1,7 @@
 from config import celery_app
 from django.db.transaction import atomic
 
-from apps.partners.models import LocalBrand, Branch
+from apps.partners.models import LocalBrand
 from ..integrations.branches import GetBranches
 from ..integrations.nomenclature import GetLocalBrandNomenclature
 from ..integrations.terminals import GetLocalBrandTerminals, CheckLocalBrandOrganizationsLiveness
