@@ -57,6 +57,26 @@ class SquareImageBrandSerializer(AbstractNameSerializer):
         )
 
 
+class UserLocalBrandsSerializer(AbstractNameSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LocalBrand
+        fields = (
+            'id',
+            'name',
+            'image',
+        )
+
+    def get_image(self, obj):
+        try:
+            return self.context['request'].build_absolute_uri(
+                obj.brand.images.get(image_type=BrandImageTypes.IMAGE_SQUARE).image.url
+            )
+        except:
+            ...
+
+
 class BrandAPILoginSerializer(serializers.ModelSerializer):
     images = BrandImagesSerializer(source="brand")
     name = serializers.CharField(source="brand.name")

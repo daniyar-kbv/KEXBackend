@@ -81,6 +81,10 @@ class LocalBrand(ServiceHistoryModel):
             branch.save(update_fields=["is_active"])
 
     @property
+    def name(self):
+        return self.brand.name
+
+    @property
     def cache_mask(self):
         return f"{self.brand.name}_{self.api_login}".replace(" ", "_").upper()
 
