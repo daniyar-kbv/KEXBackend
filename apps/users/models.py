@@ -26,7 +26,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     is_active = models.BooleanField(_("Активный"), default=True)
     is_staff = models.BooleanField(_("Сотрудник"), default=False)
     secret_key = models.UUIDField(_("Секретный ключ"), default=uuid.uuid4, unique=True)
-    device_uuid = models.UUIDField(_("UUID устройства"), null=True)
+    device_uuid = models.UUIDField(_("UUID устройства"), default=uuid.uuid4, unique=True)
 
     created_at = models.DateTimeField(_("Создан"), default=timezone.now)
     updated_at = models.DateTimeField(_("Обновлен"), auto_now=True)
