@@ -1,16 +1,11 @@
 from uuid import uuid4
 
-import requests
 from django.db import transaction
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
-
-from rest_framework_simplejwt.views import TokenRefreshView as DRFTokenRefreshView
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenRefreshView as DRFTokenRefreshView
 from rest_framework.generics import CreateAPIView, GenericAPIView
-from rest_framework.views import APIView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView as BaseTokenObtainPairView,
 )
@@ -18,26 +13,14 @@ from rest_framework_simplejwt.views import (
 from apps.sms.services import send_otp
 from apps.sms.serializers import VerifyOTPSerializer
 from apps.common.mixins import JSONRendererMixin, PublicAPIMixin, JSONPublicAPIMixin
-from django.conf import settings
+
 from .serializers import (
     TokenObtainPairSerializer,
     RegisterAccountSerializer,
     OTPResendSerializer,
 )
-from ..promotions.models import Participation, Promotion
 
 User = get_user_model()
-
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-
-class Test(GenericAPIView):
-    permission_classes = [AllowAny]
-
-    def post(self,requset, *args, **kwargs):
-        print('request body')
-        print(requset.body)
-        return Response()
 
 
 class RegisterAccountView(
@@ -95,5 +78,5 @@ class OTPResendView(PublicAPIMixin, JSONRendererMixin, GenericAPIView):
         return Response(data={})
 
 
-class TokenRefreshView(JSONPublicAPIMixin, DRFTokenRefreshView):
+class TokenRefreshView(JSONPublicAPIMixin, JSONRendererMixin, DRFTokenRefreshView):
     pass
