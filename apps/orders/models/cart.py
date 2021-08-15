@@ -12,6 +12,10 @@ class Cart(TimestampModel):
         verbose_name_plural = _("Корзины")
 
     @property
+    def positions_count(self):
+        return self.positions.count()
+
+    @property
     def price(self) -> Decimal:
         if self.positions.exists():
             return sum(
