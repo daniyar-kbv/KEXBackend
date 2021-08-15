@@ -1,5 +1,5 @@
 from django.db.models import QuerySet
-from django.db.models.manager import BaseManager
+from django.db.models.manager import BaseManager, Manager
 
 
 class BranchPositionQuerySet(QuerySet):
@@ -32,10 +32,6 @@ class BranchCategoryManager(BaseManager.from_queryset(BranchCategoryQuerySet)):
             .prefetch_related('branch_positions')
 
 
-class PositionModifierGroupQuerySet(QuerySet):
-    ...
-
-
-class PositionModifierGroupManager(BaseManager.from_queryset(PositionModifierGroupQuerySet)):
+class PositionModifierGroupManager(Manager):
     def get_queryset(self):
         return super(PositionModifierGroupManager, self).get_queryset().select_related('modifier_group')
