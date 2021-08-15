@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.common.encryption import decrypt_and_get_user
-from apps.common.mixins import PublicAPIMixin, JSONPublicAPIMixin, JSONRendererMixin
+from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin, JSONRendererMixin
 from apps.orders.models import Lead
 from apps.promotions import PromotionTypes
 from apps.promotions.models import Promotion, Participation
@@ -36,7 +36,7 @@ class PromotionContestRenderView(PromoTypeMixin, PublicAPIMixin, APIView):
         return render(request, 'promotions/contest.html', {'promo_type': self.promo_type, 'lead_uuid': lead_uuid})
 
 
-class PromotionContestDebutView(PromoTypeMixin, JSONPublicAPIMixin, APIView):
+class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView):
     queryset = Participation.objects.all()
 
     def get(self, request, lead_uuid):
@@ -84,7 +84,7 @@ class PromotionContestDebutView(PromoTypeMixin, JSONPublicAPIMixin, APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class InstagramAuthView(PromoTypeMixin, JSONPublicAPIMixin, APIView):
+class InstagramAuthView(PromoTypeMixin, PublicJSONRendererMixin, APIView):
     """
     Получение кода авторизации
     """

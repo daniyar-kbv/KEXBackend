@@ -63,6 +63,11 @@ class HandlerCode401(AbstractHandler):
     _default_error_code = error_codes.NOT_AUTHENTICATED
 
     def format_logic(self):
-        return None, CustomError(
-            *self.get_error_detail()
-        ).__dict__
+        return None, CustomError(*self.get_error_detail()).__dict__
+
+
+class HandlerCode404(AbstractHandler):
+    _default_error_code = error_codes.NOT_FOUND
+
+    def format_logic(self):
+        return None, CustomError(*self.get_error_detail()).__dict__

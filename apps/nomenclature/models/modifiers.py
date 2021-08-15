@@ -38,10 +38,9 @@ class ModifierGroup(UUIDModel, AbstractNameModel):
         return modifier_group
 
 
-class PositionModifierGroup(models.Model):
+class PositionModifierGroup(UUIDModel):
     modifier_group = models.ForeignKey(
         ModifierGroup,
-        to_field="uuid",
         null=True,
         on_delete=models.CASCADE,
         related_name="position_modifier_groups",

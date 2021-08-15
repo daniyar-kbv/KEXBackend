@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import (
     CreateAPIView,
-    UpdateAPIView,
     RetrieveAPIView,
+    GenericAPIView,
 )
 
-from apps.common.mixins import JSONPublicAPIMixin, JSONRendererMixin
+from apps.common.mixins import PublicJSONRendererMixin, JSONRendererMixin
 from apps.nomenclature.models import BranchPosition
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 from .exceptions import CouponNotActive
@@ -59,7 +60,7 @@ class BaseApplyView(CreateAPIView):
         # find_lead_organization(lead_pk=lead.pk)
 
 
-class ApplyView(JSONPublicAPIMixin, BaseApplyView):
+class ApplyView(PublicJSONRendererMixin, BaseApplyView):
     serializer_class = ApplyLeadSerializer
 
 
@@ -71,23 +72,15 @@ class AuthorizedApplyWithAddressView(JSONRendererMixin, BaseApplyView):
     serializer_class = AuthorizedApplyWithAddressSerializer
 
 
-class LeadShowView(JSONPublicAPIMixin, LeadLookUpMixin, RetrieveAPIView):
+class LeadShowView(PublicJSONRendererMixin, LeadLookUpMixin, RetrieveAPIView):
     serializer_class = LeadDetailSerializer
 
 
-class OrdersListView(JSONRendererMixin, ListAPIView):
-    queryset = Order.objects.all().select_related('lead', 'cart').prefetch_related('payments').order_by('-created_at')
-    serializer_class = OrdersListSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
-
-
-class LeadNomenclatureView(JSONPublicAPIMixin, LanguageToContextMixin, LeadLookUpMixin, RetrieveAPIView):
+class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, LeadLookUpMixin, RetrieveAPIView):
     serializer_class = LeadNomenclatureSerializer
 
 
-class BranchPositionRetrieveView(JSONPublicAPIMixin, LanguageToContextMixin, RetrieveAPIView):
+class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     serializer_class = BranchPositionSerializer
     queryset = BranchPosition.objects.all()
 
@@ -95,7 +88,7 @@ class BranchPositionRetrieveView(JSONPublicAPIMixin, LanguageToContextMixin, Ret
         return get_object_or_404(BranchPosition, uuid=self.kwargs["position_uuid"])
 
 
-class AdditionalBranchPositionListView(JSONPublicAPIMixin, LanguageToContextMixin, ListAPIView):
+class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, ListAPIView):
     """
     Get Additional nomenclature for Lead
     """
@@ -110,14 +103,21 @@ class AdditionalBranchPositionListView(JSONPublicAPIMixin, LanguageToContextMixi
         )
 
 
-class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
+class OrdersListView(JSONRendererMixin, ListAPIView):
+    queryset = Order.objects.all().select_related('lead', 'cart').prefetch_related('payments').order_by('-created_at')
+    serializer_class = OrdersListSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+
+class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
     queryset = Cart.objects.all()
     serializer_class = UpdateCartSerializer
 
     def get_object(self):
         return get_object_or_404(
-            Cart,
-            lead__uuid=self.kwargs.get("lead_uuid")
+            Cart, lead__uuid=self.kwargs.get("lead_uuid")
         )
 
     def get_serializer_context(self):
@@ -126,11 +126,16 @@ class CartRetrieveUpdateView(JSONPublicAPIMixin, UpdateAPIView):
 
         return context
 
-    def update(self, request, *args, **kwargs):
+    @swagger_auto_schema(
+        request_body=UpdateCartSerializer,
+        responses={"200": RetrieveCartSerializer}
+    )
+    def put(self, request, *args, **kwargs):
         instance = self.get_object()
+        print('founded instance', instance)
         serializer = self.get_serializer(instance, data=request.data, partial=False)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+        instance = serializer.save()
 
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
@@ -151,16 +156,16 @@ class CreateOrderView(JSONRendererMixin, CreateAPIView):
     serializer_class = CreateOrderSerializer
 
 
-class RateStarListView(JSONPublicAPIMixin, ListAPIView):
+class RateStarListView(PublicJSONRendererMixin, ListAPIView):
     queryset = RateStar.objects.all()
     serializer_class = RateStarListSerializer
 
 
-class CreateRateOrderView(JSONPublicAPIMixin, CreateAPIView):
+class CreateRateOrderView(PublicJSONRendererMixin, CreateAPIView):
     serializer_class = CreateRateOrderSerializer
 
 
-class CouponDetailView(JSONPublicAPIMixin, RetrieveAPIView):
+class CouponDetailView(PublicJSONRendererMixin, RetrieveAPIView):
     lookup_field = 'promocode'
     serializer_class = CouponSerializer
     queryset = Coupon.objects.all()

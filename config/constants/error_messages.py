@@ -19,9 +19,9 @@ ERROR_MESSAGES = {
     f"{INVALID_OTP}_{Languages.KAZAKH}": ("INVALID_OTP_KK", ""),
     f"{INVALID_OTP}_{Languages.ENGLISH}": ("INVALID_OTP_EN", ""),
 
-    f"{OBJECT_NOT_FOUND}_{Languages.RUSSIAN}": ("OBJECT_NOT_FOUND_RU", ""),
-    f"{OBJECT_NOT_FOUND}_{Languages.KAZAKH}": ("OBJECT_NOT_FOUND_KK", ""),
-    f"{OBJECT_NOT_FOUND}_{Languages.ENGLISH}": ("OBJECT_NOT_FOUND_EN", ""),
+    f"{NOT_FOUND}_{Languages.RUSSIAN}": ("NOT_FOUND_RU", ""),
+    f"{NOT_FOUND}_{Languages.KAZAKH}": ("NOT_FOUND_KK", ""),
+    f"{NOT_FOUND}_{Languages.ENGLISH}": ("NOT_FOUND_EN", ""),
 
     f"{TERMINAL_NOT_FOUND}_{Languages.RUSSIAN}": ("TERMINAL_NOT_FOUND_RU", ""),
     f"{TERMINAL_NOT_FOUND}_{Languages.KAZAKH}": ("TERMINAL_NOT_FOUND_KK", ""),

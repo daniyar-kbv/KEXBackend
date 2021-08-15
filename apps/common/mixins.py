@@ -11,5 +11,5 @@ class PublicAPIMixin:
     permission_classes = [AllowAny]
 
 
-class JSONPublicAPIMixin(JSONRendererMixin, PublicAPIMixin):
+class PublicJSONRendererMixin(JSONRendererMixin, PublicAPIMixin):
     ...

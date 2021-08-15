@@ -45,7 +45,6 @@ class ModifierSerializer(serializers.ModelSerializer):
 
 class ModifierGroupSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
-    uuid = serializers.UUIDField(source="modifier_group.uuid")
     modifiers = ModifierSerializer(many=True, required=False)
 
     class Meta:

@@ -41,7 +41,9 @@ class UpdateCartPositionModifierGroupSerializer(serializers.ModelSerializer):
 
 class UpdateCartPositionSerializer(serializers.ModelSerializer):
     position = serializers.UUIDField(required=True, write_only=True)
-    modifier_groups = UpdateCartPositionModifierGroupSerializer(many=True, required=False)
+    modifier_groups = UpdateCartPositionModifierGroupSerializer(
+        source="position_modifier_groups",many=True, required=False
+    )
 
     class Meta:
         model = CartPosition
@@ -86,12 +88,12 @@ class UpdateCartSerializer(serializers.ModelSerializer):
                 comment=position.get("comment"),
                 count=position.get("count"),
             )
-            for modifier_group in position.pop("modifier_groups", list()):
-                cart_position_modifier_group = cart_position.modifier_groups.create(
-                    modifier_group_id=modifier_group["modifier_group"],
+            for modifier_group in position.pop("position_modifier_groups", list()):
+                cart_position_modifier_group = cart_position.position_modifier_groups.create(
+                    position_modifier_group_id=modifier_group["modifier_group"],
                 )
                 for modifier in modifier_group.get("modifiers", list()):
-                    cart_position_modifier_group.modifiers.update_or_create(
+                    cart_position_modifier_group.modifiers.create(
                         branch_position_id=modifier["position"],
                         count=modifier.get("count")
                     )

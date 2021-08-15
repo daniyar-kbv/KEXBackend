@@ -13,11 +13,9 @@ class Cart(TimestampModel):
 
     @property
     def price(self) -> Decimal:
-        return Decimal("5600.00")
-
         if self.positions.exists():
             return sum(
-                [position.branch_position.price for position in self.positions.all()]
+                [position.price for position in self.positions.all()]
             )
 
         return Decimal('0.00')
@@ -49,20 +47,22 @@ class CartPosition(models.Model):
         null=True, blank=True,
     )
 
+    @property
+    def price(self):
+        return self.branch_position.price * self.count
+
 
 class CartPositionModifierGroup(models.Model):
     cart_position = models.ForeignKey(
         CartPosition,
         on_delete=models.CASCADE,
-        related_name="modifier_groups",
+        related_name="position_modifier_groups",
         null=True,
     )
-    modifier_group = models.ForeignKey(
-        "nomenclature.ModifierGroup",
+    position_modifier_group = models.ForeignKey(
+        "nomenclature.PositionModifierGroup",
         on_delete=models.CASCADE,
-        related_name="cart_modifier_groups",
         to_field="uuid",
-        null=True,
     )
 
 
@@ -76,7 +76,6 @@ class CartPositionModifier(models.Model):
     branch_position = models.ForeignKey(
         "nomenclature.BranchPosition",
         on_delete=models.CASCADE,
-        related_name="cart_modifiers",
         to_field="uuid",
         null=True,
     )

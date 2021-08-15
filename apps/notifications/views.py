@@ -5,14 +5,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, UpdateAPIView
 
-from apps.common.mixins import JSONPublicAPIMixin, JSONRendererMixin
+from apps.common.mixins import PublicJSONRendererMixin, JSONRendererMixin
 from apps.notifications.models import FirebaseToken
 from apps.notifications.serializers import CreateFirebaseTokenSerializer
 from apps.orders.models import Order
 from apps.promotions.models import Promotion
 
 
-class FirebaseTokenSaveView(JSONPublicAPIMixin, CreateAPIView):
+class FirebaseTokenSaveView(PublicJSONRendererMixin, CreateAPIView):
     queryset = FirebaseToken.objects.all()
     serializer_class = CreateFirebaseTokenSerializer
 
@@ -20,7 +20,7 @@ class FirebaseTokenSaveView(JSONPublicAPIMixin, CreateAPIView):
         serializer.save(user=self.request.user if self.request.user.is_authenticated else None)
 
 
-class FirebaseTokenUpdateView(JSONPublicAPIMixin, UpdateAPIView):
+class FirebaseTokenUpdateView(PublicJSONRendererMixin, UpdateAPIView):
     queryset = FirebaseToken.objects.all()
 
     def get_object(self):
@@ -36,11 +36,11 @@ class FirebaseTokenUpdateView(JSONPublicAPIMixin, UpdateAPIView):
         return Response({})
 
 
-class OrderQuerysetView(JSONPublicAPIMixin, APIView):
+class OrderQuerysetView(PublicJSONRendererMixin, APIView):
     def get(self, request):
         return Response([{'id': o.id, 'name': str(o)} for o in Order.objects.all()], status.HTTP_200_OK)
 
 
-class PromotionQuerysetView(JSONPublicAPIMixin, APIView):
+class PromotionQuerysetView(PublicJSONRendererMixin, APIView):
     def get(self, request):
         return Response([{'id': p.id, 'name': str(p)} for p in Promotion.objects.all()], status.HTTP_200_OK)

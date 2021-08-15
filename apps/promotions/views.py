@@ -7,7 +7,7 @@ from django.conf import settings
 
 from . import PromotionTypes
 from .models import Promotion
-from apps.common.mixins import PublicAPIMixin, JSONPublicAPIMixin
+from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin
 from .serializers import PromotionListSerializer
 from ..orders.models import Lead
 
@@ -32,7 +32,7 @@ class PromotionRenderView(PublicAPIMixin, APIView):
         return render(request, 'docs/template_page.html', {'content': content})
 
 
-class PromotionMixin(JSONPublicAPIMixin, GenericAPIView):
+class PromotionMixin(PublicJSONRendererMixin, GenericAPIView):
     queryset = Promotion.objects.all()
     serializer_class = PromotionListSerializer
 

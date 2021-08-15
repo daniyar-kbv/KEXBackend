@@ -12,7 +12,7 @@ from rest_framework_simplejwt.views import (
 
 from apps.sms.services import send_otp
 from apps.sms.serializers import VerifyOTPSerializer
-from apps.common.mixins import JSONRendererMixin, PublicAPIMixin, JSONPublicAPIMixin
+from apps.common.mixins import JSONRendererMixin, PublicAPIMixin, PublicJSONRendererMixin
 
 from .serializers import (
     TokenObtainPairSerializer,
@@ -78,5 +78,5 @@ class OTPResendView(PublicAPIMixin, JSONRendererMixin, GenericAPIView):
         return Response(data={})
 
 
-class TokenRefreshView(JSONPublicAPIMixin, JSONRendererMixin, DRFTokenRefreshView):
+class TokenRefreshView(PublicJSONRendererMixin, JSONRendererMixin, DRFTokenRefreshView):
     pass

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, GenericAPIView
 
 from config.constants.contacts import CONTACTS
-from apps.common.mixins import PublicAPIMixin, JSONPublicAPIMixin
+from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin
 
 from .models import Document
 from .serializers import DocumentListSerializer
@@ -23,7 +23,7 @@ class DocumentView(PublicAPIMixin, APIView):
         return render(request, 'docs/template_page.html', {'content': content})
 
 
-class DocumentListViewOld(JSONPublicAPIMixin, ListAPIView):
+class DocumentListViewOld(PublicJSONRendererMixin, ListAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentListSerializer
 
@@ -39,12 +39,12 @@ class DocumentListViewOld(JSONPublicAPIMixin, ListAPIView):
         return queryset
 
 
-class DocumentListView(JSONPublicAPIMixin, ListAPIView):
+class DocumentListView(PublicJSONRendererMixin, ListAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentListSerializer
 
 
-class ContactListView(JSONPublicAPIMixin, APIView):
+class ContactListView(PublicJSONRendererMixin, APIView):
     def get(self, request, *args, **kwargs):  # noqa
         return Response([
             {"name": contact, "value": getattr(config, contact)}

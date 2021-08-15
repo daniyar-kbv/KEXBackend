@@ -4,10 +4,10 @@ from .views import (
     ApplyView,
     AuthorizedApplyView,
     AuthorizedApplyWithAddressView,
-    BranchPositionRetrieveView,
     LeadNomenclatureView,
-    AdditionalBranchPositionListView,
-    CartRetrieveUpdateView,
+    LeadNomenclatureRetrieveView,
+    LeadAdditionalNomenclatureView,
+    UpdateCartView,
     LeadShowView,
     RateStarListView,
     CreateRateOrderView,
@@ -26,10 +26,10 @@ urlpatterns = [
     path("authorized-apply-with-address/", AuthorizedApplyWithAddressView.as_view()),
 
     path("<uuid:lead_uuid>/nomenclature/", LeadNomenclatureView.as_view(), name="order-nomenclature"),
-    path("<uuid:lead_uuid>/additional-nomenclature/", AdditionalBranchPositionListView.as_view()),
-    path("<uuid:lead_uuid>/nomenclature/<uuid:position_uuid>/", BranchPositionRetrieveView.as_view()),
+    path("<uuid:lead_uuid>/additional-nomenclature/", LeadAdditionalNomenclatureView.as_view()),
+    path("<uuid:lead_uuid>/nomenclature/<uuid:position_uuid>/", LeadNomenclatureRetrieveView.as_view()),
 
-    path("<uuid:lead_uuid>/cart/", CartRetrieveUpdateView.as_view()),
+    path("<uuid:lead_uuid>/cart/", UpdateCartView.as_view()),
 
     path("create/", CreateOrderView.as_view()),
     path("<uuid:lead_uuid>/status/", OrderStatusView.as_view()),
