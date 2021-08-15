@@ -161,6 +161,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
             "price",
             "description",
             "image",
+            "is_available",
             "category",
         )
 
