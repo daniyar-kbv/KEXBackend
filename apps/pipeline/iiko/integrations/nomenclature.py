@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from apps.partners.models import LocalBrand
 
 
-class GetBranchNomenclature(BaseIIKOService):
+class GetLocalBrandNomenclature(BaseIIKOService):
     """Получение меню организации"""
     endpoint = "/api/1/nomenclature"
     instance: 'LocalBrand' = None
