@@ -120,14 +120,10 @@ class LeadDetailSerializer(serializers.ModelSerializer):
     brand_name = serializers.SerializerMethodField(required=False)
     brand_image = serializers.SerializerMethodField(required=False)
     cart = RetrieveCartSerializer(required=False)
-    price = serializers.CharField(source="cart.price")
-    positions_count = serializers.IntegerField(source="cart.positions_count")
 
     class Meta:
         model = Lead
         fields = (
-            "price",
-            "positions_count",
             "cart",
             "uuid",
             "address",

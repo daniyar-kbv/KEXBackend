@@ -61,7 +61,7 @@ class RetrieveCartPositionModifierSerializer(serializers.ModelSerializer):
 
 
 class RetrieveCartPositionModifierGroupSerializer(serializers.ModelSerializer):
-    modifier_group = serializers.UUIDField(required=True, source="modifier_group.uuid")
+    modifier_group = serializers.UUIDField(required=True, source="position_modifier_group_id")
     name = serializers.SerializerMethodField(required=False)
     modifiers = RetrieveCartPositionModifierSerializer(many=True, required=False)
 
@@ -74,20 +74,21 @@ class RetrieveCartPositionModifierGroupSerializer(serializers.ModelSerializer):
         )
 
     def get_name(self, obj):
-        if not obj.modifier_group or not obj.modifier_group.name:
+        if not obj.position_modifier_group or not obj.position_modifier_group.name:
             return
 
-        return obj.modifier_group.name.text(lang=self.context.get("language", "ru"))
+        return obj.position_modifier_group.name.text(lang=self.context.get("language", "ru"))
 
 
 class RetrieveCartPositionSerializer(serializers.ModelSerializer):
     position = BranchPositionShortSerializer(source="branch_position")
-    modifier_groups = RetrieveCartPositionModifierGroupSerializer(many=True, required=False)
+    modifier_groups = RetrieveCartPositionModifierGroupSerializer(
+        source='position_modifier_groups', many=True, required=False
+    )
 
     class Meta:
         model = CartPosition
         fields = (
-            "position",
             "count",
             "position",
             "comment",
@@ -97,9 +98,13 @@ class RetrieveCartPositionSerializer(serializers.ModelSerializer):
 
 class RetrieveCartSerializer(serializers.ModelSerializer):
     positions = RetrieveCartPositionSerializer(many=True, required=False)
+    price = serializers.DecimalField(max_digits=12, decimal_places=2)
+    positions_count = serializers.IntegerField()
 
     class Meta:
         model = Cart
         fields = (
-            "positions",
+            'price',
+            'positions_count',
+            'positions',
         )
