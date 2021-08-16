@@ -5,6 +5,7 @@ from .lead_serializer import (
     LeadDetailSerializer,
     LeadNomenclatureSerializer,
     NomenclaturePositionSerializer,
+    AdditionalNomenclaturePositionSerializer,
 )
 from .order_serializers import (
     BranchPositionSerializer,

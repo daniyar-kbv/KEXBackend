@@ -147,7 +147,7 @@ class LeadDetailSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(image.image.url)
 
 
-class NomenclaturePositionSerializer(serializers.ModelSerializer):
+class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
@@ -170,6 +170,44 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
     def get_count(self, obj):
         cart = self.context['lead'].cart
         return cart.get_count_for_given_position(str(obj.uuid))
+
+    def get_name(self, obj):
+        if not obj.name:
+            return
+
+        return obj.name.text(lang=self.context["language"])
+
+    def get_description(self, obj):
+        if not obj.description:
+            return
+
+        return obj.description.text(lang=self.context["language"])
+
+    def get_image(self, obj):
+        if not obj.position.image:
+            return
+
+        request = self.context["request"]
+        return request.build_absolute_uri(obj.position.image.url)
+
+
+class NomenclaturePositionSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+    category = serializers.UUIDField(source="branch_category_id")
+
+    class Meta:
+        model = BranchPosition
+        fields = (
+            "uuid",
+            "name",
+            "price",
+            "description",
+            "image",
+            "is_available",
+            "category",
+        )
 
     def get_name(self, obj):
         if not obj.name:

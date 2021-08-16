@@ -19,7 +19,7 @@ from .serializers import (
     AuthorizedApplySerializer,
     AuthorizedApplyWithAddressSerializer,
     LeadNomenclatureSerializer,
-    NomenclaturePositionSerializer,
+    AdditionalNomenclaturePositionSerializer,
     BranchPositionSerializer,
     UpdateCartSerializer,
     LeadDetailSerializer,
@@ -93,7 +93,7 @@ class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextM
     """
     Get Additional nomenclature for Lead
     """
-    serializer_class = NomenclaturePositionSerializer
+    serializer_class = AdditionalNomenclaturePositionSerializer
     queryset = BranchPosition.objects.additional_positions()
 
     def get_serializer_context(self):
