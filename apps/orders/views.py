@@ -95,11 +95,18 @@ class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextM
     serializer_class = NomenclaturePositionSerializer
     queryset = BranchPosition.objects.additional_positions()
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lead'] = get_object_or_404(
+            Lead.objects.select_related("cart"), uuid=self.kwargs.get('lead_uuid')
+        )
+
+        return context
+
     def get_queryset(self):
         lead = get_object_or_404(Lead, uuid=self.kwargs.get('lead_uuid'))
         return self.queryset.filter(
             branch_id=lead.branch_id,
-            is_additional=True,
         )
 
 

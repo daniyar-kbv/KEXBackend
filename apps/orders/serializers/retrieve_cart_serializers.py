@@ -22,6 +22,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
             "image",
             "price",
             "category",
+            "is_additional",
             "description",
         )
         extra_kwargs = {
@@ -35,7 +36,6 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
         return obj.name.text(lang=self.context.get("language", "ru"))
 
     def get_image(self, obj):
-        return
         if not obj.position.image:
             return
 

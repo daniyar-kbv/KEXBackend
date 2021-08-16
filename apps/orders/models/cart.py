@@ -11,8 +11,14 @@ class Cart(TimestampModel):
         verbose_name = _("Корзина")
         verbose_name_plural = _("Корзины")
 
+    def get_count_for_given_position(self, position_uuid: str) -> int:
+        if self.positions.filter(branch_position_id=position_uuid).exists():
+            return self.positions.get(branch_position_id=position_uuid).count
+
+        return 0
+
     @property
-    def positions_count(self):
+    def positions_count(self) -> int:
         return self.positions.count()
 
     @property

@@ -151,6 +151,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    count = serializers.SerializerMethodField()
     category = serializers.UUIDField(source="branch_category_id")
 
     class Meta:
@@ -161,9 +162,14 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
             "price",
             "description",
             "image",
+            "count",
             "is_available",
             "category",
         )
+
+    def get_count(self, obj):
+        cart = self.context['lead'].cart
+        return cart.get_count_for_given_position(str(obj.uuid))
 
     def get_name(self, obj):
         if not obj.name:
