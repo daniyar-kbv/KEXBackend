@@ -31,6 +31,7 @@ from .serializers import (
     OrderStatusSerializer,
     CouponSerializer
 )
+from ..payments import PaymentStatusTypes
 
 
 class LeadLookUpMixin:
@@ -104,7 +105,8 @@ class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextM
 
 
 class OrdersListView(JSONRendererMixin, ListAPIView):
-    queryset = Order.objects.all().select_related('lead', 'cart').prefetch_related('payments').order_by('-created_at')
+    queryset = Order.objects.select_related('lead', 'cart').prefetch_related('payments')\
+        .filter(payments__status=PaymentStatusTypes.COMPLETED).order_by('-created_at')
     serializer_class = OrdersListSerializer
 
     def get_queryset(self):

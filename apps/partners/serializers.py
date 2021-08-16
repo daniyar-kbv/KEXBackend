@@ -52,9 +52,10 @@ class SquareImageBrandSerializer(AbstractNameSerializer):
         )
 
     def get_image(self, obj):
-        return self.context['request'].build_absolute_uri(
-            obj.images.get(image_type=BrandImageTypes.IMAGE_SQUARE).image.url
-        )
+        img_file = obj.images.filter(image_type=BrandImageTypes.IMAGE_SQUARE).first()
+        if img_file:
+            return self.context['request'].build_absolute_uri(img_file.image.url)
+        return None
 
 
 class UserLocalBrandsSerializer(AbstractNameSerializer):
