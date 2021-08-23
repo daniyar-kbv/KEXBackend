@@ -127,12 +127,6 @@ class OrdersListSerializer(serializers.ModelSerializer):
         )
 
 
-class OrderStatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = "status",
-
-
 class CreateOrderSerializer(serializers.ModelSerializer):
     lead = serializers.UUIDField(required=True)
 
