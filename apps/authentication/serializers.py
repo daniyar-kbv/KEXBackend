@@ -1,10 +1,10 @@
 from phonenumber_field.serializerfields import PhoneNumberField
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import (
-    TokenObtainPairSerializer as BaseTokenObtainPairSerializer,
-)
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as BaseTokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer as BaseTokenRefreshSerializer
 
+from apps.users.authentication import JWTAuthentication
 from apps.sms.exceptions import OTPResendTimeLimit
 from apps.sms.models import OTP
 
@@ -49,6 +49,12 @@ class TokenObtainPairSerializer(serializers.Serializer): # noqa
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }
+
+
+class TokenRefreshSerializer(BaseTokenRefreshSerializer):
+    def validate(self, attrs):
+        JWTAuthentication.validate_refresh_token(attrs['refresh'])
+        return super().validate(attrs)
 
 
 class OTPResendSerializer(serializers.Serializer):  # noqa

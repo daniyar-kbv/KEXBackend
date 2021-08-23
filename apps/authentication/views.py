@@ -18,6 +18,7 @@ from .serializers import (
     TokenObtainPairSerializer,
     RegisterAccountSerializer,
     OTPResendSerializer,
+    TokenRefreshSerializer,
 )
 
 User = get_user_model()
@@ -79,4 +80,4 @@ class OTPResendView(PublicAPIMixin, JSONRendererMixin, GenericAPIView):
 
 
 class TokenRefreshView(PublicJSONRendererMixin, JSONRendererMixin, DRFTokenRefreshView):
-    pass
+    serializer_class = TokenRefreshSerializer
