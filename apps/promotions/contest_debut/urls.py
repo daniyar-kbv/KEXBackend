@@ -1,10 +1,9 @@
 from django.urls import path
 
-from .views import PromotionContestDebutView, PromotionContestRenderView, InstagramAuthView
+from .views import PromotionContestDebutView, PromotionContestRenderView
 
 urlpatterns = [
     path("", PromotionContestDebutView.as_view(), name='api_view'),
     path("render/", PromotionContestRenderView.as_view(), name='render_view'),
-    path("instagram/<str:encoded_user>", InstagramAuthView.as_view(), name="instagram_auth_view"),
 
 ]

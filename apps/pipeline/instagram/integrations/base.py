@@ -21,7 +21,6 @@ class GetAccessTokenByCode(BaseService):  # noqa
             'client_secret': settings.INSTAGRAM_CLIENT_SECRET,
             'code': self.get_instagram_code(),
             'grant_type': 'authorization_code',
-            # 'redirect_uri': request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI + promo_type)
             'redirect_uri': self.redirect_uri
         }
 

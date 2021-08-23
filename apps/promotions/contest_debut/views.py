@@ -82,19 +82,3 @@ class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView
             return Response(data=resp_body)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-class InstagramAuthView(PromoTypeMixin, PublicJSONRendererMixin, APIView):
-    """
-    Получение кода авторизации
-    """
-
-    def get(self, request, lead_uuid, encoded_user):  # noqa
-        url = self.promotion.web_url
-        instagram_code = request.GET.get('code')
-        # user = decrypt_and_get_user(encoded_user)
-        if instagram_code:
-            code = instagram_code.split('#')[0]
-            username = get_instagram_username(code, self.promo_type, request.path)
-            url += f"?username={username}"
-        return redirect(url)

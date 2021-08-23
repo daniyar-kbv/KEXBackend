@@ -9,7 +9,7 @@ from apps.common.encryption import encrypt_user
 User = get_user_model()
 
 
-def get_instagram_username(code: str, user_pk: int, promo_type: str, redirect_uri: str):
+def get_instagram_username(code: str, redirect_uri: str):
     access_token = GetAccessTokenByCode(instance=InstagramCode(code), redirect_uri=redirect_uri).run()
 
     if not access_token:
@@ -30,3 +30,10 @@ def get_instagram_auth_url(request):
 
     return url
 
+
+def save_participation_in_promotion(user, promotion_id, username):
+    Participation.objects.update_or_create(
+        promotion=Promotion.objects.get(id=promotion_id),
+        instagram_username=username,
+        user=user,
+    )

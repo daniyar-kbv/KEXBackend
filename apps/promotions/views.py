@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from rest_framework import status
+from rest_framework.exceptions import APIException
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
 from rest_framework.response import Response
@@ -7,8 +9,9 @@ from django.conf import settings
 
 from . import PromotionTypes
 from .models import Promotion
-from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin
+from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin, JSONRendererMixin
 from .serializers import PromotionListSerializer
+from .services import get_instagram_username, save_participation_in_promotion
 from ..orders.models import Lead
 
 
@@ -65,3 +68,23 @@ class PromotionDetailView(PromotionMixin, RetrieveAPIView):
         app_name = self.request.path.replace(f'{self.kwargs.get("pk")}/', '')
         setattr(obj, 'link', self.get_link(obj, app_name))
         return obj
+
+
+class InstagramAuthParticipationView(JSONRendererMixin, APIView):
+    """
+    Получение кода авторизации
+    """
+
+    def get(self, request):  # noqa
+        insta_auth_code = request.data.get('code')
+        promotion_id = request.data.get('promotion')
+        user = request.user
+        if insta_auth_code and promotion_id and user:
+            username = get_instagram_username(
+                insta_auth_code.split('#')[0],
+                request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI)
+            )
+            save_participation_in_promotion(user, promotion_id, username)
+            return Response(status.HTTP_200_OK)
+        else:
+            raise APIException("Нужные поля не указаны")
