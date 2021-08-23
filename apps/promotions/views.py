@@ -85,7 +85,7 @@ class InstagramAuthParticipationView(JSONRendererMixin, APIView):
     Получение кода авторизации
     """
 
-    def get(self, request):  # noqa
+    def post(self, request):  # noqa
         insta_auth_code = request.data.get('code')
         promotion_id = request.data.get('promotion')
         user = request.user
