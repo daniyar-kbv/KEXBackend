@@ -64,7 +64,7 @@ class Address(models.Model):
     comment = models.TextField(_("Комментарий к адресу"), null=True, blank=True)
 
     def full_address(self):
-        return ', '.join([i for i in self.__dict__.values() if isinstance(i, str)])
+        return ', '.join([j for i, j in self.__dict__.items() if i != 'comment' and isinstance(j, str)])
 
     def __str__(self):
         if self.street:
