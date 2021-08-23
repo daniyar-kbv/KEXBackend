@@ -23,6 +23,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
             "price",
             "category",
             "is_additional",
+            "is_available",
             "description",
         )
         extra_kwargs = {
