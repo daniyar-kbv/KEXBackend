@@ -1,8 +1,10 @@
 from django.urls import path, include
 
-from .views import PromotionRenderView, PromotionListView, PromotionDetailView, InstagramAuthParticipationView
+from .views import PromotionRenderView, PromotionListView, PromotionDetailView, InstagramAuthParticipationView, \
+    InstagramRedirectURLView
 
 urlpatterns = [
+    path("instagram/", InstagramRedirectURLView.as_view(), name="instagram_redirect_url_view"),
     path("participate/", InstagramAuthParticipationView.as_view(), name="instagram_auth_participation_view"),
     path("<uuid:lead_uuid>/", PromotionListView.as_view()),
     path('<uuid:lead_uuid>/<int:pk>/', PromotionDetailView.as_view()),

@@ -59,6 +59,17 @@ class PromotionListView(PromotionMixin, ListAPIView):
 
         return queryset
 
+    def list(self, request, *args, **kwargs):
+
+        res = super(PromotionListView, self).list(request, *args, **kwargs)
+        res.data = {
+            "promotions": res.data,
+            "instagram_redirect_url": request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI),
+            "instagram_parameter": settings.INSTAGRAM_PARAMETER,
+        }
+        return res
+
+
 
 class PromotionDetailView(PromotionMixin, RetrieveAPIView):
     lookup_field = 'pk'
@@ -88,3 +99,8 @@ class InstagramAuthParticipationView(JSONRendererMixin, APIView):
             return Response(status.HTTP_200_OK)
         else:
             raise APIException("Нужные поля не указаны")
+
+
+class InstagramRedirectURLView(APIView):
+    def get(selfself, request):
+        return Response(status.HTTP_200_OK)

@@ -25,7 +25,7 @@ def get_instagram_username(code: str, redirect_uri: str):
 def get_instagram_auth_url(request):
     url = f"https://api.instagram.com/oauth/authorize" \
           f"?client_id={settings.INSTAGRAM_CLIENT_ID}&" \
-          f"redirect_uri={request.build_absolute_uri(request.path + f'instagram/{encrypt_user(request.user)}')}" \
+          f"redirect_uri={request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI)}" \
           f"&scope=user_profile,user_media&response_type=code"
 
     return url
