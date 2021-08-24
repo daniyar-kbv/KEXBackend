@@ -55,7 +55,7 @@ class CreatePaymentMixin(serializers.ModelSerializer):
         request = self.context["request"]
         validated_data["user"] = request.user
         validated_data["ip_address"] = request.META["REMOTE_ADDR"]
-        if validated_data["payment_type"] == PaymentTypes.CASH:
+        if validated_data.get("payment_type") == PaymentTypes.CASH:
             validated_data["price"] = validated_data.pop("change_for")
         else:
             validated_data["price"] = validated_data["order"].cart.price
