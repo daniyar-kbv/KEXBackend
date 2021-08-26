@@ -6,7 +6,7 @@ from apps.pipeline.cloudpayments.services import make_payment, make_card_payment
 
 from . import PaymentTypes, PaymentStatusTypes
 from .models import Payment, DebitCard
-from .exceptions import OrderAlreadyPaidError
+from .exceptions import OrderAlreadyPaidError, ChangeForNotSetError
 
 
 class DebitCardsSerializer(serializers.ModelSerializer):
@@ -55,7 +55,10 @@ class CreatePaymentMixin(serializers.ModelSerializer):
         request = self.context["request"]
         validated_data["user"] = request.user
         validated_data["ip_address"] = request.META["REMOTE_ADDR"]
-        validated_data["price"] = validated_data["order"].cart.price
+        if validated_data.get("payment_type") == PaymentTypes.CASH:
+            validated_data["price"] = validated_data.pop("change_for")
+        else:
+            validated_data["price"] = validated_data["order"].cart.price
 
         payment = super().create(validated_data)
 
@@ -72,6 +75,7 @@ class CreatePaymentMixin(serializers.ModelSerializer):
 class CreatePaymentSerializer(CreatePaymentMixin):
     keep_card = serializers.BooleanField(default=False, write_only=True)
     card_holder_name = serializers.CharField(required=False, write_only=True, allow_blank=True)
+    change_for = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
 
     def make_payment(self, payment_pk):
         make_payment(payment_pk)
@@ -85,6 +89,7 @@ class CreatePaymentSerializer(CreatePaymentMixin):
             "acs_url",
             "outer_id",
             "keep_card",
+            "change_for",
             "payment_type",
             "card_holder_name",
             "cryptogram",
@@ -108,6 +113,8 @@ class CreatePaymentSerializer(CreatePaymentMixin):
             raise OrderAlreadyPaidError()
 
         if attrs["payment_type"] == PaymentTypes.CASH:
+            if not attrs.get('change_for'):
+                raise ChangeForNotSetError
             return attrs
 
         return super().validate(attrs)

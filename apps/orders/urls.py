@@ -13,7 +13,7 @@ from .views import (
     CreateRateOrderView,
     CreateOrderView,
     OrdersListView,
-    OrderStatusView,
+    LastPaymentStatusView,
     CouponDetailView,
 )
 
@@ -32,7 +32,7 @@ urlpatterns = [
     path("<uuid:lead_uuid>/cart/", UpdateCartView.as_view()),
 
     path("create/", CreateOrderView.as_view()),
-    path("<uuid:lead_uuid>/status/", OrderStatusView.as_view()),
+    path("<uuid:lead_uuid>/status/", LastPaymentStatusView.as_view()),
 
     path("coupons/<str:promocode>/", CouponDetailView.as_view()),
     path('ratestars/', RateStarListView.as_view()),

@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
@@ -10,9 +11,11 @@ from rest_framework.generics import (
 
 from apps.common.mixins import PublicJSONRendererMixin, JSONRendererMixin
 from apps.nomenclature.models import BranchPosition
+from apps.payments.models import Payment
+from apps.payments.serializers import CreatePaymentSerializer
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
-from .exceptions import CouponNotActive
 
+from .exceptions import CouponNotActive
 from .models import Order, Lead, Cart, RateStar, Coupon
 from .serializers import (
     ApplyLeadSerializer,
@@ -28,7 +31,6 @@ from .serializers import (
     CreateRateOrderSerializer,
     CreateOrderSerializer,
     OrdersListSerializer,
-    OrderStatusSerializer,
     CouponSerializer
 )
 from ..payments import PaymentStatusTypes
@@ -153,11 +155,16 @@ class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
         return Response(output_serializer.data)
 
 
-class OrderStatusView(JSONRendererMixin, RetrieveAPIView):
-    queryset = Order.objects.all()
-    lookup_field = "lead_id"
-    lookup_url_kwarg = "lead_uuid"
-    serializer_class = OrderStatusSerializer
+class LastPaymentStatusView(JSONRendererMixin, RetrieveAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = CreatePaymentSerializer
+
+    def get_object(self):
+        payments = Payment.objects.filter(order__lead_id=self.kwargs['lead_uuid'])
+        if payments.exists():
+            return payments.last()
+
+        raise Http404
 
 
 class CreateOrderView(JSONRendererMixin, CreateAPIView):
