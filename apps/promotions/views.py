@@ -65,6 +65,7 @@ class PromotionListView(PromotionMixin, ListAPIView):
         res.data['results'] = {
             "promotions": res.data['results'],
             "instagram_redirect_url": request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI),
+            "instagram_verification_url": request.build_absolute_uri(settings.INSTAGRAM_VERIFICATION_URI),
             "instagram_parameter": settings.INSTAGRAM_PARAMETER,
         }
         return res

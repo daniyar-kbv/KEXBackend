@@ -188,6 +188,7 @@ STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, 'static'))
 
 INSTAGRAM_CLIENT_ID = "478461956554478"
 INSTAGRAM_CLIENT_SECRET = "4824cd7ac54b0b07c8e6653d8478fcc2"
+INSTAGRAM_VERIFICATION_URI = "https://api.instagram.com/oauth/authorize"
 INSTAGRAM_REDIRECT_URI = "/promotions/instagram/"
 INSTAGRAM_PARAMETER = "code"
 
