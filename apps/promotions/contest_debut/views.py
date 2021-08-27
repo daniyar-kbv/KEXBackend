@@ -77,7 +77,7 @@ class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView
                         resp_body['user_info'] = user
             if user_id and not resp_body['user_info']:
                 resp_body['user_info'] = {
-                    'participate_url': get_instagram_auth_url(request)
+                    'participate_url': get_instagram_auth_url(promotion.web_url)
                 }
             return Response(data=resp_body)
         else:

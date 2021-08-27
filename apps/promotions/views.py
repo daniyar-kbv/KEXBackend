@@ -8,10 +8,10 @@ from rest_framework.views import APIView
 from django.conf import settings
 
 from . import PromotionTypes
-from .models import Promotion
+from .models import Promotion, Participation
 from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin, JSONRendererMixin
 from .serializers import PromotionListSerializer
-from .services import get_instagram_username, save_participation_in_promotion
+from .services import get_instagram_username, save_participation_in_promotion, is_participant
 from ..orders.models import Lead
 
 
@@ -64,9 +64,9 @@ class PromotionListView(PromotionMixin, ListAPIView):
         res = super(PromotionListView, self).list(request, *args, **kwargs)
         res.data['results'] = {
             "promotions": res.data['results'],
-            "instagram_redirect_url": request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI),
             "instagram_verification_url": request.build_absolute_uri(settings.INSTAGRAM_VERIFICATION_URI),
-            "instagram_parameter": settings.INSTAGRAM_PARAMETER,
+            # "instagram_redirect_url": request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI),
+            # "instagram_parameter": settings.INSTAGRAM_PARAMETER,
         }
         return res
 
@@ -88,19 +88,19 @@ class InstagramAuthParticipationView(JSONRendererMixin, APIView):
 
     def post(self, request):  # noqa
         insta_auth_code = request.data.get('code')
-        promotion_id = request.data.get('promotion')
+        promo_type = request.data.get('promo_type')
         user = request.user
-        if insta_auth_code and promotion_id and user:
-            username = get_instagram_username(
-                insta_auth_code.split('#')[0],
-                request.build_absolute_uri(settings.INSTAGRAM_REDIRECT_URI)
-            )
-            save_participation_in_promotion(user, promotion_id, username)
-            return Response(status.HTTP_200_OK)
-        else:
-            raise APIException("Нужные поля не указаны")
+        if not is_participant(user, promo_type):
+            print("not participant")
+            if insta_auth_code and promo_type and user:
+                username = get_instagram_username(insta_auth_code.split('#')[0], promo_type)
+                save_participation_in_promotion(user, promo_type, username)
+                return Response(status.HTTP_200_OK)
+            else:
+                raise APIException("Нужные поля не указаны")
+        return Response(status.HTTP_200_OK)
 
 
 class InstagramRedirectURLView(PublicAPIMixin, APIView):
-    def get(selfself, request):
+    def get(self, request):
         return Response(status.HTTP_200_OK)
