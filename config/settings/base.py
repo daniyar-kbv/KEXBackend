@@ -273,14 +273,13 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "apps.users.authentication.JWTAuthentication"
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M",
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "DEFAULT_PAGINATION_CLASS": "apps.common.pagination.CustomPagination",
     "PAGE_SIZE": 100,
     'COERCE_DECIMAL_TO_STRING': False,
 }
