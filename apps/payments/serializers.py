@@ -55,7 +55,7 @@ class CreatePaymentMixin(serializers.ModelSerializer):
         request = self.context["request"]
         validated_data["user"] = request.user
         validated_data["ip_address"] = request.META["REMOTE_ADDR"]
-        if validated_data.get("payment_type") == PaymentTypes.CASH:
+        if validated_data.get("payment_type") == PaymentTypes.CASH and validated_data.get('change_for'):
             validated_data["price"] = validated_data.pop("change_for")
         else:
             validated_data["price"] = validated_data["order"].cart.price
@@ -111,11 +111,6 @@ class CreatePaymentSerializer(CreatePaymentMixin):
     def validate(self, attrs):
         if attrs["order"].payments.completed().exists():
             raise OrderAlreadyPaidError()
-
-        if attrs["payment_type"] == PaymentTypes.CASH:
-            if not attrs.get('change_for'):
-                raise ChangeForNotSetError
-            return attrs
 
         return super().validate(attrs)
 
