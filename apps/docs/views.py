@@ -1,5 +1,6 @@
 from constance import config
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, GenericAPIView
@@ -42,6 +43,7 @@ class DocumentListViewOld(PublicJSONRendererMixin, ListAPIView):
 class DocumentListView(PublicJSONRendererMixin, ListAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentListSerializer
+    pagination_class = None
 
 
 class ContactListView(PublicJSONRendererMixin, APIView):

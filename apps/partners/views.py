@@ -11,6 +11,7 @@ from .serializers import BrandSerializer
 class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
     queryset = Brand.objects.all().order_by('id')
     serializer_class = BrandSerializer
+    pagination_class = None
     image_map = {
         1: BrandImageTypes.IMAGE_SQUARE,
         2: BrandImageTypes.IMAGE_SHORT,

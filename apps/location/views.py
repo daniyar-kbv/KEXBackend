@@ -8,6 +8,7 @@ from .serializers import CountrySerializer, CountryRetrieveSerializer, CitySeria
 
 class CountryViewSet(PublicAPIMixin, JSONRendererMixin, ReadOnlyModelViewSet):
     queryset = Country.objects.all()
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -18,6 +19,7 @@ class CountryViewSet(PublicAPIMixin, JSONRendererMixin, ReadOnlyModelViewSet):
 
 class CityViewSet(PublicAPIMixin, JSONRendererMixin, ReadOnlyModelViewSet):
     queryset = City.objects.all()
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.action == "retrieve":

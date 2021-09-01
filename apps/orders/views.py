@@ -97,6 +97,7 @@ class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextM
     """
     serializer_class = AdditionalNomenclaturePositionSerializer
     queryset = BranchPosition.objects.additional_positions()
+    pagination_class = None
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -175,6 +176,7 @@ class CreateOrderView(JSONRendererMixin, CreateAPIView):
 class RateStarListView(PublicJSONRendererMixin, ListAPIView):
     queryset = RateStar.objects.all()
     serializer_class = RateStarListSerializer
+    pagination_class = None
 
 
 class CreateRateOrderView(PublicJSONRendererMixin, CreateAPIView):

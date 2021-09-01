@@ -41,6 +41,7 @@ class DebitCardsListViewSet(
     lookup_field = "uuid"
     queryset = DebitCard.objects.active()
     serializer_class = DebitCardsSerializer
+    pagination_class = None
     http_method_names = ["retrieve", "get", "put", "delete"]
 
     def get_queryset(self):

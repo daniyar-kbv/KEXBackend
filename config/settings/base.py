@@ -279,7 +279,8 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M",
-    "DEFAULT_PAGINATION_CLASS": "apps.common.pagination.CustomPagination",
+    # "DEFAULT_PAGINATION_CLASS": "apps.common.pagination.CustomPagination",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
     'COERCE_DECIMAL_TO_STRING': False,
 }

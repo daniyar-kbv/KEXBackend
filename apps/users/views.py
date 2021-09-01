@@ -38,6 +38,7 @@ class AccountUpdateView(JSONRendererMixin, GenericAPIView):
 
 class UserAddressViewSet(JSONRendererMixin, ModelViewSet):
     queryset = UserAddress.objects.all()
+    pagination_class = None
     http_method_names = ["put", "get", "delete"]
 
     def get_queryset(self):
