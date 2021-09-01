@@ -178,7 +178,7 @@ class RateStar(
 
 class RatedOrder(MainModel):
     star = models.ForeignKey(RateStar, on_delete=models.CASCADE, verbose_name="Звезда")
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, verbose_name="Заказ", related_name="rates")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Заказ", related_name="rates")
     comment = models.TextField("Комментарий", null=True, blank=True)
     rate_samples = models.ManyToManyField(RateSample, verbose_name="Шаблоны оценки", blank=True)
 

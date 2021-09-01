@@ -53,10 +53,12 @@ class CreateRateOrderSerializer(serializers.ModelSerializer):
         extra_kwargs = {"rate_samples": {"required": False}}
 
     def create(self, validated_data):
-        rating, _ = RatedOrder.objects.get_or_create(
-            star=validated_data.get("star"),
+        rating, _ = RatedOrder.objects.update_or_create(
             order=validated_data.get("order", None),
-            comment=validated_data.get("comment"),
+            defaults={
+                "comment": validated_data.get("comment"),
+                "star": validated_data.get("star")
+            }
         )
         # print("validated_data: ", validated_data)
         if "rate_samples" in validated_data:
