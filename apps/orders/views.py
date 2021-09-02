@@ -57,10 +57,10 @@ class BaseApplyView(CreateAPIView):
         lead = serializer.save()
 
         # for testing
-        lead.branch = lead.local_brand.branches.first()
-        lead.save(update_fields=["branch"])
+        # lead.branch = lead.local_brand.branches.first()
+        # lead.save(update_fields=["branch"])
 
-        # find_lead_organization(lead_pk=lead.pk)
+        find_lead_organization(lead_pk=lead.pk)
 
 
 class ApplyView(PublicJSONRendererMixin, BaseApplyView):

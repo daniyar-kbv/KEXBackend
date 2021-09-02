@@ -88,7 +88,7 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
             raise BrandNotFound
 
         # for testing
-        attrs["local_brand"] = LocalBrand.objects.active().first()
+        # attrs["local_brand"] = LocalBrand.objects.active().first()
 
         return attrs
 
