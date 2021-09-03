@@ -15,6 +15,7 @@ class CategoryInline(ReadChangeOnlyTabularInline):
     classes = ("collapse",)
     fields = (
         "name",
+        "priority",
         "is_active",
     )
     readonly_fields = (
