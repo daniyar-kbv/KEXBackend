@@ -109,3 +109,9 @@ class RetrieveCartSerializer(serializers.ModelSerializer):
             'positions_count',
             'positions',
         )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['has_unavailable_positions'] = not all([position['position']['is_available'] for position in data['positions']])
+
+        return data
