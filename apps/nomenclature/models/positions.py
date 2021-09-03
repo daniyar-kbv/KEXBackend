@@ -38,6 +38,7 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
     )
     priority = models.PositiveSmallIntegerField(
         null=True,
+        blank=True,
     )
     category = models.ForeignKey(
         "nomenclature.Category",

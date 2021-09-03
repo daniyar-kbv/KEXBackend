@@ -26,6 +26,7 @@ class Category(AbstractNameModel):
     )
     priority = models.PositiveSmallIntegerField(
         null=True,
+        blank=True,
     )
     is_active = models.BooleanField(
         default=True,
