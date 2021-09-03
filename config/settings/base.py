@@ -57,7 +57,6 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
-    # "django_filters",
     "corsheaders",
     "phonenumber_field",
     "constance",
@@ -200,13 +199,6 @@ GOOGLE_APPLICATION_CREDENTIALS = os.path.join(BASE_DIR, "google-credentials.json
 
 
 CKEDITOR_UPLOAD_PATH = "ncrm_helper"
-# CKEDITOR_CONFIGS = {
-#     'default': {
-#         'toolbar': 'full',
-#         'height': 600,
-#         'width': 1200,
-#     },
-# }
 CKEDITOR_CONFIGS = {
     'default': {
         'skin': 'moono',
@@ -279,7 +271,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DATETIME_FORMAT": "%Y-%m-%dT%H:%M",
-    # "DEFAULT_PAGINATION_CLASS": "apps.common.pagination.CustomPagination",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
     'COERCE_DECIMAL_TO_STRING': False,
@@ -316,7 +307,6 @@ CACHES = {
         }
     }
 }
-
 
 # Celery settings
 CELERY_BROKER_URL = "{protocol}://{user}:{pwd}@{host}:{port}/{vhost}".format(
