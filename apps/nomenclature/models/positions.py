@@ -36,6 +36,9 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
         on_delete=models.PROTECT,
         related_name="positions",
     )
+    priority = models.PositiveSmallIntegerField(
+        null=True,
+    )
     category = models.ForeignKey(
         "nomenclature.Category",
         on_delete=models.SET_NULL,
@@ -73,6 +76,7 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
 class BranchPosition(UUIDModel):
     class Meta:
         unique_together = ("position", "branch")
+        ordering = ('position__priority',)
 
     position = models.ForeignKey(
         Position,

@@ -24,6 +24,9 @@ class Category(AbstractNameModel):
         related_name="categories",
         verbose_name=_("Локальный бренд"),
     )
+    priority = models.PositiveSmallIntegerField(
+        null=True,
+    )
     is_active = models.BooleanField(
         default=True,
     )
@@ -55,6 +58,7 @@ class BranchCategory(UUIDModel):
     class Meta:
         verbose_name = _("Категория филиала")
         verbose_name_plural = _("Категории филиалов")
+        ordering = ('category__priority',)
 
     branch = models.ForeignKey(
         "partners.Branch",
