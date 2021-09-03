@@ -36,28 +36,22 @@ class BranchCategoryInline(ReadChangeOnlyTabularInline):
     )
 
 
-class LocalPositionInline(ReadChangeOnlyStackedInline):
+class PositionInline(ReadChangeOnlyStackedInline):
     model = Position
     extra = 0
     classes = ("collapse",)
     fields = (
         "id",
         "name",
+        "priority",
         "description",
         "image",
-        "get_iiko_name",
-        "local_category",
+        "category",
     )
     readonly_fields = (
         "id",
-        "get_iiko_name",
+        "category",
     )
-
-    def get_iiko_name(self, obj):
-        return obj.branch_positions.filter(
-            iiko_name__isnull=False
-        ).first().iiko_name
-    get_iiko_name.short_description = "Название в системе IIKO"
 
 
 class BranchPositionInline(ReadChangeOnlyTabularInline):
