@@ -40,8 +40,9 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
         if not obj.position.image:
             return
 
-        request = self.context["request"]
-        return request.build_absolute_uri(obj.position.image.url)
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(obj.position.image.url)
 
     def get_description(self, obj):
         if not obj.description:
