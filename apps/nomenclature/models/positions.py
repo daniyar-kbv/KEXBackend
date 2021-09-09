@@ -23,7 +23,10 @@ if TYPE_CHECKING:
 
 class PositionTypes(models.TextChoices):
     DISH = "DISH", "Основное блюдо"
-    MODIFIER = "MODIFIER", "Дополнительное блюдо"
+    MODIFIER = "MODIFIER", "Модификатор"
+    ADDITIONAL = "ADDITIONAL", "Дополнительное блюдо"
+    DAY_DELIVERY = "DAY_DELIVERY", "Дневная доставка"
+    NIGHT_DELIVERY = "NIGHT_DELIVERY", "Ночная доставка"
 
 
 class Position(AbstractNameModel, AbstractDescriptionModel):
