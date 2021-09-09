@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 
 class PositionTypes(models.TextChoices):
-    DISH = "DISH", "Основное блюдо"
+    MAIN = "MAIN", "Основное блюдо"
     MODIFIER = "MODIFIER", "Модификатор"
     ADDITIONAL = "ADDITIONAL", "Дополнительное блюдо"
     DAY_DELIVERY = "DAY_DELIVERY", "Дневная доставка"
@@ -61,7 +61,7 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
     position_type = models.CharField(
         max_length=256,
         choices=PositionTypes.choices,
-        default=PositionTypes.DISH,
+        default=PositionTypes.MAIN,
     )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa

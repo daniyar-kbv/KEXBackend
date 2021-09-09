@@ -21,7 +21,7 @@ class GetLocalBrandNomenclature(BaseIIKOService):
     save_serializer = IIKONomenclatureSerializer
 
     position_types = {
-        "Dish": PositionTypes.DISH,
+        "Dish": PositionTypes.MAIN,
         "Modifier": PositionTypes.MODIFIER,
     }
 

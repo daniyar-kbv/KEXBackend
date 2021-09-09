@@ -10,7 +10,7 @@ class BranchPositionQuerySet(QuerySet):
     #    return self.active().filter(position__is_additional=True, position__position_type="MODIFIER")
 
     def main_positions(self):
-        return self.active().filter(position__position_type="DISH")
+        return self.active() #.filter(position__position_type="DISH")
 
 
 class BranchPositionManager(BaseManager.from_queryset(BranchPositionQuerySet)):
