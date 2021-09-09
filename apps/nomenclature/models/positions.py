@@ -52,12 +52,6 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
     image = models.ImageField(
         null=True, blank=True
     )
-    price = models.DecimalField(
-        _("Цена"),
-        decimal_places=2,
-        max_digits=12,
-        default=Decimal(0),
-    )
     position_type = models.CharField(
         max_length=256,
         choices=PositionTypes.choices,
@@ -95,6 +89,12 @@ class BranchPosition(UUIDModel):
         to_field="uuid",
         related_name="branch_positions",
     )
+    price = models.DecimalField(
+        _("Цена"),
+        decimal_places=2,
+        max_digits=12,
+        default=Decimal(0),
+    )
     is_active = models.BooleanField(
         _("Временно отключен"),
         default=True,
@@ -118,10 +118,6 @@ class BranchPosition(UUIDModel):
     @property
     def image(self):
         return self.position.image
-
-    @property
-    def price(self):
-        return self.position.price
 
     @property
     def position_type(self):
