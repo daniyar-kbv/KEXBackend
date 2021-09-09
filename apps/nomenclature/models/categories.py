@@ -4,12 +4,11 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.nomenclature.managers import BranchCategoryManager
 from apps.common.utils import create_multi_language_char
-from apps.common.models import AbstractNameModel, UUIDModel
+from apps.common.models import AbstractNameModel
 
 if TYPE_CHECKING:
-    from apps.partners.models import LocalBrand, Branch
+    from apps.partners.models import LocalBrand
 
 
 class Category(AbstractNameModel):
@@ -46,50 +45,10 @@ class Category(AbstractNameModel):
             category.name = create_multi_language_char(iiko_name)
             category.save(update_fields=["name"])
 
-        for branch in local_brand.branches.active():
-            BranchCategory.register_branch_category(
-                branch=branch,
-                category=category,
-            )
+        # for branch in local_brand.branches.active():
+        #     BranchCategory.register_branch_category(
+        #         branch=branch,
+        #         category=category,
+        #     )
 
         return category
-
-
-class BranchCategory(UUIDModel):
-    class Meta:
-        verbose_name = _("Категория филиала")
-        verbose_name_plural = _("Категории филиалов")
-        ordering = ('category__priority',)
-
-    branch = models.ForeignKey(
-        "partners.Branch",
-        on_delete=models.PROTECT,
-        null=True,
-        related_name="branch_categories",
-        verbose_name=_("Филиал"),
-    )
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.PROTECT,
-        null=True,
-        verbose_name=_("Локальная категория"),
-        related_name="branch_categories",
-    )
-    is_active = models.BooleanField(
-        default=True
-    )
-
-    objects = BranchCategoryManager()
-
-    @property
-    def name(self):
-        return self.category.name
-
-    @classmethod
-    def register_branch_category(cls, branch: 'Branch', category: Category):
-        branch_category, created = cls.objects.get_or_create(
-            category=category,
-            branch=branch,
-        )
-
-        return branch_category

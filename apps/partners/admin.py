@@ -4,7 +4,7 @@ from django.utils.html import format_html
 
 from apps.common.admin import ReadChangeOnlyTabularInline, AbstractNameModelForm
 from apps.nomenclature.admin import (
-    CategoryInline, BranchCategoryInline,
+    CategoryInline,
     PositionInline, BranchPositionInline,
 )
 
@@ -104,7 +104,6 @@ class LocalBrandAdmin(admin.ModelAdmin):
 class BranchAdmin(admin.ModelAdmin):
     list_filter = ('local_brand',)
     inlines = [
-        BranchCategoryInline,
         # BranchPositionInline,
     ]
     form = BranchForm

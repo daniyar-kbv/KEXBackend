@@ -11,7 +11,6 @@ from apps.common.utils import (
 )
 from apps.nomenclature.models import (
     Category,
-    BranchCategory,
     Position,
     BranchPosition,
     ModifierGroup,
@@ -146,11 +145,11 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
     def get_category(self, outer_id):
         return Category.objects.filter(outer_id=outer_id).first()
 
-    def get_branch_category(self, outer_id, branch_id):
-        return BranchCategory.objects.filter(
-            category__outer_id=outer_id,
-            branch_id=branch_id,
-        ).first()
+    # def get_branch_category(self, outer_id, branch_id):
+    #     return BranchCategory.objects.filter(
+    #         category__outer_id=outer_id,
+    #         branch_id=branch_id,
+    #     ).first()
 
     def create(self, validated_data):
         position, created = Position.objects.get_or_create(

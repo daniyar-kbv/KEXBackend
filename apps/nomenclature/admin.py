@@ -4,7 +4,7 @@ from apps.common.admin import ReadChangeOnlyTabularInline, ReadChangeOnlyStacked
     AbstractDescriptionModelForm
 
 from .models import (
-    Category, BranchCategory,
+    Category,
     Position, BranchPosition,
 )
 
@@ -22,18 +22,18 @@ class CategoryInline(ReadChangeOnlyTabularInline):
         "name",
     )
 
-
-class BranchCategoryInline(ReadChangeOnlyTabularInline):
-    model = BranchCategory
-    extra = 0
-    classes = ("collapse",)
-    fields = (
-        "name",
-        "is_active",
-    )
-    readonly_fields = (
-        "name",
-    )
+#
+# class BranchCategoryInline(ReadChangeOnlyTabularInline):
+#     # model = BranchCategory
+#     extra = 0
+#     classes = ("collapse",)
+#     fields = (
+#         "name",
+#         "is_active",
+#     )
+#     readonly_fields = (
+#         "name",
+#     )
 
 
 class PositionInline(ReadChangeOnlyStackedInline):

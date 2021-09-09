@@ -17,7 +17,6 @@ if TYPE_CHECKING:
         ModifierGroup,
         PositionModifierGroup,
         PositionModifier,
-        BranchCategory,
     )
 
 
@@ -82,13 +81,6 @@ class BranchPosition(UUIDModel):
         on_delete=models.CASCADE,
         related_name="branch_positions",
     )
-    branch_category = models.ForeignKey(
-        "nomenclature.BranchCategory",
-        on_delete=models.SET_NULL,
-        null=True, blank=True,
-        to_field="uuid",
-        related_name="branch_positions",
-    )
     price = models.DecimalField(
         _("Цена"),
         decimal_places=2,
@@ -128,15 +120,15 @@ class BranchPosition(UUIDModel):
         return self.position.outer_id
 
     @classmethod
-    def register_branch_position(cls, branch: 'Branch', branch_category: 'BranchCategory', position: Position, modifier_groups: List['ModifierGroup'] = None):
+    def register_branch_position(cls, branch: 'Branch', position: Position, modifier_groups: List['ModifierGroup'] = None):
         from apps.nomenclature.models import ModifierGroup, PositionModifierGroup, PositionModifier
 
         branch_position, created = cls.objects.update_or_create(
             branch=branch,
             position=position,
-            defaults={
-                "branch_category": branch_category,
-            }
+            # defaults={
+            #     "branch_category": branch_category,
+            # }
         )
         for modifier_group in modifier_groups:
             position_modifier_group, _ = PositionModifierGroup.objects.update_or_create(

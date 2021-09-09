@@ -6,7 +6,6 @@ from apps.orders.models import Cart, Lead
 from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
 from apps.nomenclature.models import (
-    BranchCategory,
     BranchPosition,
 )
 
@@ -234,7 +233,7 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
     positions = NomenclaturePositionSerializer(source="branch_positions.main_positions", many=True)
 
     class Meta:
-        model = BranchCategory
+        # model = BranchCategory
         fields = (
             "name",
             "uuid",
