@@ -5,13 +5,13 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.utils import create_multi_language_char
-from apps.common.models import AbstractNameModel
+from apps.common.models import AbstractNameModel, UUIDModel
 
 if TYPE_CHECKING:
     from apps.partners.models import LocalBrand
 
 
-class Category(AbstractNameModel):
+class Category(UUIDModel, AbstractNameModel):
     class Meta:
         verbose_name = _("Локальная категория")
         verbose_name_plural = _("Локальные категории")
