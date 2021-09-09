@@ -55,10 +55,6 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
         max_digits=12,
         default=Decimal(0),
     )
-    is_additional = models.BooleanField(
-        _("Дополнительная позиция"),
-        default=False,
-    )
     position_type = models.CharField(
         max_length=256,
         choices=PositionTypes.choices,
@@ -123,10 +119,6 @@ class BranchPosition(UUIDModel):
     @property
     def price(self):
         return self.position.price
-
-    @property
-    def is_additional(self):
-        return self.position.is_additional
 
     @property
     def position_type(self):

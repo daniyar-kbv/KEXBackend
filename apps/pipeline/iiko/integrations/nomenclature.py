@@ -40,8 +40,7 @@ class GetLocalBrandNomenclature(BaseIIKOService):
     def _fetch_price_and_is_additional(position: Dict) -> Tuple[Decimal, bool]:
         try:
             size_price = position["sizePrices"][0]["price"]
-            is_additional = bool(size_price["isIncludedInMenu"]) and position["type"] == "Modifier"
-            return Decimal(size_price["currentPrice"]), is_additional
+            return Decimal(size_price["currentPrice"])
         except Exception as exc:
             print("Error while fetching position price:", exc)
             return Decimal(0), False
@@ -118,12 +117,11 @@ class GetLocalBrandNomenclature(BaseIIKOService):
         products = self.filter_products(data.get("products"))
 
         for position in products:
-            price, is_additional = self._fetch_price_and_is_additional(position)
+            price = self._fetch_price_and_is_additional(position)
             positions.append({
                 "price": price,
                 "position_type": self.position_types[position.get("type")],
                 "outer_id": position.get('id'),
-                "is_additional": is_additional,
                 "iiko_name": position.get("name"),
                 "iiko_description": position.get("description"),
                 "category_outer_id": position.get("productCategoryId"),

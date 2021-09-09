@@ -135,7 +135,6 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
     iiko_description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     modifier_groups = IIKOModifierGroupSerializer(many=True, required=False, allow_null=True)
     category_outer_id = serializers.UUIDField(required=True, allow_null=True, write_only=True)
-    is_additional = serializers.BooleanField(required=True, allow_null=True)
 
     class Meta:
         model = Position
@@ -159,7 +158,6 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             local_brand=validated_data["local_brand"],
         )
         position.price = validated_data["price"]
-        position.is_additional = validated_data["is_additional"]
         position.position_type = validated_data["position_type"]
         position.category = self.get_category(validated_data["category_outer_id"])
 

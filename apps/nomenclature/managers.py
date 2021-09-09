@@ -6,8 +6,8 @@ class BranchPositionQuerySet(QuerySet):
     def active(self):
         return self.filter(is_active=True, position__is_active=True)
 
-    def additional_positions(self):
-        return self.active().filter(position__is_additional=True, position__position_type="MODIFIER")
+    #def additional_positions(self):
+    #    return self.active().filter(position__is_additional=True, position__position_type="MODIFIER")
 
     def main_positions(self):
         return self.active().filter(position__position_type="DISH")
