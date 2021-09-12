@@ -22,19 +22,6 @@ class CategoryInline(ReadChangeOnlyTabularInline):
         "name",
     )
 
-#
-# class BranchCategoryInline(ReadChangeOnlyTabularInline):
-#     # model = BranchCategory
-#     extra = 0
-#     classes = ("collapse",)
-#     fields = (
-#         "name",
-#         "is_active",
-#     )
-#     readonly_fields = (
-#         "name",
-#     )
-
 
 class PositionInline(ReadChangeOnlyStackedInline):
     model = Position

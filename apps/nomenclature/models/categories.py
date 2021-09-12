@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 class Category(UUIDModel, AbstractNameModel):
     class Meta:
-        verbose_name = _("Локальная категория")
-        verbose_name_plural = _("Локальные категории")
+        verbose_name = _("Категория")
+        verbose_name_plural = _("Категории")
 
     local_brand = models.ForeignKey(
         "partners.LocalBrand",

@@ -126,9 +126,6 @@ class BranchPosition(UUIDModel):
         branch_position, created = cls.objects.update_or_create(
             branch=branch,
             position=position,
-            # defaults={
-            #     "branch_category": branch_category,
-            # }
         )
         for modifier_group in modifier_groups:
             position_modifier_group, _ = PositionModifierGroup.objects.update_or_create(
