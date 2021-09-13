@@ -87,11 +87,16 @@ class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        return ModifierGroup.register_modifier_group(
-            local_brand=self.context["local_brand"],
-            outer_id=validated_data["outer_id"],
-            iiko_name=validated_data["name"]
+        modifier_group, created = ModifierGroup.objects.get_or_create(
+            outer_id=validated_data['outer_id'],
+            local_brand=self.context['local_brand'],
         )
+
+        if modifier_group.name is None:
+            modifier_group.name = create_multi_language_char(validated_data['name'])
+            modifier_group.save(update_fields=['name'])
+
+        return modifier_group
 
 
 class IIKOCategorySerializer(serializers.ModelSerializer):
@@ -106,11 +111,16 @@ class IIKOCategorySerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        return Category.register_category(
-            local_brand=self.context["local_brand"],
-            outer_id=validated_data["outer_id"],
-            iiko_name=validated_data["name"],
+        category, created = Category.objects.get_or_create(
+            outer_id=validated_data['outer_id'],
+            local_brand=self.context['local_brand'],
         )
+
+        if category.name is None:
+            category.name = create_multi_language_char(validated_data["name"])
+            category.save(update_fields=["name"])
+
+        return category
 
 
 class IIKOModifierSerializer(serializers.Serializer):  # noqa
@@ -126,8 +136,6 @@ class IIKOModifierGroupSerializer(serializers.Serializer):
 
 
 class IIKONomenclatureSerializer(serializers.ModelSerializer):
-    position_type = serializers.CharField()
-    price = serializers.DecimalField(max_digits=12, decimal_places=2)
     iiko_name = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     iiko_description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     modifier_groups = IIKOModifierGroupSerializer(many=True, required=False, allow_null=True)
@@ -137,24 +145,15 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         model = Position
         fields = "__all__"
 
-    def validate(self, attrs):
-        return super().validate(attrs)
-
-    def get_category(self, outer_id):
+    @staticmethod
+    def get_category(outer_id):
         return Category.objects.filter(outer_id=outer_id).first()
-
-    # def get_branch_category(self, outer_id, branch_id):
-    #     return BranchCategory.objects.filter(
-    #         category__outer_id=outer_id,
-    #         branch_id=branch_id,
-    #     ).first()
 
     def create(self, validated_data):
         position, created = Position.objects.get_or_create(
             outer_id=validated_data["outer_id"],
             local_brand=validated_data["local_brand"],
         )
-        position.price = validated_data["price"]
         position.position_type = validated_data["position_type"]
         position.category = self.get_category(validated_data["category_outer_id"])
 
@@ -171,9 +170,6 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
                 branch=branch,
                 position=position,
                 modifier_groups=validated_data["modifier_groups"],
-                branch_category=self.get_branch_category(
-                    validated_data["category_outer_id"], branch.id
-                ),
             )
 
         return position

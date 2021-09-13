@@ -25,7 +25,7 @@ class GetLocalBrandNomenclature(BaseIIKOService):
         "Modifier": PositionTypes.MODIFIER,
     }
 
-    def get_random_active_organization_outer_id(self):
+    def get_first_active_organization_outer_id(self):
         random_branch = self.instance.branches.active().first()
 
         if random_branch is not None:
@@ -33,17 +33,8 @@ class GetLocalBrandNomenclature(BaseIIKOService):
 
     def run_service(self):
         return self.fetch(json={
-            "organizationId": self.get_random_active_organization_outer_id()
+            "organizationId": self.get_first_active_organization_outer_id()
         })
-
-    @staticmethod
-    def _fetch_price_and_is_additional(position: Dict) -> Tuple[Decimal, bool]:
-        try:
-            size_price = position["sizePrices"][0]["price"]
-            return Decimal(size_price["currentPrice"])
-        except Exception as exc:
-            print("Error while fetching position price:", exc)
-            return Decimal(0), False
 
     @staticmethod
     def _fetch_modifier_groups(position) -> List[Dict]:
@@ -54,9 +45,7 @@ class GetLocalBrandNomenclature(BaseIIKOService):
                 "max_amount": modifier_group["maxAmount"],
                 "is_required": bool(modifier_group["required"]),
                 "modifiers": [
-                    {
-                        "outer_id": modifier["id"]
-                    }
+                    {"outer_id": modifier["id"]}
                     for modifier in modifier_group["childModifiers"]
                 ],
             } for modifier_group in position.get("groupModifiers", list())
@@ -79,12 +68,16 @@ class GetLocalBrandNomenclature(BaseIIKOService):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-    def save_position_groups(self, position_groups):
+    @staticmethod
+    def fetch_modifier_groups(position_groups):
+        return [
+            position_group for position_group in position_groups
+            if position_group.get("isGroupModifier")
+        ]
+
+    def save_modifier_groups(self, modifier_groups):
         serializer = IIKOModifierGroupCreateSerializer(
-            data=[
-                position_group for position_group in position_groups
-                if position_group.get("isGroupModifier")
-            ],
+            data=modifier_groups,
             many=True,
             context={
                 "local_brand": self.instance
@@ -112,16 +105,16 @@ class GetLocalBrandNomenclature(BaseIIKOService):
             self.save_categories(categories)
 
         if position_groups is not None:
-            self.save_position_groups(position_groups)
+            self.save_modifier_groups(
+                self.fetch_modifier_groups(position_groups)
+            )
 
         products = self.filter_products(data.get("products"))
 
         for position in products:
-            price = self._fetch_price_and_is_additional(position)
             positions.append({
-                "price": price,
-                "position_type": self.position_types[position.get("type")],
                 "outer_id": position.get('id'),
+                "position_type": self.position_types.get(position.get("type")),
                 "iiko_name": position.get("name"),
                 "iiko_description": position.get("description"),
                 "category_outer_id": position.get("productCategoryId"),

@@ -55,14 +55,14 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
         max_length=256,
         choices=PositionTypes.choices,
         default=PositionTypes.MAIN,
+        db_index=True,
     )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
     )
     is_active = models.BooleanField(
-        _("Временно отключен"),
+        _("Активен в системе mti"),
         default=True,
-        help_text=_("Если отключен, то продукт не отобразится в приложении")
     )
 
 
@@ -88,11 +88,11 @@ class BranchPosition(UUIDModel):
         default=Decimal(0),
     )
     is_active = models.BooleanField(
-        _("Временно отключен"),
+        _("Активен в системе mti"),
         default=True,
     )
     is_available = models.BooleanField(
-        _("В данный момент не доступен"),
+        _("Не доступен в системе IIKO"),
         default=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
