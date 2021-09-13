@@ -79,7 +79,7 @@ class BranchPositionSerializer(serializers.ModelSerializer):
             "description",
             "image",
             "price",
-            "branch_category",
+            "category",
             "modifier_groups",
         )
 
