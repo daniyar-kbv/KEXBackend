@@ -23,6 +23,7 @@ def update_local_brands_nomenclatures():
         for branch in local_brand.branches.all():
             GetBranchNomenclaturePrices(instance=branch).run()
 
+
 @celery_app.task(name="iiko.check_brand_organizations_liveness")  # noqa
 def check_brand_organizations_liveness() -> None:
     for local_brand in LocalBrand.objects.all():
