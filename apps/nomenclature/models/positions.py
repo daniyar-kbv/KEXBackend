@@ -91,6 +91,10 @@ class BranchPosition(UUIDModel):
         _("Активен в системе mti"),
         default=True,
     )
+    is_exists = models.BooleanField(
+        _("Имеется в данной точке"),
+        default=False,
+    )
     is_available = models.BooleanField(
         _("Не доступен в системе IIKO"),
         default=True,

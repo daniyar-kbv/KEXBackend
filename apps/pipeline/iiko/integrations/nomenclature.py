@@ -11,7 +11,8 @@ from .serializers import (
 )
 
 if TYPE_CHECKING:
-    from apps.partners.models import LocalBrand
+    from apps.partners.models import LocalBrand, Branch
+    from apps.nomenclature.models import BranchPosition
 
 
 class GetLocalBrandNomenclature(BaseIIKOService):
@@ -133,3 +134,52 @@ class GetLocalBrandNomenclature(BaseIIKOService):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+
+class GetBranchNomenclaturePrices(BaseIIKOService):
+    """Получение цены меню"""
+    endpoint = "/api/1/nomenclature"
+    instance: 'Branch' = None
+
+    def get_local_brand_pk(self):  # noqa
+        return self.instance.local_brand_id
+
+    def run_service(self):
+        return self.fetch(json={
+            "organizationId": str(self.instance.outer_id)
+        })
+
+    @staticmethod
+    def fetch_price(position: Dict) -> Decimal:
+        try:
+            size_price = position["sizePrices"][0]["price"]
+            return Decimal(size_price["currentPrice"])
+        except Exception as exc:
+            print("Error while fetching position price:", exc)
+            return Decimal(0)
+
+    def filter_products(self, products):  # noqa
+        if not products:
+            return []
+
+        return list(filter(
+            lambda x: (
+                x['productCategoryId'] or x.get("type") == "Modifier"
+            ), products)
+        )
+
+    def prepare_to_save(self, data: dict):
+        products = self.filter_products(data.get("products"))
+
+        for product in products:
+            if self.instance.branch_positions.filter(position__outer_id=product.get('id')).exists():
+                branch_position: 'BranchPosition' = self.instance.branch_positions.get(position__outer_id=product.get('id'))
+                branch_position.is_exists = True
+                branch_position.price = self.fetch_price(product)
+                branch_position.save(update_fields=['is_active', 'price'])
+
+    def finalize_response(self, response):
+        ...
+
+    def save(self, prepared_data):
+        self.prepare_to_save(prepared_data)
