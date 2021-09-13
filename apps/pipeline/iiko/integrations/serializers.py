@@ -38,8 +38,6 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
         if address:
             address["city"] = address["city"].id
 
-        # print('validated_data', address)
-
         instance, created = Branch.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),
             defaults={

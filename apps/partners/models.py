@@ -70,7 +70,7 @@ class LocalBrand(ServiceHistoryModel):
         max_length=255,
     )
     is_active = models.BooleanField(
-        _("Активна"), default=False
+        _("Активна в системе mti"), default=False
     )
 
     objects = LocalBrandManager()
@@ -120,7 +120,7 @@ class Branch(AbstractNameModel):
         _("TerminalUUID в системе IIKO"), null=True,
     )
     is_active = models.BooleanField(
-        _("Активна"), default=False
+        _("Активна в системе mti"), default=False
     )
     is_alive = models.BooleanField(
         _("Доступен в системе IIKO"), editable=False, default=False
