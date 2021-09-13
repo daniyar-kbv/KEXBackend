@@ -49,13 +49,11 @@ class BranchPositionInline(ReadChangeOnlyTabularInline):
         "name",
         "description",
         "iiko_name",
-        "branch_category",
     )
     readonly_fields = (
         "name",
         "description",
         "iiko_name",
-        "branch_category",
     )
 
 

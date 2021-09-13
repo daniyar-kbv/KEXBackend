@@ -17,20 +17,17 @@ class BranchPositionManager(BaseManager.from_queryset(BranchPositionQuerySet)):
     def get_queryset(self):
         return super(BranchPositionManager, self).get_queryset().select_related('position')
 
-#
-# class BranchCategoryQuerySet(QuerySet):
-#     def active(self):
-#         return self.filter(
-#             is_active=True, category__is_active=True, branch_positions__isnull=False,
-#         ).distinct()
 
-#
-# class BranchCategoryManager(BaseManager.from_queryset(BranchCategoryQuerySet)):
-#     def get_queryset(self):
-#         return super(BranchCategoryManager, self).get_queryset()\
-#             .select_related('category')\
-#             .prefetch_related('branch_positions')
-#
+class CategoryQuerySet(QuerySet):
+    def active(self):
+        return self.filter(
+            is_active=True, branch_positions__isnull=False,
+        ).distinct()
+
+
+class CategoryManager(BaseManager.from_queryset(CategoryQuerySet)):
+    ...
+
 
 class PositionModifierGroupManager(Manager):
     def get_queryset(self):

@@ -5,9 +5,7 @@ from apps.location.serializers import AddressSerializer
 from apps.orders.models import Cart, Lead
 from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
-from apps.nomenclature.models import (
-    BranchPosition,
-)
+from apps.nomenclature.models import BranchPosition, Category
 
 from .retrieve_cart_serializers import RetrieveCartSerializer
 
@@ -194,7 +192,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
-    category = serializers.UUIDField(source="branch_category_id")
+    category = serializers.UUIDField(source="category_id")
 
     class Meta:
         model = BranchPosition
@@ -233,7 +231,7 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
     positions = NomenclaturePositionSerializer(source="branch_positions.main_positions", many=True)
 
     class Meta:
-        # model = BranchCategory
+        model = Category
         fields = (
             "name",
             "uuid",
@@ -248,7 +246,7 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
 
 
 class LeadNomenclatureSerializer(serializers.ModelSerializer):
-    categories = NomenclatureCategorySerializer(source="branch.branch_categories.active", many=True, read_only=True)
+    categories = NomenclatureCategorySerializer(source="local_brand.categories.active", many=True, read_only=True)
 
     class Meta:
         model = Lead

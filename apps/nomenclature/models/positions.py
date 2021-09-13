@@ -81,6 +81,13 @@ class BranchPosition(UUIDModel):
         on_delete=models.CASCADE,
         related_name="branch_positions",
     )
+    category = models.ForeignKey(
+        "nomenclature.Category",
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="branch_positions",
+        to_field="uuid",
+    )
     price = models.DecimalField(
         _("Цена"),
         decimal_places=2,
@@ -130,6 +137,9 @@ class BranchPosition(UUIDModel):
         branch_position, created = cls.objects.update_or_create(
             branch=branch,
             position=position,
+            defaults={
+                "category": position.category,
+            }
         )
         for modifier_group in modifier_groups:
             position_modifier_group, _ = PositionModifierGroup.objects.update_or_create(

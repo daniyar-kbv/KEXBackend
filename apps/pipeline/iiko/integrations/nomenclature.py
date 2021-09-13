@@ -176,7 +176,7 @@ class GetBranchNomenclaturePrices(BaseIIKOService):
                 branch_position: 'BranchPosition' = self.instance.branch_positions.get(position__outer_id=product.get('id'))
                 branch_position.is_exists = True
                 branch_position.price = self.fetch_price(product)
-                branch_position.save(update_fields=['is_active', 'price'])
+                branch_position.save(update_fields=['is_exists', 'price'])
 
     def finalize_response(self, response):
         ...

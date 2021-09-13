@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, UUIDModel
+from apps.nomenclature.managers import CategoryManager
 
 if TYPE_CHECKING:
     from apps.partners.models import LocalBrand
@@ -32,3 +33,5 @@ class Category(UUIDModel, AbstractNameModel):
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
     )
+
+    objects = CategoryManager()
