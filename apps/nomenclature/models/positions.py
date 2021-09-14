@@ -103,7 +103,7 @@ class BranchPosition(UUIDModel):
         default=False,
     )
     is_available = models.BooleanField(
-        _("Не доступен в системе IIKO"),
+        _("Доступен в системе IIKO"),
         default=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )

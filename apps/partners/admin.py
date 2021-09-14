@@ -103,7 +103,5 @@ class LocalBrandAdmin(admin.ModelAdmin):
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
     list_filter = ('local_brand',)
-    inlines = [
-        # BranchPositionInline,
-    ]
+    inlines = [BranchPositionInline]
     form = BranchForm
