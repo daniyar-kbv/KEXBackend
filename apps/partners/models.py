@@ -123,7 +123,7 @@ class Branch(AbstractNameModel):
         _("Активна в системе mti"), default=False
     )
     is_alive = models.BooleanField(
-        _("Доступен в системе IIKO"), editable=False, default=False
+        _("Доступен в системе IIKO"), default=False
     )
 
     start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
