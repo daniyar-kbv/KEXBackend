@@ -6,7 +6,12 @@ from django.utils.translation import gettext_lazy as _  # noqa
 from apps.common.models import AbstractNameModel, ServiceHistoryModel, MainModel
 
 from . import BrandImageTypes
-from .managers import LocalBrandManager, BranchesQuerySet
+from .managers import LocalBrandManager, BranchesQuerySet, BranchDeliveryTimeQuerySet
+
+
+class DeliveryTypes(models.TextChoices):
+    DAY_DELIVERY = 'DAY_DELIVERY', 'Дневная доставка'
+    NIGHT_DELIVERY = 'NIGHT_DELIVERY', 'Ночная доставка'
 
 
 class Brand(AbstractNameModel):
@@ -126,10 +131,23 @@ class Branch(AbstractNameModel):
         _("Доступен в системе IIKO"), default=False
     )
 
-    start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
-    end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
-
     objects = BranchesQuerySet.as_manager()
 
     def __str__(self):
         return self.iiko_name
+
+
+class BranchDeliveryTime(models.Model):
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.CASCADE,
+        related_name='delivery_times'
+    )
+    delivery_type = models.CharField(
+        max_length=256,
+        choices=DeliveryTypes.choices,
+    )
+    start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
+    end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
+
+    objects = BranchDeliveryTimeQuerySet.as_manager()
