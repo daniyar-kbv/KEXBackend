@@ -31,6 +31,7 @@ class PositionInline(ReadChangeOnlyStackedInline):
         "id",
         "name",
         "priority",
+        "position_type",
         "description",
         "image",
         "category",

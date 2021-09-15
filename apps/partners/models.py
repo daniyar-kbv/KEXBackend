@@ -5,13 +5,8 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, ServiceHistoryModel, MainModel
 
-from . import BrandImageTypes
+from . import BrandImageTypes, DeliveryTypes
 from .managers import LocalBrandManager, BranchesQuerySet, BranchDeliveryTimeQuerySet
-
-
-class DeliveryTypes(models.TextChoices):
-    DAY_DELIVERY = 'DAY_DELIVERY', 'Дневная доставка'
-    NIGHT_DELIVERY = 'NIGHT_DELIVERY', 'Ночная доставка'
 
 
 class Brand(AbstractNameModel):

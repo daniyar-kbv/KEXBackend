@@ -1,4 +1,6 @@
-from typing import Any, TYPE_CHECKING
+from typing import Any, Dict, TYPE_CHECKING, Optional
+
+from apps.partners.models import Branch
 
 from .base import BaseIIKOService
 
@@ -89,20 +91,40 @@ class FindOrganization(BaseIIKOService):
             }
         })
 
-    def prepare_to_save(self, data: dict) -> dict:
-        if not data.get("allowedItems"):
-            return {}
+    def prepare_to_save(self, prepared_data):
+        organization_info = {}
 
-        allowed_items = data.get("allowedItems")[0]
+        if not prepared_data.get('allowedItems') or not prepared_data.get('isAllowed'):
+            return organization_info
 
-        if not data.get("isAllowed") or allowed_items is None:
-            return {}
+        for allowed_item in prepared_data.get('allowedItems'):
+            organization_info = self.get_organization_info(allowed_item)
 
-        return {
-            "order_zone": allowed_items.get("zone"),
-            "organization_outer_id": allowed_items.get("organizationId"),
-            "estimated_duration": allowed_items.get("deliveryDurationInMinutes"),
-        }
+            if organization_info:
+                break
+
+        return organization_info
+
+    @staticmethod
+    def get_organization_info(allowed_item: Dict) -> Optional[Dict]:
+        try:
+            branch = Branch.objects\
+                .prefetch_related('delivery_times')\
+                .get(outer_id=allowed_item['organizationId'])
+
+            if not branch.delivery_times.open().exists():
+                raise ValueError('No delivery')
+
+            return {
+                'branch': branch.pk,
+                'delivery_type': branch.delivery_times.open().first().delivery_type,
+                'order_zone': allowed_item['zone'],
+                'estimated_duration': allowed_item["deliveryDurationInMinutes"]
+            }
+
+        except Exception as exc:
+            print('FindOrganization exception', exc)
+            return None
 
     def finalize_response(self, response) -> bool:
         if response is None:

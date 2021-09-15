@@ -40,3 +40,6 @@ class GetAuthToken(BaseService):
             self.instance.cache_mask, token,
             timeout=config.IIKO_AUTH_TOKEN_LIFETIME,
         )
+
+    def log_save(self, instance=None):
+        ...

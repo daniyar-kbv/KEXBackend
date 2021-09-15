@@ -8,13 +8,21 @@ from apps.nomenclature.admin import (
     PositionInline, BranchPositionInline,
 )
 
-from .models import Brand, BrandImage, LocalBrand, Branch
+from .models import (
+    Brand, BrandImage, LocalBrand, Branch, BranchDeliveryTime
+)
 
 
 class BrandImageInline(admin.StackedInline):
     model = BrandImage
     extra = 0
     classes = ("collapse",)
+
+
+class BranchDeliveryTimeInline(admin.TabularInline):
+    model = BranchDeliveryTime
+    extra = 0
+    classes = ('collapse',)
 
 
 class BranchInline(ReadChangeOnlyTabularInline):
@@ -103,5 +111,5 @@ class LocalBrandAdmin(admin.ModelAdmin):
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
     list_filter = ('local_brand',)
-    inlines = [BranchPositionInline]
+    inlines = [BranchPositionInline, BranchDeliveryTimeInline]
     form = BranchForm

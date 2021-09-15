@@ -8,3 +8,8 @@ class BrandImageTypes(models.TextChoices):
     IMAGE_SHORT = ("IMAGE_SHORT", "короткая")
     IMAGE_TALL = ("IMAGE_TALL", "высокая")
     IMAGE_LONG = ("IMAGE_LONG", "длинная")
+
+
+class DeliveryTypes(models.TextChoices):
+    DAY_DELIVERY = 'DAY_DELIVERY', 'Дневная доставка'
+    NIGHT_DELIVERY = 'NIGHT_DELIVERY', 'Ночная доставка'

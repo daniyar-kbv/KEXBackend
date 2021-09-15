@@ -15,8 +15,9 @@ from apps.common.models import (
 )
 
 from apps.orders import OrderStatuses
-from apps.orders.managers import OrdersManager
+from apps.partners import DeliveryTypes
 from apps.payments import PaymentStatusTypes
+from apps.orders.managers import OrdersManager
 from apps.translations.models import MultiLanguageChar, MultiLanguageText
 
 User = get_user_model()
@@ -37,6 +38,10 @@ class Lead(
         on_delete=models.PROTECT,
         null=True,
         related_name="leads",
+    )
+    delivery_type = models.CharField(
+        max_length=256,
+        choices=DeliveryTypes.choices,
     )
     local_brand = models.ForeignKey(
         "partners.LocalBrand",

@@ -57,22 +57,14 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
 
 
 class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
-    organization_outer_id = serializers.CharField(required=True)
-
     class Meta:
         model = Lead
         fields = (
+            "branch",
+            "delivery_type",
             "order_zone",
             "estimated_duration",
-            "organization_outer_id",
         )
-
-    def update(self, instance, validated_data):
-        validated_data["branch"] = Branch.objects.get(  # noqa
-            outer_id=validated_data.pop("organization_outer_id")
-        )
-
-        return super().update(instance, validated_data)
 
 
 class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
