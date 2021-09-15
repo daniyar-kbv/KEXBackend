@@ -21,6 +21,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
             "name",
             "image",
             "price",
+            "position_type",
             "category",
             "is_available",
             "description",
