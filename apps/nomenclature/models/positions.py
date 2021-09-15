@@ -124,7 +124,7 @@ class BranchPosition(UUIDModel):
 
     @property
     def position_type(self):
-        return self.position.position_type
+        return self.position.get_position_type_display()
 
     @property
     def outer_id(self):

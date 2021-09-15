@@ -50,6 +50,7 @@ class BranchPositionInline(ReadChangeOnlyTabularInline):
         "name",
         "description",
         "price",
+        'position_type',
         "is_active",
         "is_exists",
         "is_available",
@@ -57,6 +58,7 @@ class BranchPositionInline(ReadChangeOnlyTabularInline):
     readonly_fields = (
         "name",
         "description",
+        'position_type',
         "price",
         "is_exists",
         "is_available",
