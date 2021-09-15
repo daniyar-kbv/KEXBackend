@@ -66,6 +66,17 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
             "estimated_duration",
         )
 
+    def update(self, instance, validated_data):
+        lead = super().update(instance, validated_data)
+
+        if not lead.cart.positions.filter(branch_position__position__position_type=lead.delivery_type).exists():
+            lead.cart.positions.create(
+                branch_position=lead.branch.branch_positions.filter(position__position_type=lead.delivery_type).first(),
+                count=1
+            )
+
+        return lead
+
 
 class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source="outer_id", required=True, write_only=True)

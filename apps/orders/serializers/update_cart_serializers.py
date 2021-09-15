@@ -81,6 +81,14 @@ class UpdateCartSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.positions.all().delete()
+        if not instance.positions.filter(
+                branch_position__position__position_type=instance.lead.delivery_type
+        ).exists():
+            instance.positions.create(
+                branch_position=instance.branch.branch_positions
+                    .filter(position__position_type=instance.lead.delivery_type).first(),
+                count=1
+            )
 
         for position in validated_data.pop("positions", list()):
             cart_position = instance.positions.create(
