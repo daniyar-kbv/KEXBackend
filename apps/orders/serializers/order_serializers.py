@@ -69,6 +69,7 @@ class BranchPositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    branch_category = serializers.UUIDField(source='category_id')
     modifier_groups = ModifierGroupSerializer(source="position_modifier_groups", many=True, required=False)
 
     class Meta:
@@ -79,7 +80,7 @@ class BranchPositionSerializer(serializers.ModelSerializer):
             "description",
             "image",
             "price",
-            "category",
+            "branch_category",
             "modifier_groups",
         )
 
