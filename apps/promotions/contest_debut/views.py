@@ -1,4 +1,5 @@
 from datetime import timedelta
+from operator import itemgetter
 
 import requests
 from django.conf import settings
@@ -75,6 +76,7 @@ class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView
                     resp_body['users'].append(user)
                     if obj.user.id == user_id:
                         resp_body['user_info'] = user
+                resp_body['users'] = sorted(resp_body['users'], key=itemgetter('sum'), reverse=True)
             if user_id and not resp_body['user_info']:
                 resp_body['user_info'] = {
                     'participate_url': get_instagram_auth_url(promotion.web_url)
