@@ -3,7 +3,6 @@ from rest_framework import serializers
 from apps.location.models import Address
 from apps.location.serializers import AddressSerializer
 from apps.orders.models import Cart, Lead
-from apps.partners.models import LocalBrand
 from apps.partners.exceptions import BrandNotFound
 from apps.nomenclature.models import BranchPosition, Category
 
@@ -83,9 +82,6 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
 
         if not attrs["local_brand"].city == attrs["address"]["city"]:
             raise BrandNotFound
-
-        # for testing
-        # attrs["local_brand"] = LocalBrand.objects.active().first()
 
         return attrs
 
@@ -228,7 +224,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
 
 class NomenclatureCategorySerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
-    positions = NomenclaturePositionSerializer(source="branch_positions.main_positions", many=True)
+    positions = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
@@ -244,9 +240,18 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
 
         return obj.name.text(lang=self.context["language"])
 
+    def get_positions(self, obj):
+        lead: Lead = self.context['lead']
+
+        return NomenclaturePositionSerializer(
+            instance=lead.branch.branch_positions.main_positions().filter(category_id=obj.uuid),
+            context=self.context,
+            many=True,
+        ).data
+
 
 class LeadNomenclatureSerializer(serializers.ModelSerializer):
-    categories = NomenclatureCategorySerializer(source="local_brand.categories.active", many=True, read_only=True)
+    categories = serializers.SerializerMethodField()
 
     class Meta:
         model = Lead
@@ -254,3 +259,10 @@ class LeadNomenclatureSerializer(serializers.ModelSerializer):
             "uuid",
             "categories",
         )
+
+    def get_categories(self, obj):
+        return NomenclatureCategorySerializer(
+            instance=obj.local_brand.categories.active(),
+            context={**self.context, 'lead': obj},
+            many=True,
+        ).data

@@ -4,13 +4,12 @@ from django.db.models.manager import BaseManager, Manager
 
 class BranchPositionQuerySet(QuerySet):
     def active(self):
-        return self.filter(is_exists=True, is_active=True, position__is_active=True)
-
-    #def additional_positions(self):
-    #    return self.active().filter(position__is_additional=True, position__position_type="MODIFIER")
+        return self.filter(is_exists=True, is_active=True, position__is_active=True).distinct()
 
     def main_positions(self):
-        return self.active() #.filter(position__position_type="DISH")
+        return self.active()\
+            .filter(position__position_type='MAIN')\
+            .distinct()
 
 
 class BranchPositionManager(BaseManager.from_queryset(BranchPositionQuerySet)):
