@@ -70,7 +70,7 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         lead = super().update(instance, validated_data)
 
-        if not lead.cart.positions.filter(branch_position__position__position_type=lead.delivery_type).exists():
+        if not lead.branch.branch_positions.filter(position__position_type=lead.delivery_type).exists():
             raise TerminalNotFound
 
         lead.cart.positions.create(
