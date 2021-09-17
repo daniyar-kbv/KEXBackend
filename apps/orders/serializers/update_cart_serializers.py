@@ -9,7 +9,9 @@ from apps.orders.models import (
     CartPositionModifierGroup,
 )
 
-from ..exceptions import InvalidBranchError, BranchNotActiveError, TerminalNotActiveError
+from ..exceptions import (
+    InvalidBranchError, BranchNotActiveError, TerminalNotActiveError, DeliveryNotAvailableError
+)
 
 if TYPE_CHECKING:
     from apps.partners.models import Branch
@@ -84,10 +86,13 @@ class UpdateCartSerializer(serializers.ModelSerializer):
         if not instance.positions.filter(
                 branch_position__position__position_type=instance.lead.delivery_type
         ).exists():
-            instance.positions.create(
-                branch_position=instance.branch.branch_positions
-                    .filter(position__position_type=instance.lead.delivery_type).first(),
-                count=1
+            raise DeliveryNotAvailableError
+
+        instance.positions.create(
+            count=1,
+            branch_position=instance.lead.branch.branch_positions
+                .filter(position__position_type=instance.lead.delivery_type)
+                .first(),
             )
 
         for position in validated_data.pop("positions", list()):

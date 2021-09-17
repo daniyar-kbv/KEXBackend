@@ -31,3 +31,8 @@ class BranchNotActiveError(APIException):
 class TerminalNotActiveError(APIException):
     status_code = 400
     default_code = error_codes.TERMINAL_NOT_ACTIVE
+
+
+class DeliveryNotAvailableError(APIException):
+    status_code = 400
+    default_code = error_codes.DELIVERY_NOT_AVAILABLE
