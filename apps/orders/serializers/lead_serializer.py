@@ -145,7 +145,7 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
-    category = serializers.UUIDField(source="branch_category_id")
+    category = serializers.UUIDField(source="branch_category_id", required=False)
 
     class Meta:
         model = BranchPosition
