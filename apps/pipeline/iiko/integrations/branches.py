@@ -107,24 +107,24 @@ class FindOrganization(BaseIIKOService):
 
     @staticmethod
     def get_organization_info(allowed_item: Dict) -> Optional[Dict]:
-        try:
-            branch = Branch.objects\
-                .prefetch_related('delivery_times')\
-                .get(outer_id=allowed_item['organizationId'])
+        # try:
+        branch = Branch.objects\
+            .prefetch_related('delivery_times')\
+            .get(outer_id=allowed_item['organizationId'])
 
-            if not branch.delivery_times.open().exists():
-                raise ValueError('No delivery')
+        if not branch.delivery_times.open().exists():
+            raise ValueError('No delivery')
 
-            return {
-                'branch': branch.pk,
-                'delivery_type': branch.delivery_times.open().first().delivery_type,
-                'order_zone': allowed_item['zone'],
-                'estimated_duration': allowed_item["deliveryDurationInMinutes"]
-            }
+        return {
+            'branch': branch.pk,
+            'delivery_type': branch.delivery_times.open().first().delivery_type,
+            'order_zone': allowed_item['zone'],
+            'estimated_duration': allowed_item["deliveryDurationInMinutes"]
+        }
 
-        except Exception as exc:
-            print('FindOrganization exception', exc)
-            return None
+        # except Exception as exc:
+        #     print('FindOrganization exception', exc)
+        #     return None
 
     def finalize_response(self, response) -> bool:
         if response is None:
