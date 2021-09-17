@@ -55,11 +55,6 @@ class BaseApplyView(CreateAPIView):
 
     def perform_create(self, serializer):
         lead = serializer.save()
-
-        # for testing
-        # lead.branch = lead.local_brand.branches.first()
-        # lead.save(update_fields=["branch"])
-
         find_lead_organization(lead_pk=lead.pk)
 
 

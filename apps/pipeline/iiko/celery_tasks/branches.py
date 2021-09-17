@@ -12,14 +12,14 @@ def find_lead_organization(lead_pk: int):
 
     found = FindOrganization(instance=lead).run()
 
-    if not found:
-        raise TerminalNotFound
-
     lead.refresh_from_db()
 
+    if not found or lead.branch is None:
+        raise TerminalNotFound
+
     """
-    adding an branch to cache 
+    add branch to cache 
     for frequent updating of "stop list"
-    p.s. expires in 2 hours
+    p.s. expires in 1 hour
     """
-    cache.set(str(lead.branch.outer_id), True, 2 * 60 * 60)
+    cache.set(str(lead.branch.outer_id), True, 60 * 60)
