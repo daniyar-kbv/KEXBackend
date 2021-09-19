@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import TimestampModel
+from apps.orders.managers import CartPositionQueryset
 
 
 class Cart(TimestampModel):
@@ -56,6 +57,8 @@ class CartPosition(models.Model):
         _("Комментарий к заказу"),
         null=True, blank=True,
     )
+
+    objects = CartPositionQueryset.as_manager()
 
     @property
     def price(self):

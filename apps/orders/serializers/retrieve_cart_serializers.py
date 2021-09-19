@@ -99,7 +99,7 @@ class RetrieveCartPositionSerializer(serializers.ModelSerializer):
 
 
 class RetrieveCartSerializer(serializers.ModelSerializer):
-    positions = RetrieveCartPositionSerializer(many=True, required=False)
+    positions = RetrieveCartPositionSerializer(source='positions.exclude_delivery', many=True, required=False)
     price = serializers.DecimalField(max_digits=12, decimal_places=2)
     positions_count = serializers.IntegerField()
     delivery_price = serializers.SerializerMethodField()
