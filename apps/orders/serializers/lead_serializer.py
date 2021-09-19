@@ -157,6 +157,7 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
             "image",
             "count",
             "is_available",
+            "position_type",
             "category",
         )
 

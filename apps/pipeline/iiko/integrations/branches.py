@@ -107,7 +107,6 @@ class FindOrganization(BaseIIKOService):
 
     @staticmethod
     def get_organization_info(allowed_item: Dict) -> Optional[Dict]:
-        # try:
         branch = Branch.objects\
             .prefetch_related('delivery_times')\
             .get(outer_id=allowed_item['organizationId'])
@@ -121,10 +120,6 @@ class FindOrganization(BaseIIKOService):
             'order_zone': allowed_item['zone'],
             'estimated_duration': allowed_item["deliveryDurationInMinutes"]
         }
-
-        # except Exception as exc:
-        #     print('FindOrganization exception', exc)
-        #     return None
 
     def finalize_response(self, response) -> bool:
         if response is None:

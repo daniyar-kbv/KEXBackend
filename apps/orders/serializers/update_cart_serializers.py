@@ -74,9 +74,6 @@ class UpdateCartSerializer(serializers.ModelSerializer):
         if not branch.is_active:
             raise BranchNotActiveError
 
-        if not branch.is_alive:
-            raise TerminalNotActiveError
-
     def validate(self, attrs):
         self.validate_branch(self.context.get("branch"))
         return super().validate(attrs)

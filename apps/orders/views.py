@@ -91,7 +91,7 @@ class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextM
     Get Additional nomenclature for Lead
     """
     serializer_class = AdditionalNomenclaturePositionSerializer
-    queryset = BranchPosition.objects.all() #additional_positions()
+    queryset = BranchPosition.objects.additional_positions()
     pagination_class = None
 
     def get_serializer_context(self):
