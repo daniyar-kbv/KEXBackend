@@ -101,6 +101,7 @@ class RetrieveCartPositionSerializer(serializers.ModelSerializer):
 class RetrieveCartSerializer(serializers.ModelSerializer):
     positions = RetrieveCartPositionSerializer(source='positions.exclude_delivery', many=True, required=False)
     price = serializers.DecimalField(max_digits=12, decimal_places=2)
+    min_price = serializers.DecimalField(max_digits=12, decimal_places=2, source='lead.branch.min_price')
     positions_count = serializers.IntegerField()
     delivery_price = serializers.SerializerMethodField()
 
@@ -111,6 +112,7 @@ class RetrieveCartSerializer(serializers.ModelSerializer):
             'positions_count',
             'positions',
             'delivery_price',
+            'min_price',
         )
 
     def get_delivery_price(self, instance):
