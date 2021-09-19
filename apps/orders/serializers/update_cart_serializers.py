@@ -81,7 +81,9 @@ class UpdateCartSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.positions.all().delete()
 
-        if not instance.branch.branch_positions.filter(position__position_type=instance.lead.delivery_type).exists():
+        if not instance.lead.branch.branch_positions\
+                .filter(position__position_type=instance.lead.delivery_type)\
+                .exists():
             raise DeliveryNotAvailableError
 
         instance.positions.create(

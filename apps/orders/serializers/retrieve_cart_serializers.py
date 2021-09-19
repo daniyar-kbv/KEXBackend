@@ -102,6 +102,7 @@ class RetrieveCartSerializer(serializers.ModelSerializer):
     positions = RetrieveCartPositionSerializer(many=True, required=False)
     price = serializers.DecimalField(max_digits=12, decimal_places=2)
     positions_count = serializers.IntegerField()
+    delivery_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
@@ -109,7 +110,17 @@ class RetrieveCartSerializer(serializers.ModelSerializer):
             'price',
             'positions_count',
             'positions',
+            'delivery_price',
         )
+
+    def get_delivery_price(self, instance):
+        from apps.nomenclature.models.positions import PositionTypes
+        delivery = instance.positions.filter(
+            branch_position__position__position_type__in=[PositionTypes.DAY_DELIVERY, PositionTypes.NIGHT_DELIVERY]
+        ).first()
+
+        if delivery:
+            return delivery.branch_position.price
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
