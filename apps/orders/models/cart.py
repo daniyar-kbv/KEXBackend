@@ -20,11 +20,18 @@ class Cart(TimestampModel):
 
     @property
     def positions_count(self) -> int:
-        return self.positions.count()
+        return self.positions.exclude_delivery().count()
+
+    @property
+    def delivery_price(self) -> Decimal:
+        if self.positions.only_delivery().exists():
+            return self.positions.only_delivery().first().price
+
+        return Decimal('0.00')
 
     @property
     def price(self) -> Decimal:
-        if self.positions.exists():
+        if self.positions.exclude_delivery().exists():
             return sum(
                 [position.price for position in self.positions.all()]
             )

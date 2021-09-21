@@ -18,6 +18,14 @@ class CartPositionQueryset(QuerySet):
             ]
         )
 
+    def only_delivery(self):
+        return self.filter(
+            branch_position__position__position_type__in=[
+                PositionTypes.DAY_DELIVERY,
+                PositionTypes.NIGHT_DELIVERY,
+            ]
+        )
+
 
 class OrdersManager(Manager):
     def create_from_lead(self, user, lead: 'Lead'):

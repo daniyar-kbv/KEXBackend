@@ -10,7 +10,7 @@ from apps.nomenclature.models import BranchPosition
 
 class BranchPositionShortSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
-    image = serializers.SerializerMethodField(read_only=True)
+    # image = serializers.SerializerMethodField(read_only=True)
     description = serializers.SerializerMethodField(read_only=True)
     category = serializers.UUIDField(source="branch_category_id", read_only=True)
 
@@ -19,7 +19,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
         fields = (
             "uuid",
             "name",
-            "image",
+            # "image",
             "price",
             "position_type",
             "category",
@@ -36,13 +36,13 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
 
         return obj.name.text(lang=self.context.get("language", "ru"))
 
-    def get_image(self, obj):
-        if not obj.position.image:
-            return
-
-        request = self.context.get("request")
-        if request:
-            return request.build_absolute_uri(obj.position.image.url)
+    # def get_image(self, obj):
+    #     if not obj.position.image:
+    #         return
+    #
+    #     request = self.context.get("request")
+    #     if request:
+    #         return request.build_absolute_uri(obj.position.image.url)
 
     def get_description(self, obj):
         if not obj.description:
@@ -100,29 +100,20 @@ class RetrieveCartPositionSerializer(serializers.ModelSerializer):
 
 class RetrieveCartSerializer(serializers.ModelSerializer):
     positions = RetrieveCartPositionSerializer(source='positions.exclude_delivery', many=True, required=False)
-    price = serializers.DecimalField(max_digits=12, decimal_places=2)
+    # price = serializers.DecimalField(max_digits=12, decimal_places=2)
     min_price = serializers.DecimalField(max_digits=12, decimal_places=2, source='lead.branch.min_price')
-    positions_count = serializers.IntegerField()
-    delivery_price = serializers.SerializerMethodField()
+    # positions_count = serializers.IntegerField()
+    # delivery_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
         fields = (
             'price',
+            'delivery_price',
             'positions_count',
             'positions',
-            'delivery_price',
             'min_price',
         )
-
-    def get_delivery_price(self, instance):
-        from apps.nomenclature.models.positions import PositionTypes
-        delivery = instance.positions.filter(
-            branch_position__position__position_type__in=[PositionTypes.DAY_DELIVERY, PositionTypes.NIGHT_DELIVERY]
-        ).first()
-
-        if delivery:
-            return delivery.branch_position.price
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
