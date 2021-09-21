@@ -14,7 +14,10 @@ def find_lead_organization(lead_pk: int):
 
     lead.refresh_from_db()
 
-    if not found or lead.branch is None:
+    if (not found or
+        lead.branch is None or
+        not lead.cart.positions.exists()
+    ):
         raise TerminalNotFound
 
     """

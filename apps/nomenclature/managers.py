@@ -11,6 +11,10 @@ class BranchPositionQuerySet(QuerySet):
             .filter(position__position_type='MAIN')\
             .distinct()
 
+    def additional_positions(self):
+        return self.active()\
+            .filter(position__position_type='ADDITIONAL')\
+
 
 class BranchPositionManager(BaseManager.from_queryset(BranchPositionQuerySet)):
     def get_queryset(self):

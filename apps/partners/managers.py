@@ -16,7 +16,6 @@ class LocalBrandManager(BaseManager.from_queryset(LocalBrandQuerySet)):
 class BranchesQuerySet(QuerySet):
     def active(self):
         return self.filter(
-            is_alive=True,
             is_active=True,
             outer_id__isnull=False,
             terminal_id__isnull=False,

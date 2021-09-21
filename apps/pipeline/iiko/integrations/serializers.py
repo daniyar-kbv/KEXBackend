@@ -5,6 +5,7 @@ from rest_framework import serializers
 from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.partners.models import Branch
+from apps.partners.exceptions import TerminalNotFound
 from apps.common.utils import (
     create_multi_language_char,
     create_multi_language_text,
@@ -69,11 +70,13 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         lead = super().update(instance, validated_data)
 
-        if not lead.cart.positions.filter(branch_position__position__position_type=lead.delivery_type).exists():
-            lead.cart.positions.create(
-                branch_position=lead.branch.branch_positions.filter(position__position_type=lead.delivery_type).first(),
-                count=1
-            )
+        if not lead.branch.branch_positions.filter(position__position_type=lead.delivery_type).exists():
+            raise TerminalNotFound
+
+        lead.cart.positions.create(
+            branch_position=lead.branch.branch_positions.filter(position__position_type=lead.delivery_type).first(),
+            count=1
+        )
 
         return lead
 

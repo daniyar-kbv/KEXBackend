@@ -1,4 +1,5 @@
 from datetime import time
+from decimal import Decimal
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
@@ -113,6 +114,11 @@ class Branch(AbstractNameModel):
         on_delete=models.PROTECT,
         null=True, blank=True,
         verbose_name=_("Юр. адрес"),
+    )
+    min_price = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=Decimal("1000")
     )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
