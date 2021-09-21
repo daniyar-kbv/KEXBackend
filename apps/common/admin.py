@@ -221,9 +221,15 @@ class AbstractImageModelForm(forms.ModelForm):
     image_ru = forms.ImageField(label="Картинка (рус)", required=True)
     image_kk = forms.ImageField(label="Картинка (каз)", required=False)
     image_en = forms.ImageField(label="Картинка (англ)", required=False)
+    image_big_ru = forms.ImageField(label="Картинка большая (рус)", required=True)
+    image_big_kk = forms.ImageField(label="Картинка большая (каз)", required=False)
+    image_big_en = forms.ImageField(label="Картинка большая (англ)", required=False)
 
     class Meta:
-        fields = ('image_ru', 'image_kk', 'image_en',)
+        fields = (
+            'image_ru', 'image_kk', 'image_en',
+            'image_big_ru', 'image_big_kk', 'image_big_en',
+        )
 
     def __init__(self, *args, **kwargs):
         super(AbstractImageModelForm, self).__init__(*args, **kwargs)
@@ -234,6 +240,13 @@ class AbstractImageModelForm(forms.ModelForm):
                 self.initial['image_kk'] = self.instance.image.kk
             if self.instance.image.en:
                 self.initial['image_en'] = self.instance.image.en
+        if self.instance.image_big:
+            if self.instance.image_big.ru:
+                self.initial['image_big_ru'] = self.instance.image_big.ru
+            if self.instance.image_big.kk:
+                self.initial['image_big_kk'] = self.instance.image_big.kk
+            if self.instance.image_big.en:
+                self.initial['image_big_en'] = self.instance.image_big.en
 
     def save(self, commit=True):
         obj = super(AbstractImageModelForm, self).save(commit=False)
@@ -250,6 +263,20 @@ class AbstractImageModelForm(forms.ModelForm):
             )
             if created:
                 obj.image = mlchar
+
+        lang_big_dict = {
+            'ru': self.cleaned_data.get('image_big_ru', None),
+            'kk': self.cleaned_data.get('image_big_kk', None),
+            'en': self.cleaned_data.get('image_big_en', None)
+        }
+        if obj.image_big:
+            obj.image_big.set_all_langs(lang_big_dict)
+        else:
+            mlchar, created = MultiLanguageFile.objects.get_or_create(
+                file_ru=lang_big_dict['ru'], file_kk=lang_big_dict['kk'], file_en=lang_big_dict['en']
+            )
+            if created:
+                obj.image_big = mlchar
         if commit:
             obj.save()
         return obj

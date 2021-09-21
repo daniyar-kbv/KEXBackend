@@ -14,7 +14,7 @@ class PromotionForm(
 ):
     class Meta:
         model = Promotion
-        exclude = ('name', 'description', 'image')
+        exclude = ('name', 'description', 'image', 'image_big')
         # fields = (
         #     'name_ru', 'name_kk', 'name_en',
         #     'description_ru', 'description_kk', 'description_en',

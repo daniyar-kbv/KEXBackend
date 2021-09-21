@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, ServiceHistoryModel, MainModel
 
-from . import BrandImageTypes, DeliveryTypes
+from . import BrandImageTypes, DeliveryTypes, BrandSizes
 from .managers import LocalBrandManager, BranchesQuerySet, BranchDeliveryTimeQuerySet
 
 
@@ -24,7 +24,7 @@ class BrandImage(MainModel):
     class Meta:
         verbose_name = _("Brand Image")
         verbose_name_plural = _("Brand Images")
-        unique_together = ("brand", "image_type")
+        unique_together = ("brand", "image_type", "size")
 
     brand = models.ForeignKey(
         "partners.Brand",
@@ -38,6 +38,7 @@ class BrandImage(MainModel):
         choices=BrandImageTypes.choices,
         null=True
     )
+    size = models.CharField(_("Размер"), choices=BrandSizes.choices, default=BrandSizes.SMALL, max_length=10)
     image = models.ImageField(_("Image"), null=True)
 
 

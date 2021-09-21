@@ -13,3 +13,8 @@ class BrandImageTypes(models.TextChoices):
 class DeliveryTypes(models.TextChoices):
     DAY_DELIVERY = 'DAY_DELIVERY', 'Дневная доставка'
     NIGHT_DELIVERY = 'NIGHT_DELIVERY', 'Ночная доставка'
+
+
+class BrandSizes(models.TextChoices):
+    BIG = ('BIG', "Большой")
+    SMALL = ('Small', "Маленький")

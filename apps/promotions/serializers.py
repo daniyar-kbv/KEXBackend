@@ -15,7 +15,8 @@ class PromotionListSerializer(AbstractNameSerializer, AbstractImageSerializer, A
             'promo_type',
             'name',
             'description',
-            'image',
+            'image_small',
+            'image_big',
             'slug',
             'link',
         ]

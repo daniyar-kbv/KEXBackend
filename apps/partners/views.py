@@ -3,7 +3,7 @@ from django.db.models import Exists, OuterRef
 
 from apps.common.mixins import JSONRendererMixin, PublicAPIMixin
 
-from . import BrandImageTypes
+from . import BrandImageTypes, BrandSizes
 from .models import Brand, BrandImage, LocalBrand
 from .serializers import BrandSerializer
 
@@ -38,14 +38,20 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
             )
             for i, brand in enumerate(queryset):
                 blocks_amount = len(self.image_map)
-                img = BrandImage.objects.filter(
+                imgs = BrandImage.objects.filter(
                     brand_id=brand.id,
                     image_type=self.image_map[(i + 1) % blocks_amount if (i + 1) != blocks_amount else blocks_amount]
                 )
-                if img.exists():
-                    img = img.first().image
-                    img = self.request.build_absolute_uri(img.url)
-                setattr(brand, 'image', img)
+                img_small = imgs.filter(size=BrandSizes.SMALL).first()
+                print(img_small)
+                img_big = imgs.filter(size=BrandSizes.BIG).first()
+                print(img_big)
+                if img_small:
+                    img_small = self.request.build_absolute_uri(img_small.image.url)
+                if img_big:
+                    img_big = self.request.build_absolute_uri(img_big.image.url)
+                setattr(brand, 'image_small', img_small)
+                setattr(brand, 'image_big', img_big)
                 setattr(brand, 'position', i+1)
 
             return queryset

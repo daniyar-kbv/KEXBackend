@@ -20,7 +20,8 @@ class BrandImagesSerializer(serializers.ModelSerializer):
 
 class BrandSerializer(AbstractNameSerializer):
     id = serializers.SerializerMethodField()
-    image = serializers.CharField(required=False)
+    image_small = serializers.CharField(required=False)
+    image_big = serializers.CharField(required=False)
     position = serializers.IntegerField()
     is_available = serializers.BooleanField(required=False)
 
@@ -30,7 +31,8 @@ class BrandSerializer(AbstractNameSerializer):
             "id",
             "position",
             "name",
-            "image",
+            "image_small",
+            "image_big",
             "is_available"
         )
 

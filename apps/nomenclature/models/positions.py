@@ -48,7 +48,12 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
         null=True, blank=True,
         related_name="positions"
     )
-    image = models.ImageField(
+    image_small = models.ImageField(
+        "Картинка маленькая",
+        null=True, blank=True
+    )
+    image_big = models.ImageField(
+        "Картинка большая",
         null=True, blank=True
     )
     position_type = models.CharField(
@@ -119,8 +124,12 @@ class BranchPosition(UUIDModel):
         return self.position.description
 
     @property
-    def image(self):
-        return self.position.image
+    def image_small(self):
+        return self.position.image_small
+
+    @property
+    def image_big(self):
+        return self.position.image_big
 
     @property
     def position_type(self):

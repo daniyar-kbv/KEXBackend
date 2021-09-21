@@ -94,6 +94,14 @@ class AbstractImageModel(MainModel):
         verbose_name="Картинка",
         on_delete=models.CASCADE,
         null=True, blank=True,
+        related_name="image_small"
+    )
+    image_big = models.ForeignKey(
+        MultiLanguageFile,
+        verbose_name="Картинка большая",
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name="image_big"
     )
 
     class Meta:
