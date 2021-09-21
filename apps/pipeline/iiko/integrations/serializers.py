@@ -160,7 +160,7 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             outer_id=validated_data["outer_id"],
             local_brand=validated_data["local_brand"],
         )
-        position.position_type = validated_data["position_type"]
+        position.position_type = position.position_type or validated_data["position_type"]
         position.category = self.get_category(validated_data["category_outer_id"])
 
         if validated_data["iiko_name"] and position.name is None:
