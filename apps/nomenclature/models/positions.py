@@ -59,7 +59,7 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
     position_type = models.CharField(
         max_length=256,
         choices=PositionTypes.choices,
-        default=PositionTypes.MAIN,
+        null=True,
         db_index=True,
     )
     outer_id = models.UUIDField(
