@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db import models
+from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import TimestampModel
@@ -20,7 +21,8 @@ class Cart(TimestampModel):
 
     @property
     def positions_count(self) -> int:
-        return self.positions.exclude_delivery().count()
+        # return self.positions.exclude_delivery().count()
+        return self.positions.exclude_delivery().aggregate(Sum('count'))['count__sum']
 
     @property
     def delivery_price(self) -> Decimal:
