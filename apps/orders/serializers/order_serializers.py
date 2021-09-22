@@ -18,14 +18,16 @@ from ..exceptions import EmptyCartError
 class ModifierSerializer(serializers.ModelSerializer):
     uuid = serializers.CharField(source="modifier.uuid")
     name = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
+    image_small = serializers.SerializerMethodField()
+    image_big = serializers.SerializerMethodField()
 
     class Meta:
         model = PositionModifier
         fields = (
             "uuid",
             "name",
-            "image",
+            "image_small",
+            "image_big",
         )
 
     def get_name(self, obj):
@@ -34,12 +36,20 @@ class ModifierSerializer(serializers.ModelSerializer):
 
         return obj.modifier.name.text(lang=self.context["language"])
 
-    def get_image(self, obj):
-        if not obj.modifier.position.image:
+    def get_image_small(self, obj):
+        if not obj.modifier.position.image_small:
             return
 
         return self.context["request"].build_absolute_uri(
-            obj.modifier.position.image.url
+            obj.modifier.position.image_small.url
+        )
+
+    def get_image_big(self, obj):
+        if not obj.modifier.position.image_big:
+            return
+
+        return self.context["request"].build_absolute_uri(
+            obj.modifier.position.image_big.url
         )
 
 
