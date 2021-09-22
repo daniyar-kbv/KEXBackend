@@ -71,7 +71,10 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
         lead = super().update(instance, validated_data)
 
         if not lead.branch.branch_positions.filter(position__position_type=lead.delivery_type).exists():
+            if lead.user and lead.user.addresses.filter(address_id=lead.address_id).exists():
+                lead.user.addresses.filter(address_id=lead.address_id).delete()
             lead.address.delete()
+
             raise TerminalNotFound
 
         lead.cart.positions.create(
