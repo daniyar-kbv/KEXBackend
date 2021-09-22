@@ -58,7 +58,7 @@ class CreatePaymentMixin(serializers.ModelSerializer):
         if validated_data.get("payment_type") == PaymentTypes.CASH and validated_data.get('change_for'):
             validated_data["price"] = validated_data.pop("change_for")
         else:
-            validated_data["price"] = validated_data["order"].cart.price
+            validated_data["price"] = validated_data["order"].cart.total_price
 
         payment = super().create(validated_data)
 
