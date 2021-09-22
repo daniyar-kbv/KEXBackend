@@ -143,7 +143,8 @@ class LeadDetailSerializer(serializers.ModelSerializer):
 class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
+    image_small = serializers.SerializerMethodField()
+    image_big = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
     category = serializers.UUIDField(source="branch_category_id", required=False)
 
@@ -154,7 +155,8 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
             "name",
             "price",
             "description",
-            "image",
+            "image_small",
+            "image_big",
             "count",
             "is_available",
             "category",
@@ -176,12 +178,19 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
 
         return obj.description.text(lang=self.context["language"])
 
-    def get_image(self, obj):
-        if not obj.position.image:
+    def get_image_small(self, obj):
+        if not obj.position.image_small:
             return
 
         request = self.context["request"]
-        return request.build_absolute_uri(obj.position.image.url)
+        return request.build_absolute_uri(obj.position.image_small.url)
+
+    def get_image_big(self, obj):
+        if not obj.position.image_big:
+            return
+
+        request = self.context["request"]
+        return request.build_absolute_uri(obj.position.image_big.url)
 
 
 class NomenclaturePositionSerializer(serializers.ModelSerializer):
