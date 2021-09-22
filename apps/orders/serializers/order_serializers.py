@@ -68,7 +68,8 @@ class ModifierGroupSerializer(serializers.ModelSerializer):
 class BranchPositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
+    image_small = serializers.SerializerMethodField()
+    image_big = serializers.SerializerMethodField()
     branch_category = serializers.UUIDField(source='category_id')
     modifier_groups = ModifierGroupSerializer(source="position_modifier_groups", many=True, required=False)
 
@@ -78,7 +79,8 @@ class BranchPositionSerializer(serializers.ModelSerializer):
             "uuid",
             "name",
             "description",
-            "image",
+            "image_small",
+            "image_big",
             "price",
             "branch_category",
             "modifier_groups",
@@ -96,12 +98,19 @@ class BranchPositionSerializer(serializers.ModelSerializer):
 
         return obj.description.text(lang=self.context["language"])
 
-    def get_image(self, obj):
-        if not obj.position.image:
+    def get_image_small(self, obj):
+        if not obj.position.image_small:
             return
 
         request = self.context["request"]
-        return request.build_absolute_uri(obj.position.image.url)
+        return request.build_absolute_uri(obj.position.image_small.url)
+
+    def get_image_big(self, obj):
+        if not obj.position.image_big:
+            return
+
+        request = self.context["request"]
+        return request.build_absolute_uri(obj.position.image_big.url)
 
 
 class OrdersListSerializer(serializers.ModelSerializer):
