@@ -108,8 +108,9 @@ class RetrieveCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = (
-            'price',
+            'total_price',
             'delivery_price',
+            'positions_price',
             'positions_count',
             'positions',
             'min_price',
