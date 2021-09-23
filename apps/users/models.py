@@ -67,6 +67,14 @@ class User(PermissionsMixin, AbstractBaseUser):
             },
         )
 
+    def get_address(self, address):
+        return self.addresses.filter(
+            district__iexact=address.district,
+            street__iexact=address.street,
+            building__iexact=address.building,
+            comment__iexact=address.comment
+        ).first()
+
     def set_current_address(self, user_address) -> None:
         user_address.save()
 
