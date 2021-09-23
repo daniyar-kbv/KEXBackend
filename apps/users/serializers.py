@@ -17,21 +17,6 @@ class UserAddressSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class UpdateUserAddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserAddress
-        fields = "local_brand",
-        extra_kwargs = {
-            "local_brand": {"required": False}
-        }
-
-    def update(self, instance, validated_data):
-        user = self.context["request"].user
-        user.set_current_address(instance)
-
-        return super().update(instance, validated_data)
-
-
 class AccountInfoSerializer(serializers.ModelSerializer):
     current_address = serializers.IntegerField(source="current_address_pk", required=False, read_only=True)
     current_debit_card = serializers.IntegerField(source="current_debit_card_pk", required=False, read_only=True)
@@ -58,9 +43,6 @@ class AccountInfoSerializer(serializers.ModelSerializer):
 
 
 class UserViewSerializer(serializers.ModelSerializer):
-    """
-    List, Retrieve serializer for User model
-    """
     class Meta:
         model = User
         fields = [
@@ -71,9 +53,6 @@ class UserViewSerializer(serializers.ModelSerializer):
 
 
 class UserCreateUpdateSerializer(serializers.ModelSerializer):
-    """
-    Create, Update serializer for User model
-    """
     class Meta:
         model = User
         fields = [

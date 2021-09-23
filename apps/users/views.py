@@ -6,11 +6,7 @@ from django.db.models import When, Case, Value, BooleanField
 from apps.common.mixins import JSONRendererMixin
 
 from .models import UserAddress
-from .serializers import (
-    AccountInfoSerializer,
-    UserAddressSerializer,
-    UpdateUserAddressSerializer,
-)
+from .serializers import AccountInfoSerializer, UserAddressSerializer
 
 
 class AccountInfoView(JSONRendererMixin, RetrieveAPIView):
@@ -39,7 +35,7 @@ class AccountUpdateView(JSONRendererMixin, GenericAPIView):
 class UserAddressViewSet(JSONRendererMixin, ModelViewSet):
     queryset = UserAddress.objects.all()
     pagination_class = None
-    http_method_names = ["put", "get", "delete"]
+    http_method_names = ["get", "delete"]
 
     def get_queryset(self):
         return super().get_queryset()\
@@ -52,7 +48,4 @@ class UserAddressViewSet(JSONRendererMixin, ModelViewSet):
             )
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return UserAddressSerializer
-
-        return UpdateUserAddressSerializer
+        return UserAddressSerializer
