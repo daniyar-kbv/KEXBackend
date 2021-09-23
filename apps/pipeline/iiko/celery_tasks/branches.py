@@ -18,9 +18,8 @@ def find_lead_organization(lead_pk: int):
         lead.branch is None or
         not lead.cart.positions.exists()
     ):
-        if lead.user and lead.user.addresses.filter(address_id=lead.address_id).exists():
-            lead.user.addresses.filter(address_id=lead.address_id).delete()
-        lead.address.delete()
+        if lead.user and not lead.user.addresses.filter(address_id=lead.address_id).exists():
+            lead.address.delete()
 
         raise TerminalNotFound
 
