@@ -154,7 +154,7 @@ class LastPaymentStatusView(JSONRendererMixin, RetrieveAPIView):
         raise Http404
 
 
-@method_decorator(check_branch_is_open, name="get")
+@method_decorator(check_branch_is_open, name="post")
 class CreateOrderView(JSONRendererMixin, CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = CreateOrderSerializer
