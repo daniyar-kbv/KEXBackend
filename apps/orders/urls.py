@@ -3,7 +3,6 @@ from django.urls import path
 from .views import (
     ApplyView,
     AuthorizedApplyView,
-    AuthorizedApplyWithAddressView,
     LeadNomenclatureView,
     LeadNomenclatureRetrieveView,
     LeadAdditionalNomenclatureView,
@@ -23,7 +22,6 @@ urlpatterns = [
 
     path("apply/", ApplyView.as_view()),
     path("authorized-apply/", AuthorizedApplyView.as_view()),
-    path("authorized-apply-with-address/", AuthorizedApplyWithAddressView.as_view()),
 
     path("<uuid:lead_uuid>/nomenclature/", LeadNomenclatureView.as_view(), name="order-nomenclature"),
     path("<uuid:lead_uuid>/additional-nomenclature/", LeadAdditionalNomenclatureView.as_view()),

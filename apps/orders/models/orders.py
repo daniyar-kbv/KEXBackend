@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.transaction import atomic
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _  # noqa
 
@@ -18,7 +19,6 @@ from apps.orders import OrderStatuses
 from apps.partners import DeliveryTypes
 from apps.payments import PaymentStatusTypes
 from apps.orders.managers import OrdersManager
-from apps.translations.models import MultiLanguageChar, MultiLanguageText
 
 User = get_user_model()
 
@@ -78,6 +78,25 @@ class Lead(
         related_name="lead",
         null=True, blank=True,
     )
+
+    def set_delivery_params(self):
+        ...
+        # if not self.user:
+        #     return
+        #
+        # delivery_time = self.branch.delivery_times.open()  # noqa
+        # if not delivery_time.exists():
+        #     return
+        #
+        # if self.cart.positions ==None:
+        #     ...
+        # self.cart.positions.create(
+        #     branch_position=self.branch.branch_positions.filter(
+        #         position__position_type=delivery_time.first().delivery_type
+        #     ), count=1
+        # )
+        # self.delivery_type = None
+
 
 
 class Order(

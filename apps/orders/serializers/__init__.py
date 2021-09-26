@@ -1,7 +1,6 @@
 from .lead_serializer import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
-    AuthorizedApplyWithAddressSerializer,
     LeadDetailSerializer,
     LeadNomenclatureSerializer,
     NomenclaturePositionSerializer,
