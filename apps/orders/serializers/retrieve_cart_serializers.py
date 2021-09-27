@@ -100,24 +100,18 @@ class RetrieveCartPositionSerializer(serializers.ModelSerializer):
 
 class RetrieveCartSerializer(serializers.ModelSerializer):
     positions = RetrieveCartPositionSerializer(source='positions.exclude_delivery', many=True, required=False)
-    # price = serializers.DecimalField(max_digits=12, decimal_places=2)
-    min_price = serializers.DecimalField(max_digits=12, decimal_places=2, source='lead.branch.min_price')
-    # positions_count = serializers.IntegerField()
-    # delivery_price = serializers.SerializerMethodField()
+    min_price = serializers.DecimalField(source='lead.branch.min_price', max_digits=12, decimal_places=2)
+    delivery_type = serializers.CharField(source='lead.delivery_type', required=False, allow_null=True)
 
     class Meta:
         model = Cart
         fields = (
             'total_price',
+            'delivery_type',
             'delivery_price',
             'positions_price',
             'positions_count',
             'positions',
             'min_price',
+            'has_unavailable_positions',
         )
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['has_unavailable_positions'] = not all([position['position']['is_available'] for position in data['positions']])
-
-        return data

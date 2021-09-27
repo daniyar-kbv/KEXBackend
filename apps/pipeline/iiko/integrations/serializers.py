@@ -82,7 +82,7 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
             lead.save(update_fields=['cart'])
 
         if validated_data.get('is_open'):
-            lead.set_delivery_params()
+            lead.update_delivery_params()
 
         if user:
             if self.change_type == ApplyTypes.CHANGE_USER_ADDRESS_BRAND:

@@ -15,7 +15,7 @@ from apps.nomenclature.models import BranchPosition
 from apps.payments.models import Payment
 from apps.payments.serializers import CreatePaymentSerializer
 
-from .decorators import check_branch_is_open
+from .decorators import check_branch_is_open, update_delivery_positions
 from .exceptions import CouponNotActive
 from .models import Order, Lead, Cart, RateStar, Coupon
 from .serializers import (
@@ -54,6 +54,7 @@ class AuthorizedApplyView(JSONRendererMixin, CreateAPIView):
     serializer_class = AuthorizedApplySerializer
 
 
+@method_decorator(update_delivery_positions, name='get')
 class LeadShowView(PublicJSONRendererMixin, RetrieveAPIView):
     queryset = Lead.objects.all()
     lookup_field = "uuid"
@@ -62,6 +63,7 @@ class LeadShowView(PublicJSONRendererMixin, RetrieveAPIView):
 
 
 @method_decorator(check_branch_is_open, name="get")
+@method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     queryset = Lead.objects.all()
     lookup_field = "uuid"
@@ -70,6 +72,7 @@ class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, Retr
 
 
 @method_decorator(check_branch_is_open, name="get")
+@method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     serializer_class = BranchPositionSerializer
     queryset = BranchPosition.objects.all()
@@ -79,6 +82,7 @@ class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMix
 
 
 @method_decorator(check_branch_is_open, name="get")
+@method_decorator(update_delivery_positions, name='get')
 class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, ListAPIView):
     serializer_class = AdditionalNomenclaturePositionSerializer
     queryset = BranchPosition.objects.additional_positions()
@@ -109,6 +113,7 @@ class OrdersListView(JSONRendererMixin, ListAPIView):
 
 
 @method_decorator(check_branch_is_open, name="put")
+@method_decorator(update_delivery_positions, name='put')
 class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
     queryset = Cart.objects.all()
     serializer_class = UpdateCartSerializer
@@ -130,7 +135,6 @@ class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
     )
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
-        print('founded instance', instance)
         serializer = self.get_serializer(instance, data=request.data, partial=False)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
