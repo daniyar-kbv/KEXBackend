@@ -71,7 +71,7 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        print('FindOrganization validated_data', validated_data)
+        print('IIKOLeadOrganizationSerializer (validated_data):', validated_data)
         user = instance.user
         change_type = validated_data.pop('change_type')
 
@@ -85,19 +85,19 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
             lead.update_delivery_params()
 
         if user:
-            if self.change_type == ApplyTypes.CHANGE_USER_ADDRESS_BRAND:
+            if change_type == ApplyTypes.CHANGE_USER_ADDRESS_BRAND.value:
                 user.change_address_brand(
                     lead.user.addresses.get(address=lead.address),
                     lead.local_brand,
                 )
             elif change_type in [
-                ApplyTypes.SWITCH_BETWEEN_USER_ADDRESSES,
-                ApplyTypes.EXISTING_NEW_USER_ADDRESS,
+                ApplyTypes.SWITCH_BETWEEN_USER_ADDRESSES.value,
+                ApplyTypes.EXISTING_NEW_USER_ADDRESS.value,
             ]:
                 user.set_current_address(
                     user.addresses.get(address=lead.address)
                 )
-            elif change_type == ApplyTypes.NEW_USER_ADDRESS:
+            elif change_type == ApplyTypes.NEW_USER_ADDRESS.value:
                 user.add_new_address(
                     lead.address, lead.local_brand
                 )

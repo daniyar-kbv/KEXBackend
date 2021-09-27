@@ -60,11 +60,8 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.mobile_phone
 
     def add_new_address(self, address, local_brand) -> None:
-        self.addresses.get_or_create(
-            address=address,
-            defaults={
-                "local_brand": local_brand,
-            }
+        self.addresses.create(
+            address=address, local_brand=local_brand
         )
 
     @staticmethod
@@ -74,7 +71,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     @staticmethod
     def change_address_brand(user_address, local_brand) -> None:
         user_address.local_brand = local_brand
-        user_address.save(update_fields='local_brand')
+        user_address.save()
 
     @property
     def current_address(self):

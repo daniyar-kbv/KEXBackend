@@ -88,6 +88,7 @@ class AuthorizedApplySerializer(serializers.ModelSerializer):
             if local_brand:
                 attrs['change_type'] = ApplyTypes.CHANGE_USER_ADDRESS_BRAND.value
             else:
+                attrs['local_brand'] = user.addresses.get(address=attrs['address']).local_brand
                 attrs['change_type'] = ApplyTypes.SWITCH_BETWEEN_USER_ADDRESSES.value
 
         else:
@@ -102,7 +103,6 @@ class AuthorizedApplySerializer(serializers.ModelSerializer):
         return attrs
 
     def validate(self, attrs):
-        print('ATTRS;', attrs)
         attrs = super().validate(attrs)
         attrs['user'] = self.context['request'].user
 
@@ -111,8 +111,8 @@ class AuthorizedApplySerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        print('VALIDATED_DATA:', validated_data)
-        change_type = validated_data.pop('change_type')
+        print('AuthorizedApplySerializer (validated_data):', validated_data)
+        change_type = validated_data.pop('change_type', None)
         lead = super().create(validated_data)
         find_lead_organization(lead.id, change_type)
 
