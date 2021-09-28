@@ -83,12 +83,13 @@ class AuthorizedApplySerializer(serializers.ModelSerializer):
             if not attrs['user'].addresses.exists():
                 raise UserHasNoAddressError
 
-            attrs['address'] = get_object_or_404(Address, id=attrs.pop('user_address'))
+            user_address = get_object_or_404(user.addresses.all(), id=attrs.pop('user_address'))
+            attrs['address'] = user_address.address
 
             if local_brand:
                 attrs['change_type'] = ApplyTypes.CHANGE_USER_ADDRESS_BRAND.value
             else:
-                attrs['local_brand'] = user.addresses.get(address=attrs['address']).local_brand
+                attrs['local_brand'] = user_address.local_brand
                 attrs['change_type'] = ApplyTypes.SWITCH_BETWEEN_USER_ADDRESSES.value
 
         else:
