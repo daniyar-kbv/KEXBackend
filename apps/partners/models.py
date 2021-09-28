@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import AbstractNameModel, ServiceHistoryModel, MainModel
 
-from . import BrandImageTypes, DeliveryTypes, BrandSizes
-from .managers import LocalBrandManager, BranchesQuerySet, BranchDeliveryTimeQuerySet
+from . import BrandImageTypes, DeliveryTypes, PlatformTypes
+from .managers import LocalBrandManager, BranchesQuerySet, BranchDeliveryTimeQuerySet, BrandImageQuerySet
 
 
 class Brand(AbstractNameModel):
@@ -39,8 +39,10 @@ class BrandImage(MainModel):
         choices=BrandImageTypes.choices,
         null=True
     )
-    size = models.CharField(_("Размер"), choices=BrandSizes.choices, default=BrandSizes.SMALL, max_length=10)
+    size = models.CharField(_("Размер"), choices=PlatformTypes.choices, default=PlatformTypes.MOBILE, max_length=10)
     image = models.ImageField(_("Image"), null=True)
+
+    objects = BrandImageQuerySet.as_manager()
 
 
 class LocalBrand(ServiceHistoryModel):

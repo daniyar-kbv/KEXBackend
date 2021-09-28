@@ -15,6 +15,6 @@ class DeliveryTypes(models.TextChoices):
     NIGHT_DELIVERY = 'NIGHT_DELIVERY', 'Ночная доставка'
 
 
-class BrandSizes(models.TextChoices):
-    BIG = ('BIG', "Большой")
-    SMALL = ('Small', "Маленький")
+class PlatformTypes(models.TextChoices):
+    WEB = ('WEB', "Веб")
+    MOBILE = ('MOBILE', "Моб. приложение")

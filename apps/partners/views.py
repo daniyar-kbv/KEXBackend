@@ -1,13 +1,29 @@
+from django.utils.decorators import method_decorator
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import ListAPIView
 from django.db.models import Exists, OuterRef
 
 from apps.common.mixins import JSONRendererMixin, PublicAPIMixin
 
-from . import BrandImageTypes, BrandSizes
+from . import BrandImageTypes, PlatformTypes
 from .models import Brand, BrandImage, LocalBrand
 from .serializers import BrandSerializer
 
 
+@method_decorator(
+    name="get",  # change is here
+    decorator=swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                "platform",
+                openapi.IN_QUERY,
+                description="Takes the platform type: WEB, MOBILE",
+                type=openapi.TYPE_STRING,
+            )
+        ]
+    ),
+)
 class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
     queryset = Brand.objects.all().order_by('id')
     serializer_class = BrandSerializer
@@ -31,27 +47,41 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
 
     def get_queryset(self):
         city_id = self.kwargs.get("city_id")
+        platform = self.request.GET.get('platform') or PlatformTypes.MOBILE
+        platform = platform.upper()
         queryset = self.queryset
         if city_id:
             queryset = queryset.annotate(
                 is_available=Exists(LocalBrand.objects.filter(brand_id=OuterRef('pk'), city_id=city_id))
             )
-            for i, brand in enumerate(queryset):
-                blocks_amount = len(self.image_map)
-                imgs = BrandImage.objects.filter(
-                    brand_id=brand.id,
-                    image_type=self.image_map[(i + 1) % blocks_amount if (i + 1) != blocks_amount else blocks_amount]
-                )
-                img_small = imgs.filter(size=BrandSizes.SMALL).first()
-                print(img_small)
-                img_big = imgs.filter(size=BrandSizes.BIG).first()
-                print(img_big)
-                if img_small:
-                    img_small = self.request.build_absolute_uri(img_small.image.url)
-                if img_big:
-                    img_big = self.request.build_absolute_uri(img_big.image.url)
-                setattr(brand, 'image_small', img_small)
-                setattr(brand, 'image_big', img_big)
-                setattr(brand, 'position', i+1)
+            if platform == PlatformTypes.MOBILE:
+                for i, brand in enumerate(queryset):
+                    blocks_amount = len(self.image_map)
+                    imgs = BrandImage.objects.for_mobile().filter(
+                        brand_id=brand.id,
+                        image_type=self.image_map[(i + 1) % blocks_amount if (i + 1) != blocks_amount else blocks_amount]
+                    )
+                    print(imgs)
+                    img = imgs.first()
+                    if img:
+                        img = self.request.build_absolute_uri(img.image.url)
+                    setattr(brand, 'image', img)
+                    setattr(brand, 'position', i+1)
 
+            elif platform == PlatformTypes.WEB:
+                for i, brand in enumerate(queryset):
+                    image_square = None
+                    image_long = None
+                    imgs = BrandImage.objects.for_web().filter(
+                        brand_id=brand.id,
+                        image_type__in=[BrandImageTypes.IMAGE_SQUARE, BrandImageTypes.IMAGE_LONG]
+                    )
+                    if imgs.image_longs().exists():
+                        image_long = self.request.build_absolute_uri(imgs.image_longs().first().image.url)
+                    if imgs.image_squares().exists():
+                        image_square = self.request.build_absolute_uri(imgs.image_squares().first().image.url)
+                    setattr(brand, 'image_square', image_square)
+                    setattr(brand, 'image_long', image_long)
+                    setattr(brand, 'position', i + 1)
+            print(queryset)
             return queryset
