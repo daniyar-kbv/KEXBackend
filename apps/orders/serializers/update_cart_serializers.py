@@ -79,7 +79,7 @@ class UpdateCartSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def update(self, instance, validated_data):
-        instance.positions.exclude(position__position_type__in=[
+        instance.positions.exclude(branch_position__position__position_type__in=[
             DeliveryTypes.NIGHT_DELIVERY, DeliveryTypes.DAY_DELIVERY]
         ).delete()
 
