@@ -1,14 +1,11 @@
-from typing import List, Dict
-
 from rest_framework import serializers
+from django.core.cache import cache
 
-from apps.orders.models import Lead
+from apps.orders.models import Lead, Cart
 from apps.location.models import Address
 from apps.partners.models import Branch
-from apps.partners.exceptions import TerminalNotFound
 from apps.common.utils import (
-    create_multi_language_char,
-    create_multi_language_text,
+    create_multi_language_char, create_multi_language_text,
 )
 from apps.nomenclature.models import (
     Category,
@@ -16,6 +13,8 @@ from apps.nomenclature.models import (
     BranchPosition,
     ModifierGroup,
 )
+
+from .. import ApplyTypes
 
 
 class IIKOAddressSerializer(serializers.ModelSerializer):
@@ -58,25 +57,57 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
 
 
 class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
+    change_type = serializers.CharField(write_only=True, required=False, allow_null=True)
+    is_open = serializers.BooleanField(write_only=True, required=False)
+
     class Meta:
         model = Lead
         fields = (
+            "is_open",
             "branch",
-            "delivery_type",
+            "change_type",
             "order_zone",
             "estimated_duration",
         )
 
     def update(self, instance, validated_data):
+        print('IIKOLeadOrganizationSerializer (validated_data):', validated_data)
+        user = instance.user
+        change_type = validated_data.pop('change_type')
+
         lead = super().update(instance, validated_data)
 
-        if not lead.branch.branch_positions.filter(position__position_type=lead.delivery_type).exists():
-            raise TerminalNotFound
+        if not lead.cart:
+            lead.cart = Cart.objects.create()
+            lead.save(update_fields=['cart'])
 
-        lead.cart.positions.create(
-            branch_position=lead.branch.branch_positions.filter(position__position_type=lead.delivery_type).first(),
-            count=1
-        )
+        if validated_data.get('is_open'):
+            lead.update_delivery_params()
+
+        if user:
+            if change_type == ApplyTypes.CHANGE_USER_ADDRESS_BRAND.value:
+                user.change_address_brand(
+                    lead.user.addresses.get(address=lead.address),
+                    lead.local_brand,
+                )
+            elif change_type in [
+                ApplyTypes.SWITCH_BETWEEN_USER_ADDRESSES.value,
+                ApplyTypes.EXISTING_NEW_USER_ADDRESS.value,
+            ]:
+                user.set_current_address(
+                    user.addresses.get(address=lead.address)
+                )
+            elif change_type == ApplyTypes.NEW_USER_ADDRESS.value:
+                user.add_new_address(
+                    lead.address, lead.local_brand
+                )
+
+        """
+        add branch to cache
+        for frequent updating of "stop list"
+        p.s. expires in 1 hour
+        """
+        cache.set(str(lead.branch.outer_id), True, 60 * 60)
 
         return lead
 

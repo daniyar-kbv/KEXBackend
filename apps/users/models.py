@@ -60,24 +60,17 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.mobile_phone
 
     def add_new_address(self, address, local_brand) -> None:
-        self.addresses.get_or_create(
-            address=address,
-            defaults={
-                "local_brand": local_brand,
-            },
+        self.addresses.create(
+            address=address, local_brand=local_brand
         )
 
-    def get_address(self, address, local_brand):
-        return self.addresses.filter(
-            address__city=address.city,
-            address__district__iexact=address.district,
-            address__street__iexact=address.street,
-            address__building__iexact=address.building,
-            address__comment__iexact=address.comment,
-            local_brand=local_brand
-        ).first()
+    @staticmethod
+    def set_current_address(user_address) -> None:
+        user_address.save()
 
-    def set_current_address(self, user_address) -> None:
+    @staticmethod
+    def change_address_brand(user_address, local_brand) -> None:
+        user_address.local_brand = local_brand
         user_address.save()
 
     @property

@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from decimal import Decimal
 
 from django.db import models
@@ -6,6 +7,10 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import TimestampModel
 from apps.orders.managers import CartPositionQueryset
+from apps.partners import DeliveryTypes
+
+if TYPE_CHECKING:
+    from apps.nomenclature.models import BranchPosition
 
 
 class Cart(TimestampModel):
@@ -19,16 +24,27 @@ class Cart(TimestampModel):
 
         return 0
 
+    def drop_delivery_position(self):
+        self.positions.filter(
+            branch_position__position__position_type__in=[
+                DeliveryTypes.DAY_DELIVERY,
+                DeliveryTypes.NIGHT_DELIVERY
+            ]
+        ).delete()
+
+    def update_delivery_position(self, delivery_position: 'BranchPosition'):
+        print('CART (update_delivery_position) is called')
+        self.drop_delivery_position()
+        self.positions.create(branch_position=delivery_position)
+
     @property
     def positions_count(self) -> int:
-        # return self.positions.exclude_delivery().count()
-        return self.positions.exclude_delivery().aggregate(Sum('count'))['count__sum']
+        return self.positions.exclude_delivery().aggregate(Sum('count'))['count__sum'] or 0
 
     @property
     def delivery_price(self) -> Decimal:
         if self.positions.only_delivery().exists():
             return self.positions.only_delivery().first().price
-
         return Decimal('0.00')
 
     @property
@@ -37,17 +53,21 @@ class Cart(TimestampModel):
             return sum(
                 [position.price for position in self.positions.exclude_delivery()]
             )
-
         return Decimal('0.00')
 
     @property
     def total_price(self) -> Decimal:
-        if self.positions.exclude_delivery().exists():
+        if self.positions.exists():
             return sum(
                 [position.price for position in self.positions.all()]
             )
-
         return Decimal('0.00')
+
+    @property
+    def has_unavailable_positions(self):
+        return self.positions\
+            .filter(branch_position__is_available=False)\
+            .exists()
 
 
 class CartPosition(models.Model):

@@ -1,10 +1,13 @@
 from rest_framework import serializers
+from django.shortcuts import get_object_or_404
 
+from apps.orders.models import Lead
 from apps.location.models import Address
 from apps.location.serializers import AddressSerializer
-from apps.orders.models import Cart, Lead
 from apps.partners.exceptions import BrandNotFound
 from apps.nomenclature.models import BranchPosition, Category
+from apps.pipeline.iiko import ApplyTypes
+from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 
 from .retrieve_cart_serializers import RetrieveCartSerializer
 
@@ -35,27 +38,16 @@ class LeadAddressSerializer(serializers.ModelSerializer):
     }
 
 
-
-
-
-
-
-from enum import Enum
-from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
-
 class AuthorizedApplySerializer(serializers.ModelSerializer):
     address = LeadAddressSerializer(write_only=True, required=False)
-
-    class ApplyTypes(Enum):
-        NEW_ADDRESS = 'NEW_ADDRESS'
-        SWITCH_BRAND = 'SWITCH_BRAND'
-        SWITCH_ADDRESS = 'SWITCH_ADDRESS'
+    user_address = serializers.IntegerField(write_only=True, required=False)
 
     class Meta:
         model = Lead
         fields = (
             "uuid",
             "address",
+            "user_address",
             "local_brand",
         )
         extra_kwargs = {
@@ -63,70 +55,68 @@ class AuthorizedApplySerializer(serializers.ModelSerializer):
             "local_brand": {"write_only": True, "required": False},
         }
 
-    def validate(self, attrs):
-        attrs = super().validate(attrs)
+    def set_change_type(self, attrs) -> str:
         address = attrs.get('address')
         local_brand = attrs.get('local_brand')
+        user = attrs['user']
 
         if address:
-            if not local_brand or not local_brand.city == address.city:
+            if not local_brand or not local_brand.city == address['city']:
                 raise BrandNotFound
-            attrs['change_type'] = self.ApplyTypes.NEW_ADDRESS
-        else:
-            if not self.context['request'].user.addresses.exists():
+
+            comment = address.pop('comment', None)
+            address_queryset = Address.objects.filter(
+                id__in=user.addresses.values_list('address_id', flat=True), **address,
+            )
+
+            if address_queryset.exists():
+                db_address = address_queryset.first()
+                db_address.comment = comment or db_address.comment
+                db_address.save(update_fields=['comment'])
+                attrs['address'] = db_address
+                attrs['change_type'] = ApplyTypes.EXISTING_NEW_USER_ADDRESS.value
+            else:
+                attrs['address'] = Address.objects.create(**address, comment=comment)
+                attrs['change_type'] = ApplyTypes.NEW_USER_ADDRESS.value
+
+        elif attrs.get('user_address'):
+            if not attrs['user'].addresses.exists():
                 raise UserHasNoAddressError
 
+            user_address = get_object_or_404(user.addresses.all(), id=attrs.pop('user_address'))
+            attrs['address'] = user_address.address
+
             if local_brand:
-                attrs['change_type'] = self.ApplyTypes.SWITCH_BRAND
+                attrs['change_type'] = ApplyTypes.CHANGE_USER_ADDRESS_BRAND.value
             else:
-                attrs['change_type'] = self.ApplyTypes.SWITCH_ADDRESS
+                attrs['local_brand'] = user_address.local_brand
+                attrs['change_type'] = ApplyTypes.SWITCH_BETWEEN_USER_ADDRESSES.value
+
+        else:
+            if not attrs['user'].addresses.exists():
+                raise UserHasNoAddressError
+
+            current_address = attrs['user'].current_address
+            attrs['address'] = current_address.address
+            attrs['local_brand'] = current_address.local_brand
+            attrs['change_type'] = ApplyTypes.CURRENT_ADDRESS.value
+
+        return attrs
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        attrs['user'] = self.context['request'].user
+
+        self.set_change_type(attrs)
 
         return attrs
 
     def create(self, validated_data):
-        user = self['context'].user
-        validated_data['user'] = user
-        change_type = validated_data['change_type']
-
-        if change_type == self.ApplyTypes.NEW_ADDRESS:
-            # удалить адрес если филиал не найден
-            validated_data["address"], _ = Address.objects.get_or_create(**validated_data.pop("address"))
-            lead = super().create(validated_data)
-            find_lead_organization(lead_pk=lead.id)
-            user.add_new_address(lead.address, lead.local_brand)
-
-
-    def create(self, validated_data):
-        # switch branch
-        user = self.context["request"].user
-        validated_data["user"] = user
-        validated_data["address"] = user.current_address.address
-        validated_data["local_brand"] = user.current_address.local_brand
+        print('AuthorizedApplySerializer (validated_data):', validated_data)
+        change_type = validated_data.pop('change_type', None)
         lead = super().create(validated_data)
-        if lead.cart is None:
-            lead.cart = Cart.objects.create()
-            lead.save(update_fields=["cart"])
-        return lead
+        find_lead_organization(lead.id, change_type)
 
-    def create(self, validated_data):
-        # new address
-        validated_data["address"], _  = Address.objects.get_or_create(**validated_data.pop("address"))
-        lead = super().create(validated_data)
-        if lead.cart is None:
-            lead.cart = Cart.objects.create()
-            lead.save(update_fields=["cart"])
-        return lead
-
-    def create(self, validated_data):
-        # new address (authorized)
-        user = self.context["request"].user
-        validated_data["user"] = user
-        lead = super().create(validated_data)
-        user_address = user.get_address(lead.address, lead.local_brand)
-        if user_address is not None:
-            user.set_current_address(user_address)
-        else:
-            user.add_new_address(lead.address, lead.local_brand)
         return lead
 
 
@@ -158,37 +148,9 @@ class ApplyLeadSerializer(serializers.ModelSerializer):
             **validated_data.pop("address")
         )
         lead = super().create(validated_data)
-
-        if lead.cart is None:
-            lead.cart = Cart.objects.create()
-            lead.save(update_fields=["cart"])
+        find_lead_organization(lead.id)
 
         return lead
-
-
-class AuthorizedApplyWithAddressSerializer(ApplyLeadSerializer):
-    def create(self, validated_data):
-        user = self.context["request"].user
-        validated_data["user"] = user
-        lead = super().create(validated_data)
-        user_address = user.get_address(lead.address, lead.local_brand)
-        if user_address is not None:
-            user.set_current_address(user_address)
-        else:
-            user.add_new_address(lead.address, lead.local_brand)
-
-        return lead
-
-
-
-
-
-
-
-
-
-
-
 
 
 class LeadDetailSerializer(serializers.ModelSerializer):

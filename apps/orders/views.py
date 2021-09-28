@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -13,14 +14,13 @@ from apps.common.mixins import PublicJSONRendererMixin, JSONRendererMixin
 from apps.nomenclature.models import BranchPosition
 from apps.payments.models import Payment
 from apps.payments.serializers import CreatePaymentSerializer
-from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 
+from .decorators import check_branch_is_open, update_delivery_positions
 from .exceptions import CouponNotActive
 from .models import Order, Lead, Cart, Coupon
 from .serializers import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
-    AuthorizedApplyWithAddressSerializer,
     LeadNomenclatureSerializer,
     AdditionalNomenclaturePositionSerializer,
     BranchPositionSerializer,
@@ -34,12 +34,6 @@ from .serializers import (
 from ..payments import PaymentStatusTypes
 
 
-class LeadLookUpMixin:
-    queryset = Lead.objects.all()
-    lookup_field = "uuid"
-    lookup_url_kwarg = "lead_uuid"
-
-
 class LanguageToContextMixin:
     def get_serializer_context(self):
         return {
@@ -48,34 +42,35 @@ class LanguageToContextMixin:
         }
 
 
-class BaseApplyView(CreateAPIView):
+class ApplyView(PublicJSONRendererMixin, CreateAPIView):
     queryset = Lead.objects.all()
-
-    def perform_create(self, serializer):
-        lead = serializer.save()
-        find_lead_organization(lead_pk=lead.pk)
-
-
-class ApplyView(PublicJSONRendererMixin, BaseApplyView):
     serializer_class = ApplyLeadSerializer
 
 
-class AuthorizedApplyView(JSONRendererMixin, BaseApplyView):
+class AuthorizedApplyView(JSONRendererMixin, CreateAPIView):
+    queryset = Lead.objects.all()
     serializer_class = AuthorizedApplySerializer
 
 
-class AuthorizedApplyWithAddressView(JSONRendererMixin, BaseApplyView):
-    serializer_class = AuthorizedApplyWithAddressSerializer
-
-
-class LeadShowView(PublicJSONRendererMixin, LeadLookUpMixin, RetrieveAPIView):
+@method_decorator(update_delivery_positions, name='get')
+class LeadShowView(PublicJSONRendererMixin, RetrieveAPIView):
+    queryset = Lead.objects.all()
+    lookup_field = "uuid"
+    lookup_url_kwarg = "lead_uuid"
     serializer_class = LeadDetailSerializer
 
 
-class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, LeadLookUpMixin, RetrieveAPIView):
+@method_decorator(check_branch_is_open, name="get")
+@method_decorator(update_delivery_positions, name='get')
+class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
+    queryset = Lead.objects.all()
+    lookup_field = "uuid"
+    lookup_url_kwarg = "lead_uuid"
     serializer_class = LeadNomenclatureSerializer
 
 
+@method_decorator(check_branch_is_open, name="get")
+@method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     serializer_class = BranchPositionSerializer
     queryset = BranchPosition.objects.all()
@@ -84,10 +79,9 @@ class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMix
         return get_object_or_404(BranchPosition, uuid=self.kwargs["position_uuid"])
 
 
+@method_decorator(check_branch_is_open, name="get")
+@method_decorator(update_delivery_positions, name='get')
 class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, ListAPIView):
-    """
-    Get Additional nomenclature for Lead
-    """
     serializer_class = AdditionalNomenclaturePositionSerializer
     queryset = BranchPosition.objects.additional_positions()
     pagination_class = None
@@ -116,6 +110,8 @@ class OrdersListView(JSONRendererMixin, ListAPIView):
         return self.queryset.filter(user=self.request.user)
 
 
+@method_decorator(check_branch_is_open, name="put")
+@method_decorator(update_delivery_positions, name='put')
 class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
     queryset = Cart.objects.all()
     serializer_class = UpdateCartSerializer
@@ -137,7 +133,6 @@ class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
     )
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
-        print('founded instance', instance)
         serializer = self.get_serializer(instance, data=request.data, partial=False)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
@@ -161,6 +156,7 @@ class LastPaymentStatusView(JSONRendererMixin, RetrieveAPIView):
         raise Http404
 
 
+@method_decorator(check_branch_is_open, name="post")
 class CreateOrderView(JSONRendererMixin, CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = CreateOrderSerializer

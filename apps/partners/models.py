@@ -155,3 +155,15 @@ class BranchDeliveryTime(models.Model):
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
 
     objects = BranchDeliveryTimeQuerySet.as_manager()
+
+    @property
+    def is_branch_position_exists(self):
+        return self.branch.branch_positions\
+            .filter(position__position_type=self.delivery_type)\
+            .exists()
+
+    @property
+    def branch_position(self):
+        return self.branch.branch_positions\
+            .filter(position__position_type=self.delivery_type)\
+            .first()

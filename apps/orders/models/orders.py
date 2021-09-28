@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from django.db import models
 from django.db.transaction import atomic
 from django.contrib.auth import get_user_model
@@ -18,7 +20,9 @@ from apps.orders import OrderStatuses
 from apps.partners import DeliveryTypes
 from apps.payments import PaymentStatusTypes
 from apps.orders.managers import OrdersManager
-from apps.translations.models import MultiLanguageChar, MultiLanguageText
+
+if TYPE_CHECKING:
+    from apps.partners.models import BranchDeliveryTime
 
 User = get_user_model()
 
@@ -42,6 +46,7 @@ class Lead(
     delivery_type = models.CharField(
         max_length=256,
         choices=DeliveryTypes.choices,
+        null=True
     )
     local_brand = models.ForeignKey(
         "partners.LocalBrand",
@@ -78,6 +83,24 @@ class Lead(
         related_name="lead",
         null=True, blank=True,
     )
+
+    @atomic
+    def drop_delivery(self):
+        self.delivery_type = None
+        self.cart.drop_delivery_position()
+        self.save(update_fields=['delivery_type'])
+
+    @atomic
+    def update_delivery_params(self):
+        actual_delivery: BranchDeliveryTime = self.branch.delivery_times.open().first()  # noqa
+
+        if (actual_delivery and
+            actual_delivery.delivery_type != self.delivery_type and
+            actual_delivery.is_branch_position_exists
+        ):
+            self.cart.update_delivery_position(actual_delivery.branch_position)  # noqa
+            self.delivery_type = actual_delivery.delivery_type
+            self.save(update_fields=['delivery_type'])
 
 
 class Order(

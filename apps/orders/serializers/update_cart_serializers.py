@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from rest_framework import serializers
 
+from apps.partners import DeliveryTypes
 from apps.orders.models import (
     Cart,
     CartPosition,
@@ -9,9 +10,8 @@ from apps.orders.models import (
     CartPositionModifierGroup,
 )
 
-from ..exceptions import (
-    InvalidBranchError, BranchNotActiveError, TerminalNotActiveError, DeliveryNotAvailableError
-)
+from ..exceptions import InvalidBranchError, BranchNotActiveError
+
 
 if TYPE_CHECKING:
     from apps.partners.models import Branch
@@ -79,19 +79,9 @@ class UpdateCartSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def update(self, instance, validated_data):
-        instance.positions.all().delete()
-
-        if not instance.lead.branch.branch_positions\
-                .filter(position__position_type=instance.lead.delivery_type)\
-                .exists():
-            raise DeliveryNotAvailableError
-
-        instance.positions.create(
-            count=1,
-            branch_position=instance.lead.branch.branch_positions
-                .filter(position__position_type=instance.lead.delivery_type)
-                .first(),
-            )
+        instance.positions.exclude(branch_position__position__position_type__in=[
+            DeliveryTypes.NIGHT_DELIVERY, DeliveryTypes.DAY_DELIVERY]
+        ).delete()
 
         for position in validated_data.pop("positions", list()):
             cart_position = instance.positions.create(

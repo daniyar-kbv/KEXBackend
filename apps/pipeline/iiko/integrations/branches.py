@@ -1,6 +1,6 @@
-from typing import Any, Dict, TYPE_CHECKING, Optional
+from typing import Any, Dict, TYPE_CHECKING, Optional, List
 
-from apps.partners.models import Branch
+from apps.partners.exceptions import TerminalNotFound
 
 from .base import BaseIIKOService
 
@@ -71,58 +71,55 @@ class FindOrganization(BaseIIKOService):
     save_serializer = IIKOLeadOrganizationSerializer
     instance: 'Lead' = None
 
-    def __init__(self, instance=None, **kwargs):
-        super().__init__(instance, **kwargs)
-        branch = self.instance.local_brand.branches.first()
-        self.random_organization_id = str(branch.outer_id if branch else "")
-        self.longitude = str(self.instance.address.longitude)
-        self.latitude = str(self.instance.address.latitude)
-
     def get_local_brand_pk(self):
         return self.instance.local_brand_id  # noqa
 
     def run_service(self) -> Any:
         return self.fetch(json={
-            "organizationId": self.random_organization_id,
+            "organizationId": str(self.instance.local_brand.branches.first().outer_id),
             "isCourierDelivery": True,
             "orderLocation": {
-                "latitude": self.latitude,
-                "longitude": self.longitude,
+                "latitude": str(self.instance.address.latitude),
+                "longitude": str(self.instance.address.longitude),
             }
         })
 
-    def prepare_to_save(self, prepared_data):
-        organization_info = {}
+    def prepare_to_save(self, prepared_data) -> Optional[List[Dict]]:
+        if not prepared_data or not prepared_data.get('allowedItems') or not prepared_data.get('isAllowed'):
+            return
 
-        if not prepared_data.get('allowedItems') or not prepared_data.get('isAllowed'):
-            return organization_info
+        organizations = []
 
         for allowed_item in prepared_data.get('allowedItems'):
-            organization_info = self.get_organization_info(allowed_item)
+            organizations.append(self.get_organization_info(allowed_item))
 
-            if organization_info:
-                break
+        return organizations
 
-        return organization_info
-
-    @staticmethod
-    def get_organization_info(allowed_item: Dict) -> Optional[Dict]:
-        branch = Branch.objects\
+    def get_organization_info(self, allowed_item):
+        branch = self.instance.local_brand.branches\
             .prefetch_related('delivery_times')\
             .get(outer_id=allowed_item['organizationId'])
 
-        if not branch.delivery_times.open().exists():
-            raise ValueError('No delivery')
-
         return {
             'branch': branch.pk,
-            'delivery_type': branch.delivery_times.open().first().delivery_type,
+            'is_open': branch.delivery_times.open().exists(),
+            'change_type': self.kwargs.get('change_type'),
             'order_zone': allowed_item['zone'],
-            'estimated_duration': allowed_item["deliveryDurationInMinutes"]
+            'estimated_duration': allowed_item['deliveryDurationInMinutes']
         }
 
-    def finalize_response(self, response) -> bool:
-        if response is None:
-            return False
+    def save(self, prepared_data):
+        ...
 
-        return response.get("isAllowed", False)
+    def finalize_response(self, response):
+        prepared_data = self.prepare_to_save(response)
+
+        if not prepared_data:
+            raise TerminalNotFound
+
+        serializer = self.save_serializer(
+            instance=self.instance,
+            data=sorted(prepared_data, key=lambda x: x['is_open'])[0],
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
