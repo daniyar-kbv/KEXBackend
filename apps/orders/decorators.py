@@ -10,7 +10,7 @@ def check_branch_is_open(function):
         print('DECORATOR (check_branch_is_open) is called')
         lead: Lead = get_object_or_404(
             Lead.objects.select_related('branch'),
-            uuid=kwargs['lead_uuid']
+            uuid=kwargs.get('lead_uuid') or request.data.get('lead')
         )
 
         if not lead.branch.delivery_times.open().exists():
