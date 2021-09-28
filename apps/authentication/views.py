@@ -51,7 +51,7 @@ class VerifyAccountView(
     serializer_class = VerifyOTPSerializer
 
     def post(self, request, *args, **kwargs):
-        print(request.headers)
+        # print(request.headers)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

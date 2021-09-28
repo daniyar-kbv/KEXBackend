@@ -52,7 +52,7 @@ class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView
             #     objs = self.queryset.filter(promotion=promotion).select_related('payments')
             # else:
             objs = self.queryset.filter(promotion=promotion).select_related('user')
-            print(objs)
+            # print(objs)
             resp_body = {
                 "info_url": request.build_absolute_uri(app_name + promotion.slug),
                 "users": [],

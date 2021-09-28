@@ -61,7 +61,7 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
                         brand_id=brand.id,
                         image_type=self.image_map[(i + 1) % blocks_amount if (i + 1) != blocks_amount else blocks_amount]
                     )
-                    print(imgs)
+                    # print(imgs)
                     img = imgs.first()
                     if img:
                         img = self.request.build_absolute_uri(img.image.url)
@@ -83,5 +83,5 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
                     setattr(brand, 'image_square', image_square)
                     setattr(brand, 'image_long', image_long)
                     setattr(brand, 'position', i + 1)
-            print(queryset)
+            # print(queryset)
             return queryset

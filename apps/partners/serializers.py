@@ -99,7 +99,7 @@ class BrandAPILoginSerializer(serializers.ModelSerializer):
     def get_is_available(self, obj):
         city = self.context['city_id']
         if city:
-            print('obj: ', obj)
+            # print('obj: ', obj)
             if Branch.objects.filter(iiko_brand__brand=obj.brand, iiko_brand__city__id=city, is_active=True).exists():
                 return True
 
