@@ -18,11 +18,6 @@ from .retrieve_cart_serializers import (
 from .update_cart_serializers import (
     UpdateCartSerializer,
 )
-from .rate_serializers import (
-    RateStarListSerializer,
-    RatedOrderListSerializer,
-    CreateRateOrderSerializer,
-)
 from .coupon_serializers import (
     CouponSerializer,
 )

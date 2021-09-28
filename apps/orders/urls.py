@@ -9,8 +9,6 @@ from .views import (
     LeadAdditionalNomenclatureView,
     UpdateCartView,
     LeadShowView,
-    RateStarListView,
-    CreateRateOrderView,
     CreateOrderView,
     OrdersListView,
     LastPaymentStatusView,
@@ -35,6 +33,4 @@ urlpatterns = [
     path("<uuid:lead_uuid>/status/", LastPaymentStatusView.as_view()),
 
     path("coupons/<str:promocode>/", CouponDetailView.as_view()),
-    path('ratestars/', RateStarListView.as_view()),
-    path('rates/', CreateRateOrderView.as_view()),
 ]

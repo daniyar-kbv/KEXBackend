@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.orders.models.orders import RatedOrder, RateSample, RateStar
+from .models import RatedOrder, RateSample, RateStar
 from apps.common.serializers import AbstractNameSerializer, AbstractTitleSerializer, AbstractDescriptionSerializer
 
 

@@ -16,7 +16,7 @@ from apps.payments.serializers import CreatePaymentSerializer
 from apps.pipeline.iiko.celery_tasks.branches import find_lead_organization
 
 from .exceptions import CouponNotActive
-from .models import Order, Lead, Cart, RateStar, Coupon
+from .models import Order, Lead, Cart, Coupon
 from .serializers import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
@@ -27,8 +27,6 @@ from .serializers import (
     UpdateCartSerializer,
     LeadDetailSerializer,
     RetrieveCartSerializer,
-    RateStarListSerializer,
-    CreateRateOrderSerializer,
     CreateOrderSerializer,
     OrdersListSerializer,
     CouponSerializer
@@ -166,16 +164,6 @@ class LastPaymentStatusView(JSONRendererMixin, RetrieveAPIView):
 class CreateOrderView(JSONRendererMixin, CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = CreateOrderSerializer
-
-
-class RateStarListView(PublicJSONRendererMixin, ListAPIView):
-    queryset = RateStar.objects.all()
-    serializer_class = RateStarListSerializer
-    pagination_class = None
-
-
-class CreateRateOrderView(PublicJSONRendererMixin, CreateAPIView):
-    serializer_class = CreateRateOrderSerializer
 
 
 class CouponDetailView(PublicJSONRendererMixin, RetrieveAPIView):
