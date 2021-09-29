@@ -125,6 +125,20 @@ class Order(
         related_name="orders",
         verbose_name=_("Клиент"),
     )
+    branch = models.ForeignKey(
+        "partners.Branch",
+        verbose_name=_("Организация"),
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="orders",
+    )
+    local_brand = models.ForeignKey(
+        "partners.LocalBrand",
+        verbose_name=_("Бренд"),
+        on_delete=models.PROTECT,
+        null=True,
+        related_name="orders",
+    )
     cart = models.OneToOneField(
         "orders.Cart",
         on_delete=models.PROTECT,

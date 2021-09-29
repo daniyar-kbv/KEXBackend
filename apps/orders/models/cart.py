@@ -103,26 +103,18 @@ class CartPosition(models.Model):
         return self.branch_position.price * self.count
 
 
-class CartPositionModifierGroup(models.Model):
+class CartPositionModifier(models.Model):
     cart_position = models.ForeignKey(
         CartPosition,
         on_delete=models.CASCADE,
-        related_name="position_modifier_groups",
+        related_name="modifiers",
         null=True,
     )
     position_modifier_group = models.ForeignKey(
         "nomenclature.PositionModifierGroup",
         on_delete=models.CASCADE,
         to_field="uuid",
-    )
-
-
-class CartPositionModifier(models.Model):
-    cart_position_modifier_group = models.ForeignKey(
-        CartPositionModifierGroup,
-        on_delete=models.CASCADE,
-        related_name="modifiers",
-        null=True,
+        null=True
     )
     branch_position = models.ForeignKey(
         "nomenclature.BranchPosition",

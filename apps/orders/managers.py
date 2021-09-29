@@ -28,35 +28,22 @@ class CartPositionQueryset(QuerySet):
 
 
 class OrdersManager(Manager):
-    def create_from_lead(self, user, lead: 'Lead'):
-        order = self.create(  # noqa
-            lead=lead,
-            user=user,
-            cart=lead.cart,
-        )
-        user.addresses.get_or_create(
-            address=lead.address,
-            defaults={
-                "local_brand": lead.local_brand,
-            },
-        )
-
-        return order
-
     def get_or_create_from_lead(self, user: 'User', lead: 'Lead'):
         order, created = self.get_or_create(
             lead=lead,
             defaults={
                 "user": user,
-                "cart": lead.cart
+                "cart": lead.cart,
+                "local_brand": lead.local_brand,
+                "branch": lead.branch,
             }
         )
 
-        user.addresses.get_or_create(
-            address=lead.address,
-            defaults={
-                "local_brand": lead.local_brand,
-            }
-        )
+        # user.addresses.get_or_create(
+        #     address=lead.address,
+        #     defaults={
+        #         "local_brand": lead.local_brand,
+        #     }
+        # )
 
         return order

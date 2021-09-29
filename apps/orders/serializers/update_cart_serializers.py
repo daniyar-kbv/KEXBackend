@@ -4,10 +4,7 @@ from rest_framework import serializers
 
 from apps.partners import DeliveryTypes
 from apps.orders.models import (
-    Cart,
-    CartPosition,
-    CartPositionModifier,
-    CartPositionModifierGroup,
+    Cart, CartPosition, CartPositionModifier
 )
 
 from ..exceptions import InvalidBranchError, BranchNotActiveError
@@ -17,34 +14,23 @@ if TYPE_CHECKING:
     from apps.partners.models import Branch
 
 
-class UpdateCartPositionModifierSerializer(serializers.ModelSerializer):
-    position = serializers.UUIDField(required=True, write_only=True)
-    count = serializers.IntegerField(required=False)
+class UpdateCartPositionModifiersSerializer(serializers.ModelSerializer):
+    position = serializers.UUIDField(source='branch_position')
+    modifier_group = serializers.UUIDField(source='position_modifier_group')
 
     class Meta:
         model = CartPositionModifier
         fields = (
+            "modifier_group",
             "position",
             "count",
         )
 
 
-class UpdateCartPositionModifierGroupSerializer(serializers.ModelSerializer):
-    modifier_group = serializers.UUIDField(required=True, write_only=True)
-    modifiers = UpdateCartPositionModifierSerializer(many=True, required=False)
-
-    class Meta:
-        model = CartPositionModifierGroup
-        fields = (
-            "modifier_group",
-            "modifiers",
-        )
-
-
 class UpdateCartPositionSerializer(serializers.ModelSerializer):
     position = serializers.UUIDField(required=True, write_only=True)
-    modifier_groups = UpdateCartPositionModifierGroupSerializer(
-        source="position_modifier_groups",many=True, required=False
+    modifiers = UpdateCartPositionModifiersSerializer(
+        many=True, required=False
     )
 
     class Meta:
@@ -52,9 +38,8 @@ class UpdateCartPositionSerializer(serializers.ModelSerializer):
         fields = (
             "position",
             "count",
-            "position",
             "comment",
-            "modifier_groups",
+            "modifiers",
         )
 
 
@@ -79,24 +64,22 @@ class UpdateCartSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def update(self, instance, validated_data):
+        print('UpdateCartSerializer (validated_data):', validated_data)
         instance.positions.exclude(branch_position__position__position_type__in=[
             DeliveryTypes.NIGHT_DELIVERY, DeliveryTypes.DAY_DELIVERY]
         ).delete()
 
-        for position in validated_data.pop("positions", list()):
+        for position in validated_data.pop('positions', []):
             cart_position = instance.positions.create(
-                branch_position_id=position["position"],
-                comment=position.get("comment"),
-                count=position.get("count"),
+                branch_position_id=position['position'],
+                comment=position.get('comment'),
+                count=position.get('count', 1),
             )
-            for modifier_group in position.pop("position_modifier_groups", list()):
-                cart_position_modifier_group = cart_position.position_modifier_groups.create(
-                    position_modifier_group_id=modifier_group["modifier_group"],
+            for modifier in position.pop('modifiers', []):
+                cart_position.modifiers.create(
+                    position_modifier_group_id=modifier['position_modifier_group'],
+                    branch_position_id=modifier['branch_position'],
+                    count=modifier.get('count')
                 )
-                for modifier in modifier_group.get("modifiers", list()):
-                    cart_position_modifier_group.modifiers.create(
-                        branch_position_id=modifier["position"],
-                        count=modifier.get("count")
-                    )
 
         return instance

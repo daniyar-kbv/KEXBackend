@@ -3,7 +3,6 @@ from apps.orders.models import (
     Cart,
     CartPosition,
     CartPositionModifier,
-    CartPositionModifierGroup,
 )
 from apps.nomenclature.models import BranchPosition
 
@@ -51,28 +50,16 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
         return obj.description.text(lang=self.context.get("language", "ru"))
 
 
-class RetrieveCartPositionModifierSerializer(serializers.ModelSerializer):
-    position = BranchPositionShortSerializer(source="branch_position") #, read_only=True)
+class RetrieveCartPositionModifiersSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(required=False)
+    position = BranchPositionShortSerializer(source="branch_position")
 
     class Meta:
         model = CartPositionModifier
         fields = (
+            "name",
             "position",
             "count",
-        )
-
-
-class RetrieveCartPositionModifierGroupSerializer(serializers.ModelSerializer):
-    modifier_group = serializers.UUIDField(required=True, source="position_modifier_group_id")
-    name = serializers.SerializerMethodField(required=False)
-    modifiers = RetrieveCartPositionModifierSerializer(many=True, required=False)
-
-    class Meta:
-        model = CartPositionModifierGroup
-        fields = (
-            "name",
-            "modifier_group",
-            "modifiers",
         )
 
     def get_name(self, obj):
@@ -84,8 +71,8 @@ class RetrieveCartPositionModifierGroupSerializer(serializers.ModelSerializer):
 
 class RetrieveCartPositionSerializer(serializers.ModelSerializer):
     position = BranchPositionShortSerializer(source="branch_position")
-    modifier_groups = RetrieveCartPositionModifierGroupSerializer(
-        source='position_modifier_groups', many=True, required=False
+    modifiers = RetrieveCartPositionModifiersSerializer(
+        many=True, required=False
     )
 
     class Meta:
@@ -94,7 +81,7 @@ class RetrieveCartPositionSerializer(serializers.ModelSerializer):
             "count",
             "position",
             "comment",
-            "modifier_groups",
+            "modifiers",
         )
 
 

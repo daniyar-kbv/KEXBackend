@@ -1,2 +1,2 @@
 from .orders import Lead, Order, OrderStatusTransition, Coupon
-from .cart import Cart, CartPosition, CartPositionModifier, CartPositionModifierGroup
+from .cart import Cart, CartPosition, CartPositionModifier
