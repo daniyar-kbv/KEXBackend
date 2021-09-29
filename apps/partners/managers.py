@@ -1,4 +1,4 @@
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q, F
 from django.db.models.manager import BaseManager
 from django.utils.timezone import localtime
 
@@ -28,10 +28,17 @@ class BranchDeliveryTimeQuerySet(QuerySet):
     def open(self):
         l_time = localtime().time()
 
-        return self.filter(
-            start_time__lte=l_time,
-            end_time__gte=l_time,
+        # returns a list of delivery_times that have start_time less than their end times
+        list_1 = self.filter(
+            Q(start_time__lte=F('end_time')), Q(start_time__lte=l_time), end_time__gte=l_time
         )
+
+        # returns a list of delivery_times that have start_time greater than their end times
+        list_2 = self.filter(
+            Q(start_time__gt=F('end_time')), Q(start_time__lte=l_time) | Q(end_time__gte=l_time)
+        )
+
+        return list_1 | list_2
 
 
 class BrandImageQuerySet(QuerySet):
