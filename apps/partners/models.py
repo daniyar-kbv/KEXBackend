@@ -107,8 +107,18 @@ class LocalBrand(ServiceHistoryModel):
         return f"{self.brand.name}_{self.api_login}".replace(" ", "_").upper()
 
     @property
-    def current_payment_type(self):
-        return self.payment_types.filter(is_current=True).first()
+    def is_current_payment_type_exists(self):
+        return self.payment_type.filter(is_current=True).exists()
+
+    @property
+    def current_payment_type_id(self):
+        if self.is_current_payment_type_exists:
+            return self.payment_types.filter(is_current=True).first().uuid
+
+    @property
+    def current_payment_type_name(self):
+        if self.is_current_payment_type_exists:
+            return self.payment_types.filter(is_current=True).first().name
 
     def __str__(self):
         return f"{self.brand}. {self.city}"

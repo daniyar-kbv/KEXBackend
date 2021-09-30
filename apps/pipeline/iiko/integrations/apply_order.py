@@ -15,11 +15,6 @@ class ApplyDeliveryOrder(BaseIIKOService):
     save_serializer = None
     instance: 'Order' = None
 
-    _iiko_payments_types = {
-        PaymentTypes.CASH: 'Cash',
-        PaymentTypes.DEBIT_CARD: 'Card',
-    }
-
     def __init__(self, instance=None, **kwargs):
         self.payment: 'Payment' = instance.completed_payment
         super().__init__(instance, **kwargs)
@@ -49,8 +44,8 @@ class ApplyDeliveryOrder(BaseIIKOService):
                     {
                         'sum': str(self.payment.price),
                         'isProcessedExternally': True,
-                        'paymentTypeId': '9cd5d67a-89b4-ab69-1365-7b8c51865a90',
-                        'paymentTypeKind': self._iiko_payments_types.get(self.payment.payment_type),
+                        'paymentTypeId': str(self.instance.local_brand.current_payment_type_id),
+                        'paymentTypeKind': self.instance.local_brand.current_payment_type_name,
                     }
                 ],
                 'items': [{
