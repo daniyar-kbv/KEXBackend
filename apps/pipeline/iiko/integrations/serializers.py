@@ -3,7 +3,7 @@ from django.core.cache import cache
 
 from apps.orders.models import Lead, Cart
 from apps.location.models import Address
-from apps.partners.models import Branch
+from apps.partners.models import Branch, LocalBrandPaymentType
 from apps.common.utils import (
     create_multi_language_char, create_multi_language_text,
 )
@@ -15,6 +15,27 @@ from apps.nomenclature.models import (
 )
 
 from .. import ApplyTypes
+
+
+class IIKOPaymentTypeSerializer(serializers.ModelSerializer):
+    iiko_uuid = serializers.UUIDField(write_only=True)
+
+    class Meta:
+        model = LocalBrandPaymentType
+        fields = (
+            "iiko_uuid",
+            "name",
+            "code",
+        )
+
+    def create(self, validated_data):
+        print('IIKOPaymentTypeSerializer (validated_data):', validated_data)
+        uuid = validated_data.pop('iiko_uuid')
+        if LocalBrandPaymentType.objects.filter(uuid=uuid).exists():
+            print('already exists')
+            return LocalBrandPaymentType.objects.get(uuid=uuid)
+
+        return super().create({'uuid': uuid, "local_brand": self.context['local_brand'], **validated_data})
 
 
 class IIKOAddressSerializer(serializers.ModelSerializer):

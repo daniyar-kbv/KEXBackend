@@ -20,6 +20,10 @@ class BaseService(ABC):
     instance = None
     save_serializer: Optional[Type] = None
 
+    log_headers: bool = False
+    log_request: bool = False
+    log_response: bool = False
+
     headers: dict = None
     url: str = None
     host: str = None
@@ -54,11 +58,14 @@ class BaseService(ABC):
         return self._session
 
     def history(self, response: Response, *args, **kwargs) -> None:
-        print('headers:', self.headers)
         self.last_request = response.request.body
         self.last_response = response.text
-        print('request: ', self.last_request)
-        print('response: ', self.last_response)
+        if self.log_headers:
+            print('headers:', self.headers)
+        if self.log_request:
+            print('request: ', self.last_request)
+        if self.log_response:
+            print('response: ', self.last_response)
 
     def get_url(self) -> str:
         return urljoin(self.host, self.endpoint)
