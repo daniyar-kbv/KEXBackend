@@ -108,7 +108,7 @@ class LocalBrand(ServiceHistoryModel):
 
     @property
     def is_current_payment_type_exists(self):
-        return self.payment_type.filter(is_current=True).exists()
+        return self.payment_types.filter(is_current=True).exists()
 
     @property
     def current_payment_type_id(self):
