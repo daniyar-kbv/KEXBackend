@@ -9,8 +9,16 @@ from apps.nomenclature.admin import (
 )
 
 from .models import (
-    Brand, BrandImage, LocalBrand, Branch, BranchDeliveryTime
+    Brand, BrandImage, LocalBrand, Branch, BranchDeliveryTime, LocalBrandPaymentType
 )
+
+
+class LocalBrandPaymentTypeInline(admin.TabularInline):
+    model = LocalBrandPaymentType
+    extra = 0
+    classes = ('collapse',)
+    fields = ('name', 'is_current')
+    readonly_fields = 'name',
 
 
 class BrandImageInline(admin.StackedInline):
@@ -104,6 +112,7 @@ class LocalBrandAdmin(admin.ModelAdmin):
         CategoryInline,
         PositionInline,
         BranchInline,
+        LocalBrandPaymentTypeInline,
     ]
     list_filter = ('city',)
 
