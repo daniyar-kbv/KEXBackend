@@ -15,6 +15,7 @@ class PaymentTypes(TextChoices):
 
 class PaymentStatusTypes(TextChoices):
     NEW = "NEW", "Новый"
+    IN_PROGRESS = "IN_PROGRESS", "В процессе"
     COMPLETED = 'COMPLETED', "Завершено"
     CANCELLED = 'CANCELLED', "Отменено"
     DECLINED = 'DECLINED', "Отказано"
