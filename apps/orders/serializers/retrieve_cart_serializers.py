@@ -53,12 +53,14 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
 class RetrieveCartPositionModifiersSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(required=False)
     position = BranchPositionShortSerializer(source="branch_position")
+    modifier_group = serializers.UUIDField(source='position_modifier_group.uuid')
 
     class Meta:
         model = CartPositionModifier
         fields = (
             "name",
             "position",
+            "modifier_group",
             "count",
         )
 
