@@ -116,9 +116,9 @@ class LocalBrand(ServiceHistoryModel):
             return self.payment_types.filter(is_current=True).first().uuid
 
     @property
-    def current_payment_type_name(self):
+    def current_payment_type_code(self):
         if self.is_current_payment_type_exists:
-            return self.payment_types.filter(is_current=True).first().name
+            return self.payment_types.filter(is_current=True).first().code
 
     def __str__(self):
         return f"{self.brand}. {self.city}"

@@ -48,7 +48,7 @@ class ApplyDeliveryOrder(BaseIIKOService):
                         'sum': str(self.payment.price),
                         'isProcessedExternally': False,
                         'paymentTypeId': str(self.instance.local_brand.current_payment_type_id),
-                        'paymentTypeKind': self.instance.local_brand.current_payment_type_name,
+                        'paymentTypeKind': self.instance.local_brand.current_payment_type_code,
                     }
                 ],
                 'items': [{
