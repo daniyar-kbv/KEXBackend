@@ -22,10 +22,18 @@ class CreatePaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = CreatePaymentSerializer
 
+    def perform_create(self, serializer):
+        payment = serializer.save()
+        payment.change_status(PaymentStatusTypes.IN_PROGRESS)
+
 
 class CreateCardPaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = CreateCardPaymentSerializer
+
+    def perform_create(self, serializer):
+        payment = serializer.save()
+        payment.change_status(PaymentStatusTypes.IN_PROGRESS)
 
 
 class Confirm3DSPaymentView(JSONRendererMixin, UpdateAPIView):
