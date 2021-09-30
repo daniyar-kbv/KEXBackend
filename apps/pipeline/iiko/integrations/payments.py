@@ -23,7 +23,7 @@ class GetPayments(BaseIIKOService):
     def prepare_to_save(self, data: dict):
         return [{
             'iiko_uuid': payment_type.get('id'),
-            'code': payment_type.get('code'),
+            'code': payment_type.get('paymentTypeKind'),
             'name': payment_type.get('name')
         } for payment_type in data.get('paymentTypes', [])]
 
