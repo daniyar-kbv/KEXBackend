@@ -46,7 +46,7 @@ class ApplyDeliveryOrder(BaseIIKOService):
                 'payments': [
                     {
                         'sum': str(self.payment.price),
-                        'isProcessedExternally': True,
+                        'isProcessedExternally': False,
                         'paymentTypeId': str(self.instance.local_brand.current_payment_type_id),
                         'paymentTypeKind': self.instance.local_brand.current_payment_type_name,
                     }
