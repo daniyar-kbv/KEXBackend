@@ -4,10 +4,24 @@ from decimal import Decimal
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.common.models import AbstractNameModel, ServiceHistoryModel, MainModel
+from apps.common.models import (
+    AbstractNameModel,
+    ServiceHistoryModel,
+    MainModel,
+    UUIDModel,
+)
 
-from . import BrandImageTypes, DeliveryTypes, PlatformTypes
-from .managers import LocalBrandManager, BranchesQuerySet, BranchDeliveryTimeQuerySet, BrandImageQuerySet
+from . import (
+    BrandImageTypes,
+    DeliveryTypes,
+    PlatformTypes,
+)
+from .managers import (
+    LocalBrandManager,
+    BranchesQuerySet,
+    BranchDeliveryTimeQuerySet,
+    BrandImageQuerySet,
+)
 
 
 class Brand(AbstractNameModel):
@@ -92,6 +106,10 @@ class LocalBrand(ServiceHistoryModel):
     def cache_mask(self):
         return f"{self.brand.name}_{self.api_login}".replace(" ", "_").upper()
 
+    @property
+    def current_payment_type(self):
+        return self.payment_types.filter(is_current=True).first()
+
     def __str__(self):
         return f"{self.brand}. {self.city}"
 
@@ -139,6 +157,17 @@ class Branch(AbstractNameModel):
 
     def __str__(self):
         return self.iiko_name
+
+
+class LocalBrandPaymentType(UUIDModel):
+    local_brand = models.ForeignKey(  # noqa
+        "partners.LocalBrand",
+        on_delete=models.CASCADE,
+        related_name="payment_types",
+    )
+    name = models.CharField(max_length=256, null=True)
+    code = models.CharField(max_length=256, null=True)
+    is_current = models.BooleanField(default=False)
 
 
 class BranchDeliveryTime(models.Model):
