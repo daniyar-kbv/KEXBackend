@@ -92,6 +92,7 @@ class CreatePaymentMixin(serializers.ModelSerializer):
             validated_data["price"] = validated_data["order"].cart.total_price
 
         payment = super().create(validated_data)
+        payment.change_status(PaymentStatusTypes.IN_PROGRESS)
 
         if not payment.payment_type == PaymentTypes.CASH:
             self.make_payment(payment.pk)
