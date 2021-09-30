@@ -33,14 +33,14 @@ class ApplyDeliveryOrder(BaseIIKOService):
                 'transportToFrontTimeout': 20
             },
             'order': {
+                'comment': str(self.instance.lead.address.full_address()),
                 'phone': str(self.instance.user.mobile_phone),
                 'customer': {'name': self.instance.user.name},
                 'orderServiceType': 'DeliveryByCourier',
                 'deliveryPoint': {
                     'coordinates': {
                         'latitude': str(self.instance.lead.address.latitude),
-                        'longitude': str(self.instance.lead.address.longitude),
-                        'comment': str(self.instance.lead.address.full_address())
+                        'longitude': str(self.instance.lead.address.longitude)
                     },
                 },
                 'payments': [
