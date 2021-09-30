@@ -14,6 +14,9 @@ class ApplyDeliveryOrder(BaseIIKOService):
     endpoint = 'api/1/deliveries/create'
     save_serializer = None
     instance: 'Order' = None
+    log_headers = True
+    log_request = True
+    log_response = True
 
     def __init__(self, instance=None, **kwargs):
         self.payment: 'Payment' = instance.completed_payment

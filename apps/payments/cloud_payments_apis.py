@@ -36,13 +36,16 @@ class CloudPaymentsCheckView(PublicAPIMixin, APIView):
     def post(self, request, *args, **kwargs):
         print(f"{self.__class__.__name__} (request):", request.data)
         if not request.data.get('InvoiceId'):
+            print('CloudPaymentsCheckView (response)', generate_success_code())
             return Response(data=generate_success_code())
 
         payment = get_payment(invoice_id=request.data.get('InvoiceId'))
 
         if not payment or payment.order.is_completed_payment_exists:
+            print('CloudPaymentsCheckView (response)', generate_failure_code())
             return Response(data=generate_failure_code())
 
+        print('CloudPaymentsCheckView (response)', generate_success_code())
         return Response(data=generate_success_code())
 
 
