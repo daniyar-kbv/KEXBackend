@@ -40,6 +40,7 @@ class ApplyDeliveryOrder(BaseIIKOService):
                     'coordinates': {
                         'latitude': str(self.instance.lead.address.latitude),
                         'longitude': str(self.instance.lead.address.longitude),
+                        'comment': str(self.instance.lead.address.full_address())
                     },
                 },
                 'payments': [
