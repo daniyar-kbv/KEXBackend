@@ -1,9 +1,9 @@
 from apps.payments.models import Payment
 
-from .integrations.payments import (
+from .integrations import (
     PaymentService,
-    CardPaymentService,
     Confirm3DSService,
+    CardPaymentService,
 )
 
 
