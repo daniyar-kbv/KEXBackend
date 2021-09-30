@@ -166,7 +166,7 @@ class Order(
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
 
     def mark_as_paid(self):
-        from apps.pipeline.iiko.celery_tasks.apply_order import apply_delivery_order
+        from apps.pipeline.iiko.celery_tasks import apply_delivery_order
         apply_delivery_order.delay(order_pk=self.pk)
         self.change_status(status=OrderStatuses.PAID)
 
