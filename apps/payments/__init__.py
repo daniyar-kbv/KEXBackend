@@ -10,6 +10,7 @@ class PaymentTypes(TextChoices):
     DEBIT_CARD = "DEBIT_CARD", "Оплата дебетовой картой"
     GOOGLE_PAY = "GOOGLE_PAY", "Оплата через GooglePay"
     APPLE_PAY = "APPLE_PAY", "Оплата через ApplePay"
+    WEB_WIDGET = "WEB_WIDGET", "Оплата через widget на сайте"
 
 
 class PaymentStatusTypes(TextChoices):

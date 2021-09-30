@@ -7,7 +7,8 @@ from .views import (
     DebitCardsListViewSet,
     CreateCardPaymentView,
     Confirm3DSPaymentView,
-    TestPaymentRenderView
+    TestPaymentRenderView,
+    CreateWidgetPaymentView,
 )
 
 
@@ -18,6 +19,7 @@ urlpatterns = [
     path("create-payment/", CreatePaymentView.as_view()),
     path("create-card-payment/", CreateCardPaymentView.as_view()),
     path("confirm-payment/<uuid:payment_uuid>/", Confirm3DSPaymentView.as_view()),
+    path("create-widget-payment/", CreateWidgetPaymentView.as_view()),
     path("", include(router.urls)),
     path("test-template/", TestPaymentRenderView.as_view()),
 ]

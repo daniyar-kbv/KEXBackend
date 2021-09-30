@@ -12,6 +12,7 @@ from .serializers import (
     CreatePaymentSerializer,
     CreateCardPaymentSerializer,
     Confirm3DSPaymentSerializer,
+    CreateWidgetPaymentSerializer,
 )
 from apps.common.mixins import PublicAPIMixin
 
@@ -54,6 +55,11 @@ class DebitCardsListViewSet(
                     output_field=BooleanField()
                 )
             )
+
+
+class CreateWidgetPaymentView(JSONRendererMixin, CreateAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = CreateWidgetPaymentSerializer
 
 
 class TestPaymentRenderView(PublicAPIMixin, APIView):

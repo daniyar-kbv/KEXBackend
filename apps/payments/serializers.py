@@ -31,6 +31,34 @@ class DebitCardsSerializer(serializers.ModelSerializer):
         }
 
 
+class CreateWidgetPaymentSerializer(serializers.ModelSerializer):
+    lead = serializers.UUIDField(source="order", required=True, write_only=True)
+
+    class Meta:
+        model = Payment
+        fields = ('lead', 'uuid')
+        extra_kwargs = {'uuid': {'read_only': True}}
+
+    def validate_lead(self, value):
+        return get_object_or_404(Order, lead_id=value)
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs["order"].payments.completed().exists():
+            raise OrderAlreadyPaidError()
+
+        return attrs
+
+    def create(self, validated_data):
+        request = self.context['request']
+        validated_data['user'] = request.user
+        validated_data['ip_address'] = request.META['REMOTE_ADDR']
+        validated_data['price'] = validated_data['order'].cart.total_price
+        validated_data['payment_type'] = PaymentTypes.WEB_WIDGET
+
+        return super().create(validated_data)
+
+
 class CreatePaymentMixin(serializers.ModelSerializer):
     lead = serializers.UUIDField(source="order", required=True, write_only=True)
 
