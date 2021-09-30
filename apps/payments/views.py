@@ -5,7 +5,9 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 
 from apps.common.views import JSONRendererMixin
+from apps.common.mixins import PublicAPIMixin
 
+from . import PaymentStatusTypes
 from .models import Payment, DebitCard
 from .serializers import (
     DebitCardsSerializer,
@@ -14,7 +16,6 @@ from .serializers import (
     Confirm3DSPaymentSerializer,
     CreateWidgetPaymentSerializer,
 )
-from apps.common.mixins import PublicAPIMixin
 
 
 class CreatePaymentView(JSONRendererMixin, CreateAPIView):
@@ -60,6 +61,10 @@ class DebitCardsListViewSet(
 class CreateWidgetPaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = CreateWidgetPaymentSerializer
+
+    def perform_create(self, serializer):
+        payment = serializer.save()
+        payment.change_status(PaymentStatusTypes.IN_PROGRESS)
 
 
 class TestPaymentRenderView(PublicAPIMixin, APIView):

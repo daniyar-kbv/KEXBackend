@@ -127,6 +127,9 @@ class Payment(TimestampModel, UUIDModel):
 
     @atomic
     def change_status(self, status: str, status_reason: str = None):
+        if self.status == status:
+            return
+
         self.status = status
 
         if self.status == PaymentStatusTypes.COMPLETED:

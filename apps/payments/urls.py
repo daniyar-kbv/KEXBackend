@@ -11,6 +11,11 @@ from .views import (
     CreateWidgetPaymentView,
 )
 
+from .cloud_payments_apis import (
+    CloudPaymentsCheckView,
+    SuccessView,
+    FailureView,
+)
 
 router = routers.SimpleRouter()
 router.register(r'my-cards', DebitCardsListViewSet)
@@ -22,4 +27,8 @@ urlpatterns = [
     path("create-widget-payment/", CreateWidgetPaymentView.as_view()),
     path("", include(router.urls)),
     path("test-template/", TestPaymentRenderView.as_view()),
+
+    path('cloud-payments/check', CloudPaymentsCheckView.as_view()),
+    path('cloud-payments/success', SuccessView.as_view()),
+    path('cloud-payments/failure', FailureView.as_view()),
 ]

@@ -50,6 +50,9 @@ class CreateWidgetPaymentSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        if Payment.objects.in_progress().filter(order=validated_data['order']).exists():
+            return Payment.objects.in_progress().filter(order=validated_data['order']).first()
+
         request = self.context['request']
         validated_data['user'] = request.user
         validated_data['ip_address'] = request.META['REMOTE_ADDR']

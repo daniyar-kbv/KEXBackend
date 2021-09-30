@@ -171,6 +171,10 @@ class Order(
         self.change_status(status=OrderStatuses.PAID)
 
     @property
+    def is_completed_payment_exists(self) -> bool:
+        return self.payments.filter(status=PaymentStatusTypes.COMPLETED).exists()
+
+    @property
     def completed_payment(self):
         if self.payments.filter(status=PaymentStatusTypes.COMPLETED).exists():
             return self.payments.get(status=PaymentStatusTypes.COMPLETED)

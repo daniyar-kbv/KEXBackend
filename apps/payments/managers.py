@@ -20,6 +20,9 @@ class PaymentsQueryset(QuerySet):
     def completed(self):
         return self.filter(status=PaymentStatusTypes.COMPLETED)
 
+    def in_progress(self):
+        return self.filter(status=PaymentStatusTypes.IN_PROGRESS)
+
 
 class PaymentsManager(BaseManager.from_queryset(PaymentsQueryset)):
     ...
