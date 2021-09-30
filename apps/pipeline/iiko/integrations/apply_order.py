@@ -33,7 +33,6 @@ class ApplyDeliveryOrder(BaseIIKOService):
                 'transportToFrontTimeout': 20
             },
             'order': {
-                'id': str(self.instance.lead_id),
                 'phone': str(self.instance.user.mobile_phone),
                 'customer': {'name': self.instance.user.name},
                 'orderServiceType': 'DeliveryByCourier',
