@@ -37,7 +37,6 @@ class CloudPaymentsCheckView(PublicAPIMixin, APIView):
         print(f"{self.__class__.__name__} (request):", request.data)
         payment = get_payment(invoice_id=request.data.get('InvoiceId'))
 
-        print(payment.__dict__)
         if not payment or payment.order.is_completed_payment_exists:
             return Response(data=generate_failure_code())
 
