@@ -166,7 +166,9 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        return Order.objects.get_or_create_from_lead(
-            self.context["request"].user,
-            validated_data["lead"]
-        )
+        lead = validated_data['lead']
+        if not lead.user:
+            lead.user = self.context["request"].user
+            lead.save(update_fields=['user'])
+
+        return Order.objects.get_or_create_from_lead(lead)

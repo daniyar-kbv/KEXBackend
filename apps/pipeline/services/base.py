@@ -54,8 +54,11 @@ class BaseService(ABC):
         return self._session
 
     def history(self, response: Response, *args, **kwargs) -> None:
+        print('headers:', self.headers)
         self.last_request = response.request.body
         self.last_response = response.text
+        print('request: ', self.last_request)
+        print('response: ', self.last_response)
 
     def get_url(self) -> str:
         return urljoin(self.host, self.endpoint)
