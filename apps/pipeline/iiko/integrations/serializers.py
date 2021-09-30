@@ -31,7 +31,7 @@ class IIKOPaymentTypeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print('IIKOPaymentTypeSerializer (validated_data):', validated_data)
         uuid = validated_data.pop('iiko_uuid')
-        if LocalBrandPaymentType.objects.filter(uuid=uuid).exists():
+        if LocalBrandPaymentType.objects.filter(uuid=uuid, local_brand=self.context['local_brand']).exists():
             print('already exists')
             return LocalBrandPaymentType.objects.get(uuid=uuid)
 

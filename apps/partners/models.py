@@ -1,3 +1,4 @@
+from uuid import uuid4
 from datetime import time
 from decimal import Decimal
 
@@ -8,7 +9,6 @@ from apps.common.models import (
     AbstractNameModel,
     ServiceHistoryModel,
     MainModel,
-    UUIDModel,
 )
 
 from . import (
@@ -169,12 +169,13 @@ class Branch(AbstractNameModel):
         return self.iiko_name
 
 
-class LocalBrandPaymentType(UUIDModel):
+class LocalBrandPaymentType(models.Model):
     local_brand = models.ForeignKey(  # noqa
         "partners.LocalBrand",
         on_delete=models.CASCADE,
         related_name="payment_types",
     )
+    uuid = models.UUIDField("Идентификатор", default=uuid4, editable=False)
     name = models.CharField(max_length=256, null=True)
     code = models.CharField(max_length=256, null=True)
     is_current = models.BooleanField(default=False)
