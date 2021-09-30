@@ -40,7 +40,6 @@ class ApplyDeliveryOrder(BaseIIKOService):
                     'coordinates': {
                         'latitude': str(self.instance.lead.address.latitude),
                         'longitude': str(self.instance.lead.address.longitude),
-                        'comment': self.instance.lead.address.comment,
                     },
                 },
                 'payments': [
@@ -55,7 +54,7 @@ class ApplyDeliveryOrder(BaseIIKOService):
                         'type': 'Product',
                         'productId': str(position.branch_position.outer_id),
                         'amount': position.count,
-                        'comment': position.comment,
+                        'comment': position.comment or "no_comment",
                         'modifiers': [{
                             'productId': str(modifier.branch_position.outer_id),
                             'productGroupId': str(modifier.position_modifier_group.modifier_group.outer_id),
