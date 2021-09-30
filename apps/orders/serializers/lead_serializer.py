@@ -185,6 +185,36 @@ class LeadDetailSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(image.image.url)
 
 
+class LeadCheckSerializer(serializers.ModelSerializer):
+    brand_name = serializers.SerializerMethodField(required=False)
+    brand_image = serializers.SerializerMethodField(required=False)
+    cart = RetrieveCartSerializer(required=False)
+
+    class Meta:
+        model = Lead
+        fields = (
+            "cart",
+            "brand_name",
+            "brand_image",
+        )
+
+    def get_brand_name(self, obj):
+        try:
+            return obj.local_brand.brand.name.text_ru
+        except Exception as exc:
+            return None
+
+    def get_brand_image(self, obj):
+        from apps.partners import BrandImageTypes
+
+        request = self.context["request"]
+        print("get_brand_image obj: ", obj)
+        image = obj.local_brand.brand.img.filter(image_type=BrandImageTypes.IMAGE_FOR_CHECK).first()
+
+        if image is not None:
+            return request.build_absolute_uri(image.image.url)
+
+
 class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()

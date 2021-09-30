@@ -1,5 +1,5 @@
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
@@ -9,8 +9,9 @@ from rest_framework.generics import (
     RetrieveAPIView,
     GenericAPIView,
 )
+from rest_framework.views import APIView
 
-from apps.common.mixins import PublicJSONRendererMixin, JSONRendererMixin
+from apps.common.mixins import PublicJSONRendererMixin, JSONRendererMixin, PublicAPIMixin
 from apps.nomenclature.models import BranchPosition
 from apps.payments.models import Payment
 from apps.payments.serializers import CreatePaymentSerializer
@@ -31,6 +32,7 @@ from .serializers import (
     OrdersListSerializer,
     CouponSerializer
 )
+from .serializers.lead_serializer import LeadCheckSerializer
 from ..payments import PaymentStatusTypes
 
 
@@ -154,6 +156,23 @@ class LastPaymentStatusView(JSONRendererMixin, RetrieveAPIView):
             return payments.last()
 
         raise Http404
+
+
+class GetCheckView(PublicAPIMixin, GenericAPIView):
+    queryset = Order.objects.all()
+    lookup_field = 'lead'
+    lookup_url_kwarg = 'lead_uuid'
+
+    def get(self, request, lead_uuid):
+        order = super().get_object()
+        data = LeadCheckSerializer(order, context={'request': request}).data
+        print(data)
+        print(data['cart']['positions_count'])
+        print(data['cart']['positions'][0]['position']['name'])
+        print(data['cart']['positions'][0]['position']['price'])
+        for p in data['cart']['positions']:
+            setattr(p, 'count_price', p['position']['price']*p['count'])
+        return render(request, 'orders/check.html', {'data': data})
 
 
 @method_decorator(check_branch_is_open, name="post")
