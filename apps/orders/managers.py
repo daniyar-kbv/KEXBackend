@@ -6,7 +6,6 @@ from apps.nomenclature.models.positions import PositionTypes
 
 if TYPE_CHECKING:
     from .models import Lead
-    from apps.users.models import User
 
 
 class CartPositionQueryset(QuerySet):
@@ -28,11 +27,11 @@ class CartPositionQueryset(QuerySet):
 
 
 class OrdersManager(Manager):
-    def get_or_create_from_lead(self, user: 'User', lead: 'Lead'):
+    def get_or_create_from_lead(self, lead: 'Lead'):
         order, created = self.get_or_create(
             lead=lead,
             defaults={
-                "user": user,
+                "user": lead.user,
                 "cart": lead.cart,
                 "local_brand": lead.local_brand,
                 "branch": lead.branch,
