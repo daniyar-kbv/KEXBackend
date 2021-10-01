@@ -53,11 +53,9 @@ class NotificationForm(AbstractTitleModelForm, AbstractDescriptionModelForm):
 
     def save(self, commit=True):
         obj = super(NotificationForm, self).save(commit=False)
-
-        ref_oid = self.cleaned_data['ref_object']
-        print('ref_oid in save: ', ref_oid)
+        print("self.data ref_object", self.data['ref_object'])
+        ref_oid = self.data.get('ref_object')
         if ref_oid:
-            ref_oid = ref_oid.id
             if obj.push_type == PushTypes.PROMOTION:
                 obj.content_object = Promotion.objects.get(id=ref_oid)
             elif obj.push_type == PushTypes.ORDER_STATUS_UPDATE or obj.push_type == PushTypes.ORDER_RATE:
