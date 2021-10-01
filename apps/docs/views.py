@@ -1,5 +1,8 @@
 from constance import config
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -40,10 +43,28 @@ class DocumentListViewOld(PublicJSONRendererMixin, ListAPIView):
         return queryset
 
 
+@method_decorator(
+    name="get",  # change is here
+    decorator=swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                "for_web",
+                openapi.IN_QUERY,
+                description="Defines the docs for footer in website: 1, 0",
+                type=openapi.TYPE_BOOLEAN,
+            )
+        ]
+    ),
+)
 class DocumentListView(PublicJSONRendererMixin, ListAPIView):
-    queryset = Document.objects.all()
+    queryset = Document.objects.all().order_by('priority')
     serializer_class = DocumentListSerializer
     pagination_class = None
+
+    def get_queryset(self):
+        if self.request.GET.get('for_web') == 'true':
+            return super().get_queryset().filter(for_web=True)
+        return super().get_queryset().filter(for_web=False)
 
 
 class ContactListView(PublicJSONRendererMixin, APIView):

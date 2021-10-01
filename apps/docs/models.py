@@ -7,7 +7,7 @@ from .services import slugify
 
 class TemplateModel(AbstractNameModel, AbstractTemplateModel):
     priority = models.IntegerField("Позиция в очереди", default=0)
-    slug = models.SlugField("Читабельная ссылка", unique=True)
+    slug = models.SlugField("Читабельная ссылка", unique=True, blank=True)
 
     class Meta:
         abstract = True
@@ -19,4 +19,4 @@ class TemplateModel(AbstractNameModel, AbstractTemplateModel):
 
 
 class Document(TemplateModel):
-    ...
+    for_web = models.BooleanField("Статья для сайта", default=False)
