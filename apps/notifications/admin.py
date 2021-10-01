@@ -47,7 +47,7 @@ class NotificationForm(AbstractTitleModelForm, AbstractDescriptionModelForm):
         self.fields['ref_object'] = forms.ModelChoiceField(
             label="Связанный объект",
             required=False,
-            queryset=queryset or Promotion.objects.all(),
+            queryset=queryset or Order.objects.all(),
             initial=initial
         )
 
