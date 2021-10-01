@@ -179,7 +179,7 @@ class LeadDetailSerializer(serializers.ModelSerializer):
         from apps.partners import BrandImageTypes
 
         request = self.context["request"]
-        image = obj.local_brand.brand.images.filter(image_type=BrandImageTypes.IMAGE_SQUARE).first()
+        image = obj.local_brand.brand.img.filter(image_type=BrandImageTypes.IMAGE_SQUARE).first()
 
         if image is not None:
             return request.build_absolute_uri(image.image.url)
