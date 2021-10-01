@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('image_type', models.CharField(choices=[('IMAGE_SQUARE', 'квадрат'), ('IMAGE_SHORT', 'короткая'), ('IMAGE_TALL', 'высокая'), ('IMAGE_LONG', 'длинная')], max_length=12, null=True, verbose_name='Тип картинки')),
                 ('image', models.ImageField(null=True, upload_to='', verbose_name='Image')),
-                ('brand', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='partners.brand', verbose_name='Брэнд')),
+                ('brand', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='img', to='partners.brand', verbose_name='Брэнд')),
             ],
             options={
                 'verbose_name': 'Brand Image',

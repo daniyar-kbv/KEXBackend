@@ -130,6 +130,7 @@ class OrdersListSerializer(serializers.ModelSerializer):
     price = serializers.CharField(source="completed_payment.price", required=False)
     created_at = serializers.DateTimeField(source="completed_payment.created_at", required=False)
     payment_type = serializers.CharField(source="completed_payment.payment_type", required=False)
+    check_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -144,7 +145,11 @@ class OrdersListSerializer(serializers.ModelSerializer):
             "payment_type",
             "status_reason",
             "lead_id",
+            "check_url",
         )
+
+    def get_check_url(self, obj):
+        return self.context['request'].build_absolute_uri(f"{obj.lead_id}/check/")
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):

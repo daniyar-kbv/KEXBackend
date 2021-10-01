@@ -44,12 +44,12 @@ class BrandImage(MainModel):
     brand = models.ForeignKey(
         "partners.Brand",
         on_delete=models.CASCADE,
-        related_name="images",
+        related_name="img",
         verbose_name=_("Брэнд"),
     )
     image_type = models.CharField(
         _("Тип картинки"),
-        max_length=12,
+        max_length=20,
         choices=BrandImageTypes.choices,
         null=True
     )

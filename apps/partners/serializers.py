@@ -56,7 +56,7 @@ class SquareImageBrandSerializer(AbstractNameSerializer):
         )
 
     def get_image(self, obj):
-        img_file = obj.images.filter(image_type=BrandImageTypes.IMAGE_SQUARE).first()
+        img_file = obj.img.filter(image_type=BrandImageTypes.IMAGE_SQUARE).first()
         if img_file:
             return self.context['request'].build_absolute_uri(img_file.image.url)
         return None
@@ -92,7 +92,7 @@ class BrandAPILoginSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "images",
+            "img",
             "is_available"
         )
 

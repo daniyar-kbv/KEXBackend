@@ -4,6 +4,7 @@ default_app_config = 'apps.partners.apps.PartnersConfig'
 
 
 class BrandImageTypes(models.TextChoices):
+    IMAGE_FOR_CHECK = ("IMAGE_FOR_CHECK", "для чека")
     IMAGE_SQUARE = ("IMAGE_SQUARE", "квадрат")
     IMAGE_SHORT = ("IMAGE_SHORT", "короткая")
     IMAGE_TALL = ("IMAGE_TALL", "высокая")
