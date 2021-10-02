@@ -11,8 +11,8 @@ from ..integrations.apply_order import ApplyDeliveryOrder, VerifyDeliveryOrder
 class OrderApplyTask(Task):
     name = 'iiko.order_apply_task'
     autoretry_for = (ConnectionError, HTTPError, Timeout)
-    default_retry_delay = 10
-    max_retries = 2
+    default_retry_delay = 5
+    max_retries = 10
 
     @staticmethod
     def get_instance(order_pk) -> Order:
