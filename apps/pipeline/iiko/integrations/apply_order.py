@@ -3,11 +3,18 @@ from typing import TYPE_CHECKING, Iterable, cast
 from .base import BaseIIKOService
 
 from apps.orders.models import Order
+from apps.orders import OrderStatuses
 
 from .serializers import IIKOOrderIDSerializer
 
 if TYPE_CHECKING:
     from apps.payments.models import Payment
+
+
+CREATION_STATUS_MAPPING = {
+    "InProgress": OrderStatuses.APPLYING,
+    "Success": OrderStatuses.APPLIED,
+}
 
 
 class ApplyDeliveryOrder(BaseIIKOService):
@@ -23,6 +30,10 @@ class ApplyDeliveryOrder(BaseIIKOService):
     def __init__(self, instance=None, **kwargs):
         self.payment: 'Payment' = instance.completed_payment
         super().__init__(instance, **kwargs)
+
+    def skip_task(self):
+        if self.instance.status in [OrderStatuses.APPLYING, OrderStatuses.APPLIED]:
+            return True
 
     def get_local_brand_pk(self):  # noqa
         return self.instance.local_brand_id
@@ -68,13 +79,16 @@ class ApplyDeliveryOrder(BaseIIKOService):
         })
 
     def prepare_to_save(self, data: dict) -> dict:
+        prepared_data = {}
         order_info = data.get('orderInfo', {})
         outer_id = order_info.get('id')
 
         if outer_id:
-            return {'outer_id': outer_id}
+            status = CREATION_STATUS_MAPPING.get(order_info.get('creationStatus'))
+            prepared_data['outer_id'] = outer_id
+            prepared_data['status'] = status
 
-        return {}
+        return prepared_data
 
     def save(self, prepared_data):
         serializer = self.save_serializer(

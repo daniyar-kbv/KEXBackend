@@ -20,8 +20,19 @@ from .. import ApplyTypes
 class IIKOOrderIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = 'outer_id',
-        extra_kwargs = {'outer_id': {'required': False}}
+        fields = 'outer_id', 'status'
+        extra_kwargs = {
+            'outer_id': {'required': False},
+            'status': {'required': False},
+        }
+
+    def update(self, instance: Order, validated_data):
+        status = validated_data.pop('status', None)
+
+        if status:
+            instance.change_status(status)
+
+        return super().update(instance, validated_data)
 
 
 class IIKOPaymentTypeSerializer(serializers.ModelSerializer):
