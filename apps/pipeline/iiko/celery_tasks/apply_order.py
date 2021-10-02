@@ -28,7 +28,8 @@ class OrderApplyTask(Task):
         instance.refresh_from_db()
 
         if instance.status == OrderStatuses.APPLIED:
-            return
+            from .update_status import update_order_status
+            return update_order_status.delay(order_pk=order_pk)
 
         self.retry()
 

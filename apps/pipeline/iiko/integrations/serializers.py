@@ -17,6 +17,17 @@ from apps.nomenclature.models import (
 from .. import ApplyTypes
 
 
+class IIKOOrderStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = 'status',
+
+    def update(self, instance: Order, validated_data):
+        instance.change_status(validated_data['status'])
+
+        return instance
+
+
 class IIKOOrderIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order

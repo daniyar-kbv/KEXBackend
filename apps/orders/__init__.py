@@ -9,8 +9,12 @@ class OrderStatuses(TextChoices):
     APPLYING = "APPLYING", "Процесс просадки в IIKO"
     APPLY_ERROR = "APPLY_ERROR", "Ошибка при просадке в IIKO"
     APPLIED = "APPLIED", "Просажено в IIKO"
-    IN_PROGRESS = "IN_PROGRESS"
-    COOKING = "COOKING", "Готовится"
-    IN_DELIVERY = "IN_DELIVERY", "Доставляется"
-    ISSUED = "ISSUED", "Доставлен"
-    FAILURE = "FAILURE", "Ошибка"
+    UNCONFIRMED = 'UNCONFIRMED', 'Заказ подтверждается'
+    READY_FOR_COOKING = 'READY_FOR_COOKING', 'Заказ готов к приготовлению'
+    COOKING_STARTED = 'COOKING_STARTED', 'Заказ в процессе готовки'
+    COOKING_COMPLETED = 'COOKING_COMPLETED', 'Заказ приготовлен'
+    WAITING = 'WAITING', 'Ожидание доставки заказа'
+    ON_WAY = 'ON_WAY', 'Заказ доставляется'
+    DELIVERED = 'DELIVERED', 'Заказ доставлен'
+    DONE = 'DONE', 'Заказ завершен'
+    CANCELLED = 'CANCELLED', 'Заказ отменен'
