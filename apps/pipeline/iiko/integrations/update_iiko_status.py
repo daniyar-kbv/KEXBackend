@@ -7,6 +7,7 @@ from .serializers import IIKOOrderStatusSerializer
 
 
 class UpdateOrderStatus(BaseIIKOService):
+    """Обновление статуса заказа"""
     endpoint = 'api/1/deliveries/by_id'
     instance: Order = None
     save_serializer = IIKOOrderStatusSerializer
