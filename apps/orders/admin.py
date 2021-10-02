@@ -27,7 +27,7 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
 
         for el in queryset:
             if el.status == OrderStatuses.APPLY_ERROR:
-                order_apply_task.delay(el.pk)
+                order_apply_task.delay(order_pk=el.pk)
 
     retry_apply_to_iiko.short_description = "Повторная выгрузка в IIKO"
 
