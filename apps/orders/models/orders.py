@@ -157,6 +157,9 @@ class Order(
 
     @atomic
     def change_status(self, status: str, status_reason: str = None):
+        if self.status == status:
+            return
+
         self.status = status
         self.status_reason = status_reason
         self.save(update_fields=["status", "status_reason"])
