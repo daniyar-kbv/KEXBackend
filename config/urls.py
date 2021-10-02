@@ -46,7 +46,7 @@ urlpatterns = [
         name="schema-json",
     ),
     path("", include("apps.urls")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
 
 # if settings.DEBUG_TOOLBAR_ENABLED:
 #     import debug_toolbar
