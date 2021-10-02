@@ -4,7 +4,7 @@ from config import celery_app
 from apps.orders import OrderStatuses
 from apps.orders.models import Order
 
-from ..integrations.apply_order import ApplyDeliveryOrder
+from ..integrations.apply_order import ApplyDeliveryOrder, VerifyDeliveryOrder
 
 
 @celery_app.task(
@@ -17,20 +17,14 @@ def call_order_apply_task(order_pk: int):
     order = Order.objects.get(id=order_pk)
 
     ApplyDeliveryOrder(instance=order).run()
+    VerifyDeliveryOrder(instance=order).run()
 
     order.refresh_from_db()
 
-    if order.status != OrderStatuses.APPLIED:
-        call_order_apply_task.retry()
+    if order.status == OrderStatuses.APPLIED:
+        return
 
-
-@celery_app.task(
-    name='iiko.call_verify_order_task',
-)
-def call_verify_order_task(order_pk: int):
-    order = Order.objects.get(id=order_pk)
-
-    return 'success'
+    call_order_apply_task.retry()
 
 
 """

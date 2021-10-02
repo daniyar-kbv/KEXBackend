@@ -11,32 +11,45 @@ if TYPE_CHECKING:
     from apps.payments.models import Payment
 
 
-CREATION_STATUS_MAPPING = {
-    "InProgress": OrderStatuses.APPLYING,
-    "Success": OrderStatuses.APPLIED,
-}
-
-
-class ApplyDeliveryOrder(BaseIIKOService):
-    """Создание заказа в системе IIKO"""
-    endpoint = 'api/1/deliveries/create'
+class BaseApplyOrder(BaseIIKOService):
     save_serializer = IIKOOrderIDSerializer
     instance: 'Order' = None
+
+    _CREATION_STATUS_MAPPING = {
+        "InProgress": OrderStatuses.APPLYING,
+        "Success": OrderStatuses.APPLIED,
+    }
 
     log_headers = True
     log_request = True
     log_response = True
 
-    def __init__(self, instance=None, **kwargs):
-        self.payment: 'Payment' = instance.completed_payment
-        super().__init__(instance, **kwargs)
-
     def skip_task(self):
         if self.instance.status in [OrderStatuses.APPLYING, OrderStatuses.APPLIED]:
             return True
 
-    def get_local_brand_pk(self):  # noqa
-        return self.instance.local_brand_id
+    def get_local_brand_pk(self):
+        return self.instance.local_brand_id  # noqa
+
+    def map_creation_status(self, iiko_status: str) -> str:
+        return self._CREATION_STATUS_MAPPING.get(iiko_status)
+
+    def save(self, prepared_data):
+        serializer = self.save_serializer(
+            instance=self.instance,
+            data=self.prepare_to_save(prepared_data),
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+
+class ApplyDeliveryOrder(BaseApplyOrder):
+    """Создание заказа в системе IIKO"""
+    endpoint = 'api/1/deliveries/create'
+
+    def __init__(self, instance=None, **kwargs):
+        self.payment: 'Payment' = instance.completed_payment
+        super().__init__(instance, **kwargs)
 
     def run_service(self):
         return self.fetch(json={
@@ -60,8 +73,8 @@ class ApplyDeliveryOrder(BaseIIKOService):
                     {
                         'sum': float(self.payment.price),
                         'isProcessedExternally': False,
-                        'paymentTypeId': str(self.instance.local_brand.current_payment_type_id),
-                        'paymentTypeKind': self.instance.local_brand.current_payment_type_code,
+                        'paymentTypeId': '09322f46-578a-d210-add7-eec222a08871',
+                        'paymentTypeKind': 'Cash',
                     }
                 ],
                 'items': [{
@@ -84,16 +97,41 @@ class ApplyDeliveryOrder(BaseIIKOService):
         outer_id = order_info.get('id')
 
         if outer_id:
-            status = CREATION_STATUS_MAPPING.get(order_info.get('creationStatus'))
+            status = self.map_creation_status(order_info.get('creationStatus'))
             prepared_data['outer_id'] = outer_id
-            prepared_data['status'] = status
+            if status:
+                prepared_data['status'] = status
 
         return prepared_data
 
-    def save(self, prepared_data):
-        serializer = self.save_serializer(
-            instance=self.instance,
-            data=self.prepare_to_save(prepared_data),
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+
+class VerifyDeliveryOrder(BaseApplyOrder):
+    """Валидация просадки заказа в сервис IIKO"""
+    endpoint = 'api/1/deliveries/by_id'
+
+    def skip_task(self):
+        if self.instance.status in [OrderStatuses.APPLIED]:
+            return True
+
+    def run_service(self):
+        return self.fetch(json={
+            "organizationId": str(self.instance.branch.outer_id),
+            "orderIds": [str(self.instance.outer_id),]
+        })
+
+    def prepare_to_save(self, data: dict) -> dict:
+        prepared_data = {}
+        orders = data.get('orders', [])
+        if not orders or not isinstance(orders, list):
+            return prepared_data
+
+        order_info = orders[0]
+        outer_id = order_info.get('id')
+
+        if outer_id:
+            status = self.map_creation_status(order_info.get('creationStatus'))
+            prepared_data['outer_id'] = outer_id
+            if status:
+                prepared_data['status'] = status
+
+        return prepared_data
