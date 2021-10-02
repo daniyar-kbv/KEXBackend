@@ -1,3 +1,4 @@
+from celery import Task
 from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 from config import celery_app
@@ -7,29 +8,39 @@ from apps.orders.models import Order
 from ..integrations.apply_order import ApplyDeliveryOrder, VerifyDeliveryOrder
 
 
-@celery_app.task(
-    name='iiko.call_order_apply_task',
-    autoretry_for=(ConnectionError, HTTPError, Timeout),
-    default_retry_delay=3,
-    retry_kwargs={'max_retries': 2},
-)
-def call_order_apply_task(order_pk: int):
-    order = Order.objects.get(id=order_pk)
+class OrderApplyTask(Task):
+    name = 'iiko.order_apply_task'
+    autoretry_for = (ConnectionError, HTTPError, Timeout)
+    default_retry_delay = 10
+    max_retries = 2
 
-    ApplyDeliveryOrder(instance=order).run()
-    VerifyDeliveryOrder(instance=order).run()
+    @staticmethod
+    def get_instance(order_pk) -> Order:
+        return Order.objects.get(id=order_pk)
 
-    order.refresh_from_db()
+    def run(self, order_pk, *args, **kwargs):
+        instance = self.get_instance(order_pk)
 
-    if order.status == OrderStatuses.APPLIED:
-        return
+        ApplyDeliveryOrder(instance=instance).run()
+        VerifyDeliveryOrder(instance=instance).run()
 
-    call_order_apply_task.retry()
+        instance.refresh_from_db()
 
+        if instance.status == OrderStatuses.APPLIED:
+            return
+
+        self.retry()
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        instance = self.get_instance(kwargs.get('order_pk'))
+        instance.mark_as_apply_error()
+
+
+order_apply_task = celery_app.register_task(OrderApplyTask())
 
 """
 from apps.orders.models import Order
-from apps.pipeline.iiko.celery_tasks.apply_order import call_order_apply_task
+from apps.pipeline.iiko.celery_tasks.apply_order import order_apply_task
 t = Order.objects.get()
-call_order_apply_task.delay(order_pk=t.id)
+order_apply_task.delay(order_pk=t.id)
 """

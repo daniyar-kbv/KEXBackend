@@ -166,10 +166,15 @@ class Order(
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
 
     def mark_as_paid(self):
-        from apps.pipeline.iiko.celery_tasks import call_order_apply_task
+        from apps.pipeline.iiko.celery_tasks import order_apply_task
 
-        call_order_apply_task.delay(order_pk=self.pk)
+        order_apply_task.delay(order_pk=self.pk)
         self.change_status(status=OrderStatuses.PAID)
+
+    def mark_as_apply_error(self):
+        self.outer_id = None
+        self.save(update_fields=['outer_id'])
+        self.change_status(OrderStatuses.APPLY_ERROR, "Заказ не дошел до ресторона")
 
     @property
     def is_completed_payment_exists(self) -> bool:
