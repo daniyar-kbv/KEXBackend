@@ -11,6 +11,7 @@ from ..integrations.update_iiko_status import UpdateOrderStatus
     name='iiko.update_order_status',
     autoretry_for=(ConnectionError, HTTPError, Timeout),
     default_retry_delay=60,
+    max_retries=100,
     retry_kwargs={'max_retries': 100},
 )
 def update_order_status(order_pk: int):
