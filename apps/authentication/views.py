@@ -20,6 +20,8 @@ from .serializers import (
     OTPResendSerializer,
     TokenRefreshSerializer,
 )
+from ..notifications.models import FirebaseToken
+from ..notifications.serializers import CreateFirebaseTokenSerializer, FirebaseTokenSerializer
 
 User = get_user_model()
 
@@ -80,3 +82,13 @@ class OTPResendView(PublicAPIMixin, JSONRendererMixin, GenericAPIView):
 
 class TokenRefreshView(PublicJSONRendererMixin, JSONRendererMixin, DRFTokenRefreshView):
     serializer_class = TokenRefreshSerializer
+
+
+class LogoutView(JSONRendererMixin, GenericAPIView):
+    serializer_class = FirebaseTokenSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.delete_user()
+        return Response(data={})

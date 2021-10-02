@@ -1,39 +1,37 @@
 from django.contrib import admin
 
-from apps.common.admin import HistoryInline, AbstractTitleModelForm, AbstractDescriptionModelForm, AbstractNameModelForm
+from apps.common.admin import HistoryInline, ReadOnlyMixin
 
-from .models import Lead, Cart
-from .models.orders import Order, CouponGroup, Coupon
+from . import OrderStatuses
+from .models import Lead, Cart, Order, OrderStatusTransition
+
+
+class OrderStatusTransitionInline(ReadOnlyMixin, admin.TabularInline):
+    model = OrderStatusTransition
+    extra = 0
+    classes = ('collapse',)
+    fields = ('status', 'status_reason', 'created_at')
+    readonly_fields = ('status', 'status_reason', 'created_at')
 
 
 class LeadAdmin(admin.ModelAdmin):
     inlines = (HistoryInline,)
 
 
+class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
+    inlines = (HistoryInline, OrderStatusTransitionInline)
+    actions = 'retry_apply_to_iiko',
+
+    def retry_apply_to_iiko(self, request, queryset):
+        from apps.pipeline.iiko.celery_tasks import order_apply_task
+
+        for el in queryset:
+            if el.status == OrderStatuses.APPLY_ERROR:
+                order_apply_task.delay(order_pk=el.pk)
+
+    retry_apply_to_iiko.short_description = "Повторная выгрузка в IIKO"
+
+
 admin.site.register(Lead, LeadAdmin)
-admin.site.register(Order)
+admin.site.register(Order, OrderAdmin)
 admin.site.register(Cart)
-
-
-@admin.register(CouponGroup)
-class CouponGroupAdmin(admin.ModelAdmin):
-    list_display = ['name']
-
-
-@admin.register(Coupon)
-class CouponAdmin(admin.ModelAdmin):
-    list_display = [
-        'group',
-        'promocode',
-        'start_date',
-        'end_date'
-    ]
-    list_filter = ['group']
-    search_fields = ['promocode']
-    fields = [
-        'group',
-        'promocode',
-        'description',
-        'start_date',
-        'end_date'
-    ]

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.orders.models.orders import Coupon
+from .models import Coupon
 
 
 class CouponSerializer(serializers.ModelSerializer):

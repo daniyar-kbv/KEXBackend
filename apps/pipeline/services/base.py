@@ -131,8 +131,13 @@ class BaseService(ABC):
         This method should be overload
         """
 
+    def skip_task(self):
+        ...
+
     def run(self):
         response_data = None
+        if self.skip_task():
+            return
 
         try:
             response_data = self.run_service()

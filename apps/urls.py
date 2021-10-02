@@ -10,7 +10,7 @@ urlpatterns = [
     path("location/", include("apps.location.urls")),
     path("partners/", include("apps.partners.urls")),
     path("payments/", include("apps.payments.urls")),
-    path("common/", include("apps.common.urls")),
+    path('coupons/', include('apps.coupons.urls')),
     path("orders/", include("apps.orders.urls")),
     path("users/", include("apps.users.urls")),
     path("promotions/", include("apps.promotions.urls")),
@@ -23,3 +23,4 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

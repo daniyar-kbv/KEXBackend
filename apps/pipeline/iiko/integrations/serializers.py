@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.core.cache import cache
 
-from apps.orders.models import Lead, Cart
+from apps.orders.models import Order, Lead, Cart
 from apps.location.models import Address
 from apps.partners.models import Branch, LocalBrandPaymentType
 from apps.common.utils import (
@@ -15,6 +15,35 @@ from apps.nomenclature.models import (
 )
 
 from .. import ApplyTypes
+
+
+class IIKOOrderStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = 'status',
+
+    def update(self, instance: Order, validated_data):
+        instance.change_status(validated_data['status'])
+
+        return instance
+
+
+class IIKOOrderIDSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = 'outer_id', 'status'
+        extra_kwargs = {
+            'outer_id': {'required': False},
+            'status': {'required': False},
+        }
+
+    def update(self, instance: Order, validated_data):
+        status = validated_data.pop('status', None)
+
+        if status:
+            instance.change_status(status)
+
+        return super().update(instance, validated_data)
 
 
 class IIKOPaymentTypeSerializer(serializers.ModelSerializer):

@@ -90,6 +90,7 @@ LOCAL_APPS = [
     'apps.payments.apps.PaymentsConfig',
     'apps.notifications.apps.NotificationsConfig',
     'apps.order_rates.apps.OrderRatesConfig',
+    'apps.coupons.apps.CouponsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -184,7 +185,7 @@ USE_TZ = True
 
 STATIC_URL = os.getenv("STATIC_URL", "/static/")
 STATIC_ROOT = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, 'static'))
-# STATIC_DIR = os.path.join(BASE_DIR, 'static')
+# STATIC_DIR = os.getenv("STATIC_ROOT", os.path.join(BASE_DIR, 'static'))
 # STATICFILES_DIRS = [STATIC_DIR]
 
 INSTAGRAM_CLIENT_ID = "478461956554478"

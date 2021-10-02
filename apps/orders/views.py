@@ -9,7 +9,6 @@ from rest_framework.generics import (
     RetrieveAPIView,
     GenericAPIView,
 )
-from rest_framework.views import APIView
 
 from apps.common.mixins import PublicJSONRendererMixin, JSONRendererMixin, PublicAPIMixin
 from apps.nomenclature.models import BranchPosition
@@ -17,8 +16,7 @@ from apps.payments.models import Payment
 from apps.payments.serializers import CreatePaymentSerializer
 
 from .decorators import check_branch_is_open, update_delivery_positions
-from .exceptions import CouponNotActive
-from .models import Order, Lead, Cart, Coupon
+from .models import Order, Lead, Cart
 from .serializers import (
     ApplyLeadSerializer,
     AuthorizedApplySerializer,
@@ -30,7 +28,6 @@ from .serializers import (
     RetrieveCartSerializer,
     CreateOrderSerializer,
     OrdersListSerializer,
-    CouponSerializer
 )
 from .serializers.lead_serializer import LeadCheckSerializer
 from ..payments import PaymentStatusTypes
@@ -166,12 +163,10 @@ class GetCheckView(PublicAPIMixin, GenericAPIView):
     def get(self, request, lead_uuid):
         order = super().get_object()
         data = LeadCheckSerializer(order, context={'request': request}).data
-        print(data)
-        print(data['cart']['positions_count'])
-        print(data['cart']['positions'][0]['position']['name'])
-        print(data['cart']['positions'][0]['position']['price'])
+
         for p in data['cart']['positions']:
             setattr(p, 'count_price', p['position']['price']*p['count'])
+
         return render(request, 'orders/check.html', {'data': data})
 
 
@@ -179,16 +174,3 @@ class GetCheckView(PublicAPIMixin, GenericAPIView):
 class CreateOrderView(JSONRendererMixin, CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = CreateOrderSerializer
-
-
-class CouponDetailView(PublicJSONRendererMixin, RetrieveAPIView):
-    lookup_field = 'promocode'
-    serializer_class = CouponSerializer
-    queryset = Coupon.objects.all()
-
-    def get_object(self):
-        obj = super().get_object()
-        if obj:
-            if not obj.is_active():
-                raise CouponNotActive
-        return obj
