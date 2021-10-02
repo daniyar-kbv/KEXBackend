@@ -17,6 +17,3 @@ from .retrieve_cart_serializers import (
 from .update_cart_serializers import (
     UpdateCartSerializer,
 )
-from .coupon_serializers import (
-    CouponSerializer,
-)

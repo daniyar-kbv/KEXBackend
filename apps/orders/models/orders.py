@@ -3,23 +3,17 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.db.transaction import atomic
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _  # noqa
-
-from apps.common.models import (
-    TimestampModel,
-    UUIDModel,
-    ServiceHistoryModel,
-    MainModel,
-    AbstractNameModel,
-    AbstractDescriptionModel,
-    AbstractTitleModel,
-)
 
 from apps.orders import OrderStatuses
 from apps.partners import DeliveryTypes
 from apps.payments import PaymentStatusTypes
 from apps.orders.managers import OrdersManager
+from apps.common.models import (
+    TimestampModel,
+    UUIDModel,
+    ServiceHistoryModel,
+)
 
 if TYPE_CHECKING:
     from apps.partners.models import BranchDeliveryTime
@@ -169,8 +163,9 @@ class Order(
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
 
     def mark_as_paid(self):
-        from apps.pipeline.iiko.celery_tasks import apply_delivery_order
-        apply_delivery_order.delay(order_pk=self.pk)
+        from apps.pipeline.iiko.celery_tasks import call_order_apply_task
+
+        call_order_apply_task.delay(order_pk=self.pk)
         self.change_status(status=OrderStatuses.PAID)
 
     @property
@@ -203,31 +198,3 @@ class OrderStatusTransition(TimestampModel):
         verbose_name=_("Заказ"),
     )
     status_reason = models.TextField(_("Причина присвоения статуса"), null=True)
-
-
-class CouponGroup(MainModel):
-    name = models.CharField("Название серии", max_length=255)
-
-    class Meta:
-        verbose_name = "Серия купона"
-        verbose_name_plural = "Серии Купонов"
-
-    def __str__(self):
-        return self.name
-
-
-class Coupon(AbstractDescriptionModel):
-    group = models.ForeignKey(CouponGroup, verbose_name="Серия", on_delete=models.PROTECT)
-    promocode = models.CharField(max_length=255, verbose_name="Код")
-    start_date = models.DateField("Период действи с ", default=timezone.now)
-    end_date = models.DateField("Период действи по ", default=timezone.now)
-
-    class Meta:
-        verbose_name = "Купон"
-        verbose_name_plural = "Купоны"
-
-    def __str__(self):
-        return f"{self.promocode}[{self.group}]"
-
-    def is_active(self):
-        return self.start_date <= timezone.now().date() <= self.end_date

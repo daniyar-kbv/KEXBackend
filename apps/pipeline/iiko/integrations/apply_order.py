@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, Iterable, cast
 from .base import BaseIIKOService
 
 from apps.orders.models import Order
-from apps.payments import PaymentTypes
+
+from .serializers import IIKOOrderIDSerializer
 
 if TYPE_CHECKING:
     from apps.payments.models import Payment
@@ -12,8 +13,9 @@ if TYPE_CHECKING:
 class ApplyDeliveryOrder(BaseIIKOService):
     """Создание заказа в системе IIKO"""
     endpoint = 'api/1/deliveries/create'
-    save_serializer = None
+    save_serializer = IIKOOrderIDSerializer
     instance: 'Order' = None
+
     log_headers = True
     log_request = True
     log_response = True
@@ -64,3 +66,20 @@ class ApplyDeliveryOrder(BaseIIKOService):
                 } for position in cast(Iterable['CartPosition'], self.instance.cart.positions.all())]
             }
         })
+
+    def prepare_to_save(self, data: dict) -> dict:
+        order_info = data.get('orderInfo', {})
+        outer_id = order_info.get('id')
+
+        if outer_id:
+            return {'outer_id': outer_id}
+
+        return {}
+
+    def save(self, prepared_data):
+        serializer = self.save_serializer(
+            instance=self.instance,
+            data=self.prepare_to_save(prepared_data),
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()

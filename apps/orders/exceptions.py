@@ -13,11 +13,6 @@ class UserHasNoAddressError(APIException):
     default_code = error_codes.USER_HAS_NO_ADDRESS
 
 
-class CouponNotActive(APIException):
-    status_code = 400
-    default_code = error_codes.COUPON_NOT_ACTIVE
-
-
 class InvalidBranchError(APIException):
     status_code = 400
     default_code = error_codes.INVALID_BRANCH

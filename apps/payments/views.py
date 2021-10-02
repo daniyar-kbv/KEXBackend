@@ -4,8 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 
-from apps.common.views import JSONRendererMixin
-from apps.common.mixins import PublicAPIMixin
+from apps.common.mixins import PublicAPIMixin, JSONRendererMixin
 
 from . import PaymentStatusTypes
 from .models import Payment, DebitCard
