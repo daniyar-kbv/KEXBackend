@@ -176,13 +176,11 @@ class LeadDetailSerializer(serializers.ModelSerializer):
             return None
 
     def get_brand_image(self, obj):
-        from apps.common import ImageTypes
-
-        request = self.context["request"]
-        image = obj.local_brand.brand.img.filter(image_type=ImageTypes.IMAGE_SQUARE).first()
-
-        if image is not None:
-            return request.build_absolute_uri(image.image.url)
+        request = self.context.get("request")
+        if request:
+            image = obj.local_brand.brand.mobile_image_square if request.user_agent.is_mobile else obj.local_brand.brand.web_image_square
+            if image:
+                return request.build_absolute_uri(image.url)
 
 
 class LeadCheckSerializer(serializers.ModelSerializer):
@@ -208,8 +206,7 @@ class LeadCheckSerializer(serializers.ModelSerializer):
         from apps.common import ImageTypes
 
         request = self.context["request"]
-        print("get_brand_image obj: ", obj)
-        image = obj.local_brand.brand.img.filter(image_type=ImageTypes.IMAGE_FOR_CHECK).first()
+        image = obj.local_brand.brand.images.filter(image_type=ImageTypes.IMAGE_FOR_CHECK).first()
 
         if image is not None:
             return request.build_absolute_uri(image.image.url)
@@ -218,8 +215,7 @@ class LeadCheckSerializer(serializers.ModelSerializer):
 class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
-    image_small = serializers.SerializerMethodField()
-    image_big = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
     category = serializers.UUIDField(source="branch_category_id", required=False)
 
@@ -230,8 +226,7 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
             "name",
             "price",
             "description",
-            "image_small",
-            "image_big",
+            "image",
             "count",
             "is_available",
             "category",
@@ -254,25 +249,17 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
         return obj.description.text(lang=self.context["language"])
 
     def get_image_small(self, obj):
-        if not obj.position.image_small:
-            return
-
-        request = self.context["request"]
-        return request.build_absolute_uri(obj.position.image_small.url)
-
-    def get_image_big(self, obj):
-        if not obj.position.image_big:
-            return
-
-        request = self.context["request"]
-        return request.build_absolute_uri(obj.position.image_big.url)
+        request = self.context.get("request")
+        if request:
+            image = obj.position.mobile_image if request.user_agent.is_mobile else obj.position.web_image
+            if image:
+                return request.build_absolute_uri(image.url)
 
 
 class NomenclaturePositionSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
-    image_small = serializers.SerializerMethodField()
-    image_big = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
     category = serializers.UUIDField(source="category_id")
 
     class Meta:
@@ -282,8 +269,7 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
             "name",
             "price",
             "description",
-            "image_small",
-            "image_big",
+            "image",
             "is_available",
             "category",
         )
@@ -300,19 +286,12 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
 
         return obj.description.text(lang=self.context["language"])
 
-    def get_image_small(self, obj):
-        if not obj.position.image_small:
-            return
-
-        request = self.context["request"]
-        return request.build_absolute_uri(obj.position.image_small.url)
-
-    def get_image_big(self, obj):
-        if not obj.position.image_big:
-            return
-
-        request = self.context["request"]
-        return request.build_absolute_uri(obj.position.image_big.url)
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if request:
+            image = obj.position.mobile_image if request.user_agent.is_mobile else obj.position.web_image
+            if image:
+                return request.build_absolute_uri(image.url)
 
 
 class NomenclatureCategorySerializer(serializers.ModelSerializer):

@@ -142,7 +142,7 @@ class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
 
-        output_serializer = RetrieveCartSerializer(instance)
+        output_serializer = RetrieveCartSerializer(instance, context={'request': request})
         return Response(output_serializer.data)
 
 

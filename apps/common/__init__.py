@@ -4,13 +4,13 @@ default_app_config = 'apps.common.apps.CommonConfig'
 
 
 class ImageTypes(models.TextChoices):
-    IMAGE_FOR_CHECK = ("IMAGE_FOR_CHECK", "Для Бренда: чек")
-    IMAGE_SQUARE = ("IMAGE_SQUARE", "Для Бренда: квадрат")
-    IMAGE_SHORT = ("IMAGE_SHORT", "Для Бренда: короткая")
-    IMAGE_TALL = ("IMAGE_TALL", "Для Бренда: высокая")
-    IMAGE_LONG = ("IMAGE_LONG", "Для Бренда: длинная")
-    IMAGE_FOR_PROMOTION = ("IMAGE_FOR_PROMOTION", "Для Акции")
-    IMAGE_FOR_POSITION = ("IMAGE_FOR_POSITION", "Для Позиции")
+    IMAGE_FOR_CHECK = ("image_for_check", "Для Бренда: чек")
+    IMAGE_SQUARE = ("image_square", "Для Бренда: квадрат")
+    IMAGE_SHORT = ("image_short", "Для Бренда: короткая")
+    IMAGE_TALL = ("image_tall", "Для Бренда: высокая")
+    IMAGE_LONG = ("image_long", "Для Бренда: длинная")
+    IMAGE_FOR_PROMOTION = ("image_for_promotion", "Для Акции")
+    IMAGE_FOR_POSITION = ("image_for_position", "Для Позиции")
 
 
 class PlatformTypes(models.TextChoices):

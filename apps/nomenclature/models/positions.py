@@ -1,15 +1,17 @@
 from decimal import Decimal
 from typing import TYPE_CHECKING, List
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
+from apps.common import ImageTypes
 from apps.nomenclature.managers import BranchPositionManager
 from apps.common.models import (
     AbstractDescriptionModel,
     AbstractNameModel,
     UUIDModel,
-)
+    ImageModel)
 
 if TYPE_CHECKING:
     from apps.partners.models import Branch
@@ -69,6 +71,17 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
         _("Активен в системе mti"),
         default=True,
     )
+    images = GenericRelation(ImageModel)
+
+    @property
+    def web_image(self):
+        if self.images.for_web().filter(image_type=ImageTypes.IMAGE_FOR_POSITION).exists():
+            return self.images.for_web().filter(image_type=ImageTypes.IMAGE_FOR_POSITION).first().image
+
+    @property
+    def mobile_image(self):
+        if self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_FOR_POSITION).exists():
+            return self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_FOR_POSITION).first().image
 
 
 class BranchPosition(UUIDModel):

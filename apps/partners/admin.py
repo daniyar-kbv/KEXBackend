@@ -3,16 +3,19 @@ from django.urls import reverse
 from django.contrib import admin
 from django.utils.html import format_html
 
-from apps.common.admin import ReadChangeOnlyTabularInline, AbstractNameModelForm
+from apps.common.admin import (
+    ReadChangeOnlyTabularInline,
+    AbstractNameModelForm,
+    ImageModelInline
+)
 from apps.nomenclature.admin import (
     CategoryInline,
     PositionInline, BranchPositionInline,
 )
 
 from .models import (
-    Brand, BrandImage, LocalBrand, Branch, BranchDeliveryTime, LocalBrandPaymentType
+    Brand, LocalBrand, Branch, BranchDeliveryTime, LocalBrandPaymentType
 )
-from apps.common.models import ImageModel
 
 
 class LocalBrandPaymentTypeInline(admin.TabularInline):
@@ -21,17 +24,6 @@ class LocalBrandPaymentTypeInline(admin.TabularInline):
     classes = ('collapse',)
     fields = ('name', 'is_current')
     readonly_fields = 'name',
-
-
-class BrandImageInline(admin.StackedInline):
-    model = BrandImage
-    extra = 0
-    classes = ("collapse",)
-
-
-class ImageModelInline(GenericStackedInline):
-    model = ImageModel
-    extra = 0
 
 
 class BranchDeliveryTimeInline(admin.TabularInline):
@@ -106,7 +98,7 @@ class BranchForm(AbstractNameModelForm):
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    inlines = [BrandImageInline, LocalBrandInline, ImageModelInline]
+    inlines = [LocalBrandInline, ImageModelInline]
     list_editable = ["priority"]
     list_display = ['name', "id", "priority"]
     ordering = ['priority']

@@ -7,6 +7,7 @@ from .models import (
     Category,
     Position, BranchPosition,
 )
+from apps.common.admin import ImageModelInline
 
 
 class CategoryInline(ReadChangeOnlyTabularInline):
@@ -83,3 +84,6 @@ class LocalPositionAdmin(admin.ModelAdmin):
         "outer_id",
     )
     form = LocalPositionForm
+    inlines = [
+        ImageModelInline
+    ]

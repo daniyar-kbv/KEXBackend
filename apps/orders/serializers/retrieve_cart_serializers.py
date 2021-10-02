@@ -9,7 +9,7 @@ from apps.nomenclature.models import BranchPosition
 
 class BranchPositionShortSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
-    # image = serializers.SerializerMethodField(read_only=True)
+    image = serializers.SerializerMethodField(read_only=True)
     description = serializers.SerializerMethodField(read_only=True)
     category = serializers.UUIDField(source="branch_category_id", read_only=True)
 
@@ -18,7 +18,7 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
         fields = (
             "uuid",
             "name",
-            # "image",
+            "image",
             "price",
             "position_type",
             "category",
@@ -35,13 +35,12 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
 
         return obj.name.text(lang=self.context.get("language", "ru"))
 
-    # def get_image(self, obj):
-    #     if not obj.position.image:
-    #         return
-    #
-    #     request = self.context.get("request")
-    #     if request:
-    #         return request.build_absolute_uri(obj.position.image.url)
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if request:
+            image = obj.position.mobile_image if request.user_agent.is_mobile else obj.position.web_image
+            if image:
+                return request.build_absolute_uri(image.url)
 
     def get_description(self, obj):
         if not obj.description:

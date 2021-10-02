@@ -111,3 +111,46 @@ class MultiLanguageFile(models.Model):
         if self.file_ru:
             return self.file_ru.name
         return "No name"
+
+
+class MultiLanguageImage(models.Model):
+    file_ru = models.FileField("Файл (рус)", upload_to='', null=True)
+    file_kk = models.FileField("Файл (каз)", upload_to='', blank=True, null=True)
+    file_en = models.FileField("Файл (англ)", upload_to='', blank=True, null=True)
+
+    def set_all_langs(self, lang_dict: dict) -> None:
+        for lang, value in lang_dict.items():
+            setattr(self, f"file_{lang}", value)
+        self.save()
+
+    @property
+    def ru(self):
+        return self.file_ru
+
+    @ru.setter
+    def ru(self, value):
+        self.file_ru = value
+        self.save()
+
+    @property
+    def kk(self):
+        return self.file_kk
+
+    @kk.setter
+    def kk(self, value):
+        self.file_kk = value
+        self.save()
+
+    @property
+    def en(self):
+        return self.file_en
+
+    @en.setter
+    def en(self, value):
+        self.file_en = value
+        self.save()
+
+    def __str__(self):
+        if self.file_ru:
+            return self.file_ru.name
+        return "No name"

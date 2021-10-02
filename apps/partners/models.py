@@ -26,7 +26,49 @@ from .managers import (
 )
 
 
-class Brand(AbstractNameModel):
+class BrandImageMixin:
+    @property
+    def web_image_square(self):
+        if self.images.for_web().filter(image_type=ImageTypes.IMAGE_SQUARE).exists():
+            return self.images.for_web().filter(image_type=ImageTypes.IMAGE_SQUARE).first().image
+
+    @property
+    def web_image_short(self):
+        if self.images.for_web().filter(image_type=ImageTypes.IMAGE_SHORT).exists():
+            return self.images.for_web().filter(image_type=ImageTypes.IMAGE_SHORT).first().image
+
+    @property
+    def web_image_tall(self):
+        if self.images.for_web().filter(image_type=ImageTypes.IMAGE_TALL).first():
+            return self.images.for_web().filter(image_type=ImageTypes.IMAGE_TALL).first().image
+
+    @property
+    def web_image_long(self):
+        if self.images.for_web().filter(image_type=ImageTypes.IMAGE_LONG).first():
+            return self.images.for_web().filter(image_type=ImageTypes.IMAGE_LONG).first().image
+
+    @property
+    def mobile_image_square(self):
+        if self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_SQUARE).exists():
+            return self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_SQUARE).first().image
+
+    @property
+    def mobile_image_short(self):
+        if self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_SHORT).exists():
+            return self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_SHORT).first().image
+
+    @property
+    def mobile_image_tall(self):
+        if self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_TALL).first():
+            return self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_TALL).first().image
+
+    @property
+    def mobile_image_long(self):
+        if self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_LONG).first():
+            return self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_LONG).first().image
+
+
+class Brand(BrandImageMixin, AbstractNameModel):
     class Meta:
         verbose_name = _("Брэнд")
         verbose_name_plural = _("Брэнды")
@@ -36,30 +78,6 @@ class Brand(AbstractNameModel):
         default=1,
     )
     images = GenericRelation(ImageModel)
-
-
-class BrandImage(MainModel):
-    class Meta:
-        verbose_name = _("Brand Image")
-        verbose_name_plural = _("Brand Images")
-        unique_together = ("brand", "image_type", "platform")
-
-    brand = models.ForeignKey(
-        "partners.Brand",
-        on_delete=models.CASCADE,
-        related_name="img",
-        verbose_name=_("Брэнд"),
-    )
-    image_type = models.CharField(
-        _("Тип картинки"),
-        max_length=20,
-        choices=ImageTypes.choices,
-        null=True
-    )
-    platform = models.CharField(_("Размер"), choices=PlatformTypes.choices, default=PlatformTypes.MOBILE, max_length=10)
-    image = models.ImageField(_("Image"), null=True)
-
-    objects = BrandImageQuerySet.as_manager()
 
 
 class LocalBrand(ServiceHistoryModel):

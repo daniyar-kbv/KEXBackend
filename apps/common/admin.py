@@ -12,6 +12,11 @@ from apps.pipeline.models import ServiceHistory
 from apps.translations.models import MultiLanguageTextEditor, MultiLanguageFile
 
 
+class ImageModelInline(GenericStackedInline):
+    model = ImageModel
+    extra = 0
+
+
 class HiddenAdmin(admin.ModelAdmin):
     def get_model_perms(self, request):
         return {}  # Hide model in admin list

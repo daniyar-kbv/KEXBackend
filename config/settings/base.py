@@ -100,6 +100,7 @@ AUTH_USER_MODEL = "users.User"
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'apps.translations.middleware.LanguageHeaderMiddleware',
+    'apps.common.middleware.UserAgentMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

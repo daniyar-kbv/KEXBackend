@@ -7,7 +7,7 @@ from django.db.models import Exists, OuterRef
 from apps.common import ImageTypes, PlatformTypes
 from apps.common.mixins import JSONRendererMixin, PublicAPIMixin
 
-from .models import Brand, BrandImage, LocalBrand
+from .models import Brand, LocalBrand
 from .serializers import BrandSerializer
 
 
@@ -37,6 +37,11 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
         6: ImageTypes.IMAGE_LONG,
     }
 
+    def get_image_type(self, index):
+        index = index % len(self.image_map) if index % len(self.image_map) != 0 else len(self.image_map)
+        print("index is: ", index)
+        return self.image_map[index]
+
     def get_serializer_context(self):
         return {
             'request': self.request,
@@ -56,32 +61,25 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
             )
             if platform == PlatformTypes.MOBILE:
                 for i, brand in enumerate(queryset):
-                    blocks_amount = len(self.image_map)
-                    imgs = BrandImage.objects.for_mobile().filter(
-                        brand_id=brand.id,
-                        image_type=self.image_map[(i + 1) % blocks_amount if (i + 1) != blocks_amount else blocks_amount]
-                    )
-                    # print(imgs)
-                    img = imgs.first()
-                    if img:
-                        img = self.request.build_absolute_uri(img.image.url)
-                    setattr(brand, 'image', img)
                     setattr(brand, 'position', i+1)
+                    setattr(
+                        brand, 'image',
+                        self.request.build_absolute_uri(getattr(brand, f"mobile_{self.get_image_type(i+1)}").url)
+                        if getattr(brand, f"mobile_{self.get_image_type(i+1)}") else None)
+                    setattr(
+                        brand, 'favicon',
+                        self.request.build_absolute_uri(brand.mobile_image_square.url) if brand.mobile_image_square else None)
 
             elif platform == PlatformTypes.WEB:
                 for i, brand in enumerate(queryset):
-                    image_square = None
-                    image_long = None
-                    imgs = BrandImage.objects.for_web().filter(
-                        brand_id=brand.id,
-                        image_type__in=[ImageTypes.IMAGE_SQUARE, ImageTypes.IMAGE_LONG]
-                    )
-                    if imgs.image_longs().exists():
-                        image_long = self.request.build_absolute_uri(imgs.image_longs().first().image.url)
-                    if imgs.image_squares().exists():
-                        image_square = self.request.build_absolute_uri(imgs.image_squares().first().image.url)
-                    setattr(brand, 'image_square', image_square)
-                    setattr(brand, 'image_long', image_long)
                     setattr(brand, 'position', i + 1)
+                    setattr(
+                        brand, 'image_square',
+                        self.request.build_absolute_uri(brand.web_image_square.url) if brand.web_image_square else None
+                    )
+                    setattr(
+                        brand, 'image_long',
+                        self.request.build_absolute_uri(brand.web_image_long.url) if brand.web_image_long else None
+                    )
             # print(queryset)
             return queryset

@@ -21,6 +21,7 @@ class BrandImagesSerializer(serializers.ModelSerializer):
 class BrandSerializer(AbstractNameSerializer):
     id = serializers.SerializerMethodField()
     image = serializers.CharField(required=False)
+    favicon = serializers.CharField(required=False)
     image_long = serializers.CharField(required=False)
     image_square = serializers.CharField(required=False)
     position = serializers.IntegerField()
@@ -33,6 +34,7 @@ class BrandSerializer(AbstractNameSerializer):
             "position",
             "name",
             "image",
+            "favicon",
             "image_long",
             "image_square",
             "is_available"
