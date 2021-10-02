@@ -1,6 +1,9 @@
+from django.db.models import QuerySet
 from django.db import models
 import inspect
 import sys
+
+from . import PlatformTypes, ImageTypes
 
 
 class MainManager(models.Manager):
@@ -18,3 +21,23 @@ class MainManager(models.Manager):
 
         queryset = queryset.select_related(*rel_fields)
         return queryset
+
+
+class ImageQuerySet(QuerySet):
+    def for_web(self):
+        return self.filter(platform=PlatformTypes.WEB)
+
+    def for_mobile(self):
+        return self.filter(platform=PlatformTypes.MOBILE)
+
+    def image_longs(self):
+        return self.filter(image_type=ImageTypes.IMAGE_LONG)
+
+    def image_squares(self):
+        return self.filter(image_type=ImageTypes.IMAGE_SQUARE)
+
+    def image_shorts(self):
+        return self.filter(image_type=ImageTypes.IMAGE_SHORT)
+
+    def image_talls(self):
+        return self.filter(image_type=ImageTypes.IMAGE_TALL)

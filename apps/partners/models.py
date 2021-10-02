@@ -2,6 +2,7 @@ from uuid import uuid4
 from datetime import time
 from decimal import Decimal
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
@@ -9,13 +10,14 @@ from apps.common.models import (
     AbstractNameModel,
     ServiceHistoryModel,
     MainModel,
+    ImageModel
 )
-
-from . import (
-    BrandImageTypes,
-    DeliveryTypes,
+from apps.common import (
+    ImageTypes,
     PlatformTypes,
 )
+
+from . import DeliveryTypes
 from .managers import (
     LocalBrandManager,
     BranchesQuerySet,
@@ -33,13 +35,14 @@ class Brand(AbstractNameModel):
         _("Приоритетность"),
         default=1,
     )
+    images = GenericRelation(ImageModel)
 
 
 class BrandImage(MainModel):
     class Meta:
         verbose_name = _("Brand Image")
         verbose_name_plural = _("Brand Images")
-        unique_together = ("brand", "image_type", "size")
+        unique_together = ("brand", "image_type", "platform")
 
     brand = models.ForeignKey(
         "partners.Brand",
@@ -50,10 +53,10 @@ class BrandImage(MainModel):
     image_type = models.CharField(
         _("Тип картинки"),
         max_length=20,
-        choices=BrandImageTypes.choices,
+        choices=ImageTypes.choices,
         null=True
     )
-    size = models.CharField(_("Размер"), choices=PlatformTypes.choices, default=PlatformTypes.MOBILE, max_length=10)
+    platform = models.CharField(_("Размер"), choices=PlatformTypes.choices, default=PlatformTypes.MOBILE, max_length=10)
     image = models.ImageField(_("Image"), null=True)
 
     objects = BrandImageQuerySet.as_manager()

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from apps.common.serializers import AbstractNameSerializer
-from . import BrandImageTypes
+from apps.common import ImageTypes
 
 from .models import Brand, LocalBrand, Branch
 
@@ -56,7 +56,7 @@ class SquareImageBrandSerializer(AbstractNameSerializer):
         )
 
     def get_image(self, obj):
-        img_file = obj.img.filter(image_type=BrandImageTypes.IMAGE_SQUARE).first()
+        img_file = obj.img.filter(image_type=ImageTypes.IMAGE_SQUARE).first()
         if img_file:
             return self.context['request'].build_absolute_uri(img_file.image.url)
         return None
@@ -76,7 +76,7 @@ class UserLocalBrandsSerializer(AbstractNameSerializer):
     def get_image(self, obj):
         try:
             return self.context['request'].build_absolute_uri(
-                obj.brand.images.get(image_type=BrandImageTypes.IMAGE_SQUARE).image.url
+                obj.brand.images.get(image_type=ImageTypes.IMAGE_SQUARE).image.url
             )
         except:
             ...

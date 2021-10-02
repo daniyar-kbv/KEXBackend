@@ -176,10 +176,10 @@ class LeadDetailSerializer(serializers.ModelSerializer):
             return None
 
     def get_brand_image(self, obj):
-        from apps.partners import BrandImageTypes
+        from apps.common import ImageTypes
 
         request = self.context["request"]
-        image = obj.local_brand.brand.img.filter(image_type=BrandImageTypes.IMAGE_SQUARE).first()
+        image = obj.local_brand.brand.img.filter(image_type=ImageTypes.IMAGE_SQUARE).first()
 
         if image is not None:
             return request.build_absolute_uri(image.image.url)
@@ -205,11 +205,11 @@ class LeadCheckSerializer(serializers.ModelSerializer):
             return None
 
     def get_brand_image(self, obj):
-        from apps.partners import BrandImageTypes
+        from apps.common import ImageTypes
 
         request = self.context["request"]
         print("get_brand_image obj: ", obj)
-        image = obj.local_brand.brand.img.filter(image_type=BrandImageTypes.IMAGE_FOR_CHECK).first()
+        image = obj.local_brand.brand.img.filter(image_type=ImageTypes.IMAGE_FOR_CHECK).first()
 
         if image is not None:
             return request.build_absolute_uri(image.image.url)

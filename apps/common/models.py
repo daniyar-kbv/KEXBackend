@@ -6,7 +6,8 @@ from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKe
 from django.contrib.contenttypes.models import ContentType
 
 from apps.translations.models import MultiLanguageChar, MultiLanguageText, MultiLanguageTextEditor, MultiLanguageFile
-from .managers import MainManager
+from .managers import MainManager, ImageQuerySet
+from . import ImageTypes, PlatformTypes
 
 
 class MainModel(models.Model):
@@ -163,3 +164,24 @@ class MultipleModelFK(MainModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        abstract = True
+
+
+class ImageModel(MultipleModelFK):
+    class Meta:
+        verbose_name = _("Картинка")
+        verbose_name_plural = _("Картинки")
+        unique_together = ("image_type", "platform", "content_type", "object_id")
+
+    image_type = models.CharField(
+        _("Тип картинки"),
+        max_length=20,
+        choices=ImageTypes.choices,
+        null=True
+    )
+    platform = models.CharField(_("Платформа"), choices=PlatformTypes.choices, default=PlatformTypes.MOBILE, max_length=10)
+    image = models.ImageField(_("Image"), null=True)
+
+    objects = ImageQuerySet.as_manager()

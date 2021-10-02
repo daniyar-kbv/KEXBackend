@@ -2,7 +2,7 @@ from django.db.models import QuerySet, Q, F
 from django.db.models.manager import BaseManager
 from django.utils.timezone import localtime
 
-from apps.partners import PlatformTypes, BrandImageTypes
+from apps.common import PlatformTypes, ImageTypes
 
 
 class LocalBrandQuerySet(QuerySet):
@@ -43,19 +43,19 @@ class BranchDeliveryTimeQuerySet(QuerySet):
 
 class BrandImageQuerySet(QuerySet):
     def for_web(self):
-        return self.filter(size=PlatformTypes.WEB)
+        return self.filter(platform=PlatformTypes.WEB)
 
     def for_mobile(self):
-        return self.filter(size=PlatformTypes.MOBILE)
+        return self.filter(platform=PlatformTypes.MOBILE)
 
     def image_longs(self):
-        return self.filter(image_type=BrandImageTypes.IMAGE_LONG)
+        return self.filter(image_type=ImageTypes.IMAGE_LONG)
 
     def image_squares(self):
-        return self.filter(image_type=BrandImageTypes.IMAGE_SQUARE)
+        return self.filter(image_type=ImageTypes.IMAGE_SQUARE)
 
     def image_shorts(self):
-        return self.filter(image_type=BrandImageTypes.IMAGE_SHORT)
+        return self.filter(image_type=ImageTypes.IMAGE_SHORT)
 
     def image_talls(self):
-        return self.filter(image_type=BrandImageTypes.IMAGE_TALL)
+        return self.filter(image_type=ImageTypes.IMAGE_TALL)

@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.admin import GenericStackedInline
 from django.urls import reverse
 from django.contrib import admin
 from django.utils.html import format_html
@@ -11,6 +12,7 @@ from apps.nomenclature.admin import (
 from .models import (
     Brand, BrandImage, LocalBrand, Branch, BranchDeliveryTime, LocalBrandPaymentType
 )
+from apps.common.models import ImageModel
 
 
 class LocalBrandPaymentTypeInline(admin.TabularInline):
@@ -25,6 +27,11 @@ class BrandImageInline(admin.StackedInline):
     model = BrandImage
     extra = 0
     classes = ("collapse",)
+
+
+class ImageModelInline(GenericStackedInline):
+    model = ImageModel
+    extra = 0
 
 
 class BranchDeliveryTimeInline(admin.TabularInline):
@@ -99,7 +106,7 @@ class BranchForm(AbstractNameModelForm):
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    inlines = [BrandImageInline, LocalBrandInline]
+    inlines = [BrandImageInline, LocalBrandInline, ImageModelInline]
     list_editable = ["priority"]
     list_display = ['name', "id", "priority"]
     ordering = ['priority']

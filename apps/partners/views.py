@@ -4,9 +4,9 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import ListAPIView
 from django.db.models import Exists, OuterRef
 
+from apps.common import ImageTypes, PlatformTypes
 from apps.common.mixins import JSONRendererMixin, PublicAPIMixin
 
-from . import BrandImageTypes, PlatformTypes
 from .models import Brand, BrandImage, LocalBrand
 from .serializers import BrandSerializer
 
@@ -29,12 +29,12 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
     serializer_class = BrandSerializer
     pagination_class = None
     image_map = {
-        1: BrandImageTypes.IMAGE_SQUARE,
-        2: BrandImageTypes.IMAGE_SHORT,
-        3: BrandImageTypes.IMAGE_TALL,
-        4: BrandImageTypes.IMAGE_SQUARE,
-        5: BrandImageTypes.IMAGE_SQUARE,
-        6: BrandImageTypes.IMAGE_LONG,
+        1: ImageTypes.IMAGE_SQUARE,
+        2: ImageTypes.IMAGE_SHORT,
+        3: ImageTypes.IMAGE_TALL,
+        4: ImageTypes.IMAGE_SQUARE,
+        5: ImageTypes.IMAGE_SQUARE,
+        6: ImageTypes.IMAGE_LONG,
     }
 
     def get_serializer_context(self):
@@ -74,7 +74,7 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
                     image_long = None
                     imgs = BrandImage.objects.for_web().filter(
                         brand_id=brand.id,
-                        image_type__in=[BrandImageTypes.IMAGE_SQUARE, BrandImageTypes.IMAGE_LONG]
+                        image_type__in=[ImageTypes.IMAGE_SQUARE, ImageTypes.IMAGE_LONG]
                     )
                     if imgs.image_longs().exists():
                         image_long = self.request.build_absolute_uri(imgs.image_longs().first().image.url)

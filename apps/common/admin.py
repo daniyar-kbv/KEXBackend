@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.admin import GenericTabularInline, GenericStackedInline
 
-from apps.common.models import MultiLanguageChar, MultiLanguageText
+from apps.common.models import MultiLanguageChar, MultiLanguageText, ImageModel
 from apps.pipeline.models import ServiceHistory
 from apps.translations.models import MultiLanguageTextEditor, MultiLanguageFile
 
