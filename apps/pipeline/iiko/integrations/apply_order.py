@@ -25,7 +25,7 @@ class BaseApplyOrder(BaseIIKOService):
     log_response = True
 
     def skip_task(self):
-        if self.instance.status in [OrderStatuses.APPLYING, OrderStatuses.APPLIED]:
+        if self.instance.status == OrderStatuses.APPLIED:
             return True
 
     def get_local_brand_pk(self):
@@ -109,14 +109,10 @@ class VerifyDeliveryOrder(BaseApplyOrder):
     """Валидация просадки заказа в сервис IIKO"""
     endpoint = 'api/1/deliveries/by_id'
 
-    def skip_task(self):
-        if self.instance.status in [OrderStatuses.APPLIED]:
-            return True
-
     def run_service(self):
         return self.fetch(json={
             "organizationId": str(self.instance.branch.outer_id),
-            "orderIds": [str(self.instance.outer_id),]
+            "orderIds": [str(self.instance.outer_id)]
         })
 
     def prepare_to_save(self, data: dict) -> dict:
