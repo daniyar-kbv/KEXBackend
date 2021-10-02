@@ -19,7 +19,7 @@ urlpatterns = [
     path("rates/", include("apps.order_rates.urls")),
     path("contacts/", ContactListView.as_view()),
     path('', index_view),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
