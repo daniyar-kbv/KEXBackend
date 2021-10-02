@@ -109,6 +109,12 @@ class VerifyDeliveryOrder(BaseApplyOrder):
     """Валидация просадки заказа в сервис IIKO"""
     endpoint = 'api/1/deliveries/by_id'
 
+    def skip_task(self):
+        if self.instance.outer_id is None:
+            return True
+
+        return super().skip_task()
+
     def run_service(self):
         return self.fetch(json={
             "organizationId": str(self.instance.branch.outer_id),
