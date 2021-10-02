@@ -145,6 +145,9 @@ class Order(
         related_name="order",
         null=True, blank=True,
     )
+    outer_id = models.UUIDField(
+        _("UUID в системе IIKO"), null=True,  # noqa
+    )
     status = models.CharField(
         _("Статус"),
         max_length=32,
