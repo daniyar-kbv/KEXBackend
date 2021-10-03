@@ -48,12 +48,12 @@ def push_order_rate_to_user(fb_tokens, order, lang=settings.DEFAULT_LANGUAGE):
 
 
 @celery_app.task
-def push_order_status_update_to_user(fb_tokens, order, lang=settings.DEFAULT_LANGUAGE):
+def push_order_status_update_to_user(fb_tokens, order_id, order_status, lang=settings.DEFAULT_LANGUAGE):
     template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_STATUS_UPDATE)
-    title = getattr(template.title, lang).format(order.id)
-    body = getattr(template.description, lang).format(order.status)
+    title = getattr(template.title, lang).format(order_id)
+    body = getattr(template.description, lang).format(order_status)
     extra = {
         'push_type': str(PushTypes.ORDER_STATUS_UPDATE),
-        'push_type_value': str(order.id)
+        'push_type_value': str(order_id)
     }
     push_multicast(fb_tokens, title, body, extra)

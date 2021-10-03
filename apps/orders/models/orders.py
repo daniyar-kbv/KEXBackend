@@ -5,6 +5,7 @@ from django.db.transaction import atomic
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _  # noqa
 
+from apps.notifications.tasks import push_order_status_update_to_user
 from apps.orders import OrderStatuses
 from apps.partners import DeliveryTypes
 from apps.payments import PaymentStatusTypes
@@ -163,6 +164,7 @@ class Order(
         self.status = status
         self.status_reason = status_reason
         self.save(update_fields=["status", "status_reason"])
+        push_order_status_update_to_user.delay(self.user.fb_tokens, self.id, status)
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
 
     def mark_as_paid(self):

@@ -4,7 +4,6 @@ from django.utils import timezone
 
 from apps.common.models import AbstractTitleModel, AbstractDescriptionModel, MultipleModelFK, UUIDModel
 from apps.notifications import PushTypes
-from apps.orders.models import Lead
 
 User = get_user_model()
 
