@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -6,13 +7,14 @@ from django.utils.translation import gettext_lazy as _
 from . import PromotionTypes
 from apps.translations.models import MultiLanguageFile, MultiLanguageText
 from apps.docs.models import TemplateModel
-from apps.common.models import AbstractDescriptionModel, AbstractImageModel
+from apps.common.models import AbstractDescriptionModel, AbstractImageModel, MultiLanguageImageModel
+from ..common import ImageTypes
 from ..partners.models import LocalBrand
 
 User = get_user_model()
 
 
-class Promotion(TemplateModel, AbstractImageModel):
+class Promotion(TemplateModel):
     promo_type = models.CharField("Тип Акции", max_length=20, choices=PromotionTypes.choices)
     description = models.ForeignKey(
         MultiLanguageText, verbose_name=_("Текстовое описание (для сайта)"), on_delete=models.CASCADE, null=True
@@ -23,10 +25,22 @@ class Promotion(TemplateModel, AbstractImageModel):
     end_date = models.DateField("Дата завершения", null=True, default=timezone.now)
     # contest_type = models.CharField("Тип Конкурса", max_length=20, choices=PromotionTypes.choices)
 
+    images = GenericRelation(MultiLanguageImageModel)
+
     class Meta:
         verbose_name = "Акция"
         verbose_name_plural = "Акции"
         ordering = ['priority']
+
+    @property
+    def web_image(self):
+        if self.images.for_web().filter(image_type=ImageTypes.IMAGE_FOR_PROMOTION).exists():
+            return self.images.for_web().filter(image_type=ImageTypes.IMAGE_FOR_PROMOTION).first().image
+
+    @property
+    def mobile_image(self):
+        if self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_FOR_PROMOTION).exists():
+            return self.images.for_mobile().filter(image_type=ImageTypes.IMAGE_FOR_PROMOTION).first().image
 
 
 class Participation(models.Model):

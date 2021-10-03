@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from apps.common.admin import AbstractNameModelForm, AbstractTemplateModelForm, AbstractDescriptionModelForm, \
-    AbstractImageModelForm
+    AbstractImageModelForm, ImageModelInline, MultiLanguageImageModelInline
 from apps.notifications.admin import InlineNotification
 from apps.promotions.models import Promotion, Participation
 
@@ -10,11 +10,11 @@ class PromotionForm(
     AbstractNameModelForm,
     AbstractTemplateModelForm,
     AbstractDescriptionModelForm,
-    AbstractImageModelForm
+    # AbstractImageModelForm
 ):
     class Meta:
         model = Promotion
-        exclude = ('name', 'description', 'image', 'image_big')
+        exclude = ('name', 'description')
         # fields = (
         #     'name_ru', 'name_kk', 'name_en',
         #     'description_ru', 'description_kk', 'description_en',
@@ -35,14 +35,16 @@ class PromotionAdmin(admin.ModelAdmin):
     list_display = [
         'name',
         'promo_type',
-        'image',
+        # 'image',
         'priority',
         # 'web_url',
         # 'slug',
     ]
     list_editable = ['priority']
     prepopulated_fields = {"slug": ("template", 'promo_type')}
-    inlines = [InlineNotification]
+    inlines = [
+        InlineNotification, MultiLanguageImageModelInline
+    ]
     filter_horizontal = ['local_brand']
     form = PromotionForm
 

@@ -211,3 +211,27 @@ class ImageModel(MultipleModelFK):
     image = models.ImageField(_("Image"), null=True)
 
     objects = ImageQuerySet.as_manager()
+
+
+class MultiLanguageImageModel(MultipleModelFK):
+    class Meta:
+        verbose_name = _("Картинка")
+        verbose_name_plural = _("Картинки")
+        unique_together = ("image_type", "platform", "content_type", "object_id")
+
+    image_type = models.CharField(
+        _("Тип картинки"),
+        max_length=20,
+        choices=ImageTypes.choices,
+        null=True
+    )
+    platform = models.CharField(_("Платформа"), choices=PlatformTypes.choices, default=PlatformTypes.MOBILE, max_length=10)
+    image = models.ForeignKey(
+        MultiLanguageFile,
+        verbose_name="Картинка",
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name="images"
+    )
+
+    objects = ImageQuerySet.as_manager()

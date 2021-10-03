@@ -26,7 +26,6 @@ class ModifierSerializer(serializers.ModelSerializer):
             "uuid",
             "name",
             "image",
-            "image_big",
         )
 
     def get_name(self, obj):

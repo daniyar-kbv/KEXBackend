@@ -34,8 +34,7 @@ class PositionInline(ReadChangeOnlyStackedInline):
         "priority",
         "position_type",
         "description",
-        "image_small",
-        "image_big",
+        "image",
         "category",
     )
     readonly_fields = (

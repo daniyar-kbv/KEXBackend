@@ -7,13 +7,18 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.admin import GenericTabularInline, GenericStackedInline
 
-from apps.common.models import MultiLanguageChar, MultiLanguageText, ImageModel
+from apps.common.models import MultiLanguageChar, MultiLanguageText, ImageModel, MultiLanguageImageModel
 from apps.pipeline.models import ServiceHistory
 from apps.translations.models import MultiLanguageTextEditor, MultiLanguageFile
 
 
 class ImageModelInline(GenericStackedInline):
     model = ImageModel
+    extra = 0
+
+
+class MultiLanguageImageModelInline(GenericStackedInline):
+    model = MultiLanguageImageModel
     extra = 0
 
 
@@ -238,6 +243,7 @@ class AbstractImageModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AbstractImageModelForm, self).__init__(*args, **kwargs)
+        print("AbstractImageModelForm: ", self.instance)
         if self.instance.image:
             if self.instance.image.ru:
                 self.initial['image_ru'] = self.instance.image.ru
