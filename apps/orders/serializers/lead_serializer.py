@@ -248,7 +248,7 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
 
         return obj.description.text(lang=self.context["language"])
 
-    def get_image_small(self, obj):
+    def get_image(self, obj):
         request = self.context.get("request")
         if request:
             image = obj.position.mobile_image if request.user_agent.is_mobile else obj.position.web_image
