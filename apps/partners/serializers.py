@@ -58,10 +58,11 @@ class SquareImageBrandSerializer(AbstractNameSerializer):
         )
 
     def get_image(self, obj):
-        img_file = obj.img.filter(image_type=ImageTypes.IMAGE_SQUARE).first()
-        if img_file:
-            return self.context['request'].build_absolute_uri(img_file.image.url)
-        return None
+        request = self.context.get("request")
+        if request:
+            image = obj.mobile_image_square if request.user_agent.is_mobile else obj.web_image_square
+            if image:
+                return request.build_absolute_uri(image.url)
 
 
 class UserLocalBrandsSerializer(AbstractNameSerializer):
