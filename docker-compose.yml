@@ -1,7 +1,6 @@
 version: '3'
 
 volumes:
-  postgres:
   media:
   portainer_data:
 
@@ -17,13 +16,12 @@ services:
       - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - RABBIT_HOST=rabbitmq
-      - DB_HOST=postgres
+      - DB_HOST=localhost
       - REDIS_HOST=redis
     ports:
       - "8000:8000"
     depends_on:
       - redis
-      - postgres
       - celery-worker
       - celery-beat
 
@@ -36,7 +34,7 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - RABBIT_HOST=rabbitmq
-      - DB_HOST=postgres
+      - DB_HOST=localhost
       - REDIS_HOST=redis
       - CONTAINER_TYPE=BEAT
     depends_on:
@@ -53,23 +51,11 @@ services:
       - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - RABBIT_HOST=rabbitmq
-      - DB_HOST=postgres
+      - DB_HOST=localhost
       - REDIS_HOST=redis
       - CONTAINER_TYPE=CELERY
     depends_on:
       - rabbitmq
-
-  postgres:
-    image: postgres
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=kexdb
-      - POSTGRES_PASSWORD=kexdb
-    ports:
-      - "5432:5432"
-    depends_on:
-      - redis
 
   rabbitmq:
     image: rabbitmq
