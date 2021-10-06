@@ -164,7 +164,7 @@ class Order(
         self.status = status
         self.status_reason = status_reason
         self.save(update_fields=["status", "status_reason"])
-        # push_order_status_update_to_user.delay(self.user.fb_tokens, self.id, status)
+        push_order_status_update_to_user.delay(self.user.fb_tokens, self.id, status)
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
 
     def mark_as_paid(self):
