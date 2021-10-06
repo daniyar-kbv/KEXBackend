@@ -23,7 +23,4 @@ WORKDIR /app
 # Copy source code
 COPY . /app
 
-# Collect static
-RUN python manage.py collectstatic --noinput --clear
-
 CMD ["/docker-entrypoint.sh"]

@@ -1,13 +1,13 @@
 from config import celery_app
 
-from apps.partners.models import IIKOBrand
+from apps.partners.models import LocalBrand
 from apps.pipeline.iiko.integrations.auth import GetAuthToken
 
 
-@celery_app.task
-def fetch_auth_token(brand_api_login_pk: int):
-    brand_api_login = IIKOBrand.objects.get(
-        pk=brand_api_login_pk
+@celery_app.task(name="iiko.fetch_auth_token")
+def fetch_auth_token(iiko_brand_pk: int):
+    local_brand = LocalBrand.objects.get(
+        pk=iiko_brand_pk
     )
 
-    return GetAuthToken(instance=brand_api_login).run()
+    return GetAuthToken(instance=local_brand).run()

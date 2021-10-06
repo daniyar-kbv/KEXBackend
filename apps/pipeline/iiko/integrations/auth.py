@@ -1,12 +1,18 @@
+from typing import TYPE_CHECKING
+
 from constance import config
 from django.core.cache import cache
-from requests.models import Response
 
 from apps.pipeline.services import BaseService
+
+if TYPE_CHECKING:
+    from apps.partners.models import LocalBrand
 
 
 class GetAuthToken(BaseService):
     """Получение токена брэнда"""
+    instance: 'LocalBrand' = None
+
     host = config.IIKO_SERVICE_HOST
     endpoint = "/api/1/access_token"
 
@@ -34,3 +40,6 @@ class GetAuthToken(BaseService):
             self.instance.cache_mask, token,
             timeout=config.IIKO_AUTH_TOKEN_LIFETIME,
         )
+
+    def log_save(self, instance=None):
+        ...

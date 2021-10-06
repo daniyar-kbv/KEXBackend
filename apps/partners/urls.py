@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import BrandImagesView
+from .views import BrandListView
 
 urlpatterns = [
-    path("brands_images/<str:city>/", BrandImagesView.as_view()),
+    path("brands_of_city/<str:city_id>/", BrandListView.as_view()),
 ]

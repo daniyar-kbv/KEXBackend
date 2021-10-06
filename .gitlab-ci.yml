@@ -1,22 +1,20 @@
+image: tiangolo/docker-with-compose
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
 stages:
   - build
+  - deploy
 
-variables:
- TAG: $CI_BUILD_REF_SLUG-$CI_PIPELINE_ID-$CI_COMMIT_SHORT_SHA
-
-docker-image:
+build-prod:
   stage: build
-  image: docker:18.06
-  tags:
-    - docker
-  only: ["dev", "master"]
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_PROJECT_PATH .
-    - docker tag $CI_PROJECT_PATH $CI_REGISTRY_IMAGE
-    - docker tag $CI_PROJECT_PATH $CI_REGISTRY_IMAGE:$TAG
-    - docker push $CI_REGISTRY_IMAGE
-    - docker push $CI_REGISTRY_IMAGE:$TAG
-    - docker rmi $CI_PROJECT_PATH
-    - docker rmi $CI_REGISTRY_IMAGE
-    - docker rmi $CI_REGISTRY_IMAGE:$TAG
+    - docker-compose build
+  only: ["dev", "master"]
+
+deploy-prod:
+  stage: deploy
+  script:
+    - docker stack deploy -c docker-compose.yml --with-registry-auth kex-brands
+  only: ["dev", "master"]

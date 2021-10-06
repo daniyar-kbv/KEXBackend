@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
 from drf_yasg import openapi
@@ -13,6 +14,7 @@ internal_schema_view = get_schema_view(
     openapi.Info(
         title="KEX API", default_version="v1", description="Kex",
     ),
+    # url="https://dev.kexbrands.kz/",
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
@@ -27,6 +29,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path(
         "docs/",
         schema_view.with_ui("swagger", cache_timeout=0),

@@ -2,6 +2,8 @@ version: '3'
 
 volumes:
   postgres:
+  media:
+  portainer_data:
 
 services:
   rest_server:
@@ -10,7 +12,9 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
+      - media:/media
     environment:
+      - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - RABBIT_HOST=rabbitmq
       - DB_HOST=postgres
@@ -34,7 +38,7 @@ services:
       - RABBIT_HOST=rabbitmq
       - DB_HOST=postgres
       - REDIS_HOST=redis
-      - CONTAINER_TYPE=FLOWER
+      - CONTAINER_TYPE=BEAT
     depends_on:
       - rabbitmq
       - celery-worker
@@ -46,6 +50,7 @@ services:
     volumes:
       - .:/app
     environment:
+      - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - RABBIT_HOST=rabbitmq
       - DB_HOST=postgres
@@ -72,3 +77,24 @@ services:
       - redis
   redis:
     image: redis
+
+  portainer-agent:
+    image: portainer/agent
+    environment:
+      AGENT_PORT: 9001
+      LOG_LEVEL: debug
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+
+  portainer:
+    image: portainer/portainer:alpine
+    command: -H tcp://portainer-agent:9001 --tlsskipverify
+    ports:
+      - "9000:9000"
+    volumes:
+      - portainer_data:/data
+    depends_on:
+      - rest_server
+      - portainer-agent
+    restart: always

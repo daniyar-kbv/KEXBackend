@@ -1,49 +1,48 @@
 from rest_framework import serializers
-from django.apps import apps
-from django.contrib.auth.models import Permission
 
-from .models import User
+from apps.location.serializers import AddressSerializer
+from apps.partners.serializers import UserLocalBrandsSerializer
+
+from .models import User, UserAddress
+from ..notifications.firebase import subscribe_to_language_topic
 
 
-class TestSerializer(serializers.ModelSerializer):
+class UserAddressSerializer(serializers.ModelSerializer):
+    address = AddressSerializer(read_only=True)
+    is_current = serializers.BooleanField()
+    local_brand = UserLocalBrandsSerializer(read_only=True)
+
     class Meta:
-        model = User
+        model = UserAddress
         fields = "__all__"
 
 
-class UserInfoSerializer(serializers.ModelSerializer):
-    full_name = serializers.ReadOnlyField(required=False)
-    branch = serializers.SerializerMethodField(required=False)
-    role = serializers.SerializerMethodField(required=False)
-
-    def get_role(self, instance):
-        if instance.is_supervisor:
-            return "supervisor"
-
-        if instance.is_superuser:
-            return "superuser"
-
-        elif instance.is_credit_manager:
-            return "credit_manager"
-
-    def get_branch(self, instance) -> str:
-        return instance.branch.address if instance.branch else ""
+class AccountInfoSerializer(serializers.ModelSerializer):
+    current_address = serializers.IntegerField(source="current_address_pk", required=False, read_only=True)
+    current_debit_card = serializers.IntegerField(source="current_debit_card_pk", required=False, read_only=True)
 
     class Meta:
         model = User
-        fields = (
+        fields = [
+            "name",
             "email",
-            "role",
-            "full_name",
-            "merchant",
-            "branch"
-        )
+            "mobile_phone",
+            "current_address",
+            "current_debit_card",
+            "last_payment_type",
+            "language"
+        ]
+        extra_kwargs = {
+            "last_payment_type": {"read_only": True, "required": False}
+        }
+
+    def validate_language(self, value):
+        if self.instance.fb_tokens:
+            subscribe_to_language_topic(value, self.instance.fb_tokens)
+        return value
 
 
 class UserViewSerializer(serializers.ModelSerializer):
-    """
-    List, Retrieve serializer for User model
-    """
     class Meta:
         model = User
         fields = [
@@ -54,9 +53,6 @@ class UserViewSerializer(serializers.ModelSerializer):
 
 
 class UserCreateUpdateSerializer(serializers.ModelSerializer):
-    """
-    Create, Update serializer for User model
-    """
     class Meta:
         model = User
         fields = [

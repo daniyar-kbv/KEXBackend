@@ -13,7 +13,7 @@ django-rosetta==0.9.3
 
 # Celery
 celery[redis]==5.0.2
-django-celery-beat==2.0.0
+django-celery-beat==2.2.0
 
 # Redis
 django-redis==4.12.1
@@ -21,7 +21,7 @@ django-redis==4.12.1
 # Utils
 phonenumbers==8.11.1
 pyotp==2.3.0
-#Pillow==8.1.2
+Pillow==8.2.0
 xmltodict==0.12.0
 python-dateutil==2.8.1
 ipdb==0.12.3
@@ -29,9 +29,13 @@ django-ckeditor==5.9.0
 zeep==3.4.0
 num2words==0.5.10
 pyexcelerate==0.8.0
+cryptography==3.4.7
 
 # xlsx files
 xlrd==1.2.0
 
 # dynamic settings
 django-constance[redis]==2.7.0
+
+# firebase
+firebase_admin==5.0.1

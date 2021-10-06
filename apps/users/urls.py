@@ -1,12 +1,17 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from .views import UserViewSet, Test
+from .views import (
+    AccountInfoView,
+    AccountUpdateView,
+    UserAddressViewSet,
+)
 
 router = DefaultRouter()
-# router.register("", UserViewSet)
+router.register("addresses", UserAddressViewSet)
 
 urlpatterns = [
-    # path("", include(router.urls)),
-    path("video/", Test.as_view()),
+    path("account-info/", AccountInfoView.as_view()),
+    path("account-update/", AccountUpdateView.as_view()),
+    path("", include(router.urls)),
 ]

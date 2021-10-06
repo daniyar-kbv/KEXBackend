@@ -59,7 +59,7 @@ coverage.xml
 staticfiles/
 
 # Sphinx documentation
-docs/_build/
+apps/docs/_build/
 
 # PyBuilder
 target/

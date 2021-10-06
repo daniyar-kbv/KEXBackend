@@ -1,2 +1,1 @@
-from .error_codes import *
-from .dynamic_constance_configs import *
+user_agents_mobile = ['Mobile', 'Opera Mini', 'Android', 'IOS']

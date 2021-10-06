@@ -8,7 +8,7 @@ DEBUG = True
 
 INSTALLED_APPS += ["django_extensions"]  # noqa F405
 
-CACHES["LOCATION"] = "redis://localhost:6379/1"  # noqa
+CACHES["LOCATION"] = f"redis://{os.getenv('REDIS_HOST', 'localhost')}:6379/1"  # noqa
 
 LOGGING = {
     "version": 1,
@@ -17,4 +17,4 @@ LOGGING = {
     "loggers": {"django.db.backends": {"handlers": ["console"], "level": "INFO"}},
 }
 
-CONSTANCE_REDIS_CONNECTION["host"] = "localhost"  # noqa
+# CONSTANCE_REDIS_CONNECTION["host"] = os.getenv("REDIS_HOST", "localhost")  # noqa

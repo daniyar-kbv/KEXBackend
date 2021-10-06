@@ -15,7 +15,11 @@ def _get_handler_class(status_code: str):
         return getattr(handlers, f"HandlerCode{status_code}")
 
 
-def execute_handler(data: Dict, raw_response: 'Response') -> Dict:
+def execute_handler(
+    data: Dict,
+    raw_response: 'Response',
+    language: str = None,
+) -> Dict:
     status_code = str(raw_response.status_code)
     handler_class = _get_handler_class(status_code)
 
@@ -23,7 +27,7 @@ def execute_handler(data: Dict, raw_response: 'Response') -> Dict:
         return data
 
     data, error = handler_class(
-        data, raw_response._headers.get("language") # noqa
+        data, language # noqa
     ).format()
 
     return CustomResponse(data, error).__dict__
