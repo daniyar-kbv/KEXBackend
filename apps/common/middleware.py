@@ -28,6 +28,7 @@ class UserAgentMiddleware(object):
 
     def process_request(self, request):
         user_agent = request.META.get('HTTP_USER_AGENT')
+        print(user_agent)
         setattr(request, 'user_agent', UserAgent(user_agent))
         response = self.get_response(request)
         return response
