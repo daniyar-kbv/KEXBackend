@@ -67,7 +67,7 @@ class HistoryInline(ReadOnlyMixin, GenericTabularInline):
 
 
 class AbstractNameModelForm(forms.ModelForm):
-    name_ru = forms.CharField(label="Название (рус)", required=True, max_length=256)
+    name_ru = forms.CharField(label="Название (рус)", required=False, max_length=256)
     name_kk = forms.CharField(label="Название (каз)", required=False, max_length=256)
     name_en = forms.CharField(label="Название (англ)", required=False, max_length=256)
 
@@ -76,15 +76,6 @@ class AbstractNameModelForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AbstractNameModelForm, self).__init__(*args, **kwargs)
-        # self.fields['name_ru'] = forms.CharField(
-        #     label="Название (рус)", required=True, max_length=256
-        # )
-        # self.fields['name_kk'] = forms.CharField(
-        #     label="Название (каз)", required=False, max_length=256
-        # )
-        # self.fields['name_en'] = forms.CharField(
-        #     label="Название (англ)", required=False, max_length=256
-        # )
         if self.instance.name:
             name_ru = self.instance.name.ru
             name_kk = self.instance.name.kk
@@ -114,7 +105,7 @@ class AbstractNameModelForm(forms.ModelForm):
 
 
 class AbstractTitleModelForm(forms.ModelForm):
-    title_ru = forms.CharField(label="Заголовок (рус)", required=True, max_length=256)
+    title_ru = forms.CharField(label="Заголовок (рус)", required=False, max_length=256)
     title_kk = forms.CharField(label="Заголовок (каз)", required=False, max_length=256)
     title_en = forms.CharField(label="Заголовок (англ)", required=False, max_length=256)
 
@@ -152,7 +143,7 @@ class AbstractTitleModelForm(forms.ModelForm):
 
 
 class AbstractDescriptionModelForm(forms.ModelForm):
-    description_ru = forms.CharField(label="Описание (рус)", required=True, widget=forms.Textarea())
+    description_ru = forms.CharField(label="Описание (рус)", required=False, widget=forms.Textarea())
     description_kk = forms.CharField(label="Описание (каз)", required=False, widget=forms.Textarea())
     description_en = forms.CharField(label="Описание (англ)", required=False, widget=forms.Textarea())
 
@@ -190,7 +181,7 @@ class AbstractDescriptionModelForm(forms.ModelForm):
 
 
 class AbstractTemplateModelForm(forms.ModelForm):
-    template_ru = forms.CharField(label="HTML Шаблон (рус)", required=True, widget=CKEditorUploadingWidget())
+    template_ru = forms.CharField(label="HTML Шаблон (рус)", required=False, widget=CKEditorUploadingWidget())
     template_kk = forms.CharField(label="HTML Шаблон (каз)", required=False, widget=CKEditorUploadingWidget())
     template_en = forms.CharField(label="HTML Шаблон (англ)", required=False, widget=CKEditorUploadingWidget())
 
@@ -228,10 +219,10 @@ class AbstractTemplateModelForm(forms.ModelForm):
 
 
 class AbstractImageModelForm(forms.ModelForm):
-    image_ru = forms.ImageField(label="Картинка (рус)", required=True)
+    image_ru = forms.ImageField(label="Картинка (рус)", required=False)
     image_kk = forms.ImageField(label="Картинка (каз)", required=False)
     image_en = forms.ImageField(label="Картинка (англ)", required=False)
-    image_big_ru = forms.ImageField(label="Картинка большая (рус)", required=True)
+    image_big_ru = forms.ImageField(label="Картинка большая (рус)", required=False)
     image_big_kk = forms.ImageField(label="Картинка большая (каз)", required=False)
     image_big_en = forms.ImageField(label="Картинка большая (англ)", required=False)
 
