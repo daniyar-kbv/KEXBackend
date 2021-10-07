@@ -9,6 +9,7 @@ class Category(UUIDModel, AbstractNameModel):
     class Meta:
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории")
+        ordering = ('priority',)
 
     local_brand = models.ForeignKey(
         "partners.LocalBrand",
