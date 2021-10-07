@@ -34,7 +34,7 @@ class PositionInline(ReadChangeOnlyStackedInline):
         "priority",
         "position_type",
         "description",
-        # "image",
+        "is_active",
         "category",
     )
     readonly_fields = (
@@ -76,8 +76,6 @@ class LocalPositionForm(AbstractNameModelForm, AbstractDescriptionModelForm):
 class LocalPositionAdmin(admin.ModelAdmin):
     list_filter = "local_brand",
     readonly_fields = (
-        # "name",
-        # "description",
         "category",
         "local_brand",
         "outer_id",
