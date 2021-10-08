@@ -94,7 +94,7 @@ class AbstractNameModelForm(forms.ModelForm):
         if obj.name:
             obj.name.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageChar.objects.get_or_create(
+            mlchar, created = MultiLanguageChar.objects.create(
                 text_ru=lang_dict['ru'], text_kk=lang_dict['kk'], text_en=lang_dict['en']
             )
             if created:
@@ -132,7 +132,7 @@ class AbstractTitleModelForm(forms.ModelForm):
         if obj.title:
             obj.title.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageChar.objects.get_or_create(
+            mlchar, created = MultiLanguageChar.objects.create(
                 text_ru=lang_dict['ru'], text_kk=lang_dict['kk'], text_en=lang_dict['en']
             )
             if created:
@@ -170,7 +170,7 @@ class AbstractDescriptionModelForm(forms.ModelForm):
         if obj.description:
             obj.description.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageText.objects.get_or_create(
+            mlchar, created = MultiLanguageText.objects.create(
                 text_ru=lang_dict['ru'], text_kk=lang_dict['kk'], text_en=lang_dict['en']
             )
             if created:
@@ -208,7 +208,7 @@ class AbstractTemplateModelForm(forms.ModelForm):
         if obj.template:
             obj.template.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageTextEditor.objects.get_or_create(
+            mlchar, created = MultiLanguageTextEditor.objects.create(
                 text_ru=lang_dict['ru'], text_kk=lang_dict['kk'], text_en=lang_dict['en']
             )
             if created:
@@ -260,7 +260,7 @@ class AbstractImageModelForm(forms.ModelForm):
         if obj.image:
             obj.image.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageFile.objects.get_or_create(
+            mlchar, created = MultiLanguageFile.objects.create(
                 file_ru=lang_dict['ru'], file_kk=lang_dict['kk'], file_en=lang_dict['en']
             )
             if created:
@@ -274,7 +274,7 @@ class AbstractImageModelForm(forms.ModelForm):
         if obj.image_big:
             obj.image_big.set_all_langs(lang_big_dict)
         else:
-            mlchar, created = MultiLanguageFile.objects.get_or_create(
+            mlchar, created = MultiLanguageFile.objects.create(
                 file_ru=lang_big_dict['ru'], file_kk=lang_big_dict['kk'], file_en=lang_big_dict['en']
             )
             if created:
