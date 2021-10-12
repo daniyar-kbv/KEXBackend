@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   postgres:
+  redis_data:
   media:
   portainer_data:
 
@@ -77,6 +78,8 @@ services:
       - redis
   redis:
     image: redis
+    volumes:
+      - redis_data:/data
 
   portainer-agent:
     image: portainer/agent
