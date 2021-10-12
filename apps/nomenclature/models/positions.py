@@ -70,6 +70,7 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
     is_active = models.BooleanField(
         _("Активен в системе mti"),
         default=True,
+        db_index=True,
     )
     images = GenericRelation(ImageModel)
 
@@ -115,14 +116,17 @@ class BranchPosition(UUIDModel):
     is_active = models.BooleanField(
         _("Активен в системе mti"),
         default=True,
+        db_index=True,
     )
     is_exists = models.BooleanField(
         _("Имеется в данной точке"),
         default=False,
+        db_index=True,
     )
     is_available = models.BooleanField(
         _("Доступен в системе IIKO"),
         default=True,
+        db_index=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
 
