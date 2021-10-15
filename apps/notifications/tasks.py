@@ -1,19 +1,29 @@
 from typing import List
 
+from django.conf import settings
+
+from config.settings import Languages
 from config import celery_app
+from apps.orders.models import Order
 
 from . import PushTypes
-from .models import Notification
-from .services import send_multicast_push, subscribe
+from .models import Notification, NotificationTemplate
 from .firebase import (
     push_broadcast,
+    push_multicast,
+    subscribe_to_topic,
+    unsubscribe_from_topic,
 )
 
 
 @celery_app.task(name='notifications.subscribe_to_topic')
 def register_token_in_firebase(topic: str, registration_tokens: List[str]) -> None:
     print(f'REGISTER_TOKEN_IN_FIREBASE. tokens: {registration_tokens}')
-    subscribe(topic, registration_tokens)
+    if not isinstance(registration_tokens, list):
+        registration_tokens = [registration_tokens]
+
+    subscribe_to_topic(topic=topic, registration_tokens=registration_tokens)
+    [unsubscribe_from_topic(lang, registration_tokens) for lang in Languages if lang != topic]
 
 
 @celery_app.task
@@ -30,10 +40,25 @@ def push_broadcast_later(notify_data):
 
 @celery_app.task(name='notifications.rate_order_notifier')
 def rate_order_notifier(order_pk: int):
-    send_multicast_push(order_pk, PushTypes.ORDER_RATE)
+    order = Order.objects.select_related('user').get(pk=order_pk)
+    template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_RATE)
+    push_multicast(
+        [order.user.fb_token],
+        getattr(template.title, order.user.language),
+        getattr(template.description, order.user.language),
+        {'push_type': str(PushTypes.ORDER_RATE),
+         'push_type_value': str(order.id)},
+    )
 
 
 @celery_app.task(name='notifications.status_update_notifier')
 def status_update_notifier(order_pk: int):
-    send_multicast_push(order_pk, PushTypes.ORDER_STATUS_UPDATE)
-
+    order = Order.objects.select_related('user').get(pk=order_pk)
+    template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_STATUS_UPDATE)
+    push_multicast(
+        [order.user.fb_token],
+        getattr(template.title, order.user.language).format(order_pk),
+        getattr(template.description, order.user.language).format(order.get_status_display()),
+        {'push_type': str(PushTypes.ORDER_STATUS_UPDATE),
+         'push_type_value': str(order_pk)},
+    )
