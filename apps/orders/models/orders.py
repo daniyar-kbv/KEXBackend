@@ -157,8 +157,6 @@ class Order(
 
     @atomic
     def change_status(self, status: str, status_reason: str = None):
-        from apps.notifications.tasks import status_update_notifier
-
         if self.status == status:
             return
 
@@ -166,15 +164,23 @@ class Order(
         self.status_reason = status_reason
         self.save(update_fields=["status", "status_reason"])
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
+        self.push(status=self.status)
 
+    def push(self, status: str):
+        from apps.notifications.tasks import (
+            status_update_notifier,
+            rate_order_notifier,
+        )
         if status in [
             OrderStatuses.COOKING_STARTED,
-            OrderStatuses.COOKING_COMPLETED,
             OrderStatuses.WAITING,
             OrderStatuses.ON_WAY,
             OrderStatuses.DELIVERED,
         ]:
-            status_update_notifier.delay(order_pk=self.pk)
+            status_update_notifier(self.pk)
+
+        if status == OrderStatuses.DONE:
+            rate_order_notifier(self.pk)
 
     def mark_as_paid(self):
         from apps.pipeline.iiko.celery_tasks import order_apply_task
