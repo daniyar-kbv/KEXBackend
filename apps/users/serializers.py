@@ -2,9 +2,9 @@ from rest_framework import serializers
 
 from apps.location.serializers import AddressSerializer
 from apps.partners.serializers import UserLocalBrandsSerializer
+from apps.notifications.tasks import register_token_in_firebase
 
 from .models import User, UserAddress
-from ..notifications.firebase import subscribe_to_language_topic
 
 
 class UserAddressSerializer(serializers.ModelSerializer):
@@ -38,7 +38,8 @@ class AccountInfoSerializer(serializers.ModelSerializer):
 
     def validate_language(self, value):
         if self.instance.fb_tokens:
-            subscribe_to_language_topic(value, self.instance.fb_tokens)
+            register_token_in_firebase.delay(topic=value, registration_tokens=self.instance.fb_tokens)
+
         return value
 
 

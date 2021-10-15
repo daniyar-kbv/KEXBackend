@@ -1,3 +1,5 @@
+from typing import List
+
 from django.conf import settings
 from firebase_admin import messaging, credentials, initialize_app
 
@@ -7,20 +9,14 @@ cred = credentials.Certificate(settings.GOOGLE_APPLICATION_CREDENTIALS)
 initialize_app(cred)
 
 
-def subscribe_to_language_topic(topic, registration_tokens=None):
-    print('SUBSCRIBE_TO_LANGUAGE_TOPIC (registration_tokens): %r' % registration_tokens)
-
-    if registration_tokens is None:
-        return
-
-    if isinstance(registration_tokens, str):
-        registration_tokens = [registration_tokens]
-
+def subscribe_to_topic(topic: str, registration_tokens: List[str]) -> None:
+    print(f'SUBSCRIBE_TO_TOPIC. {len(registration_tokens)} device to {topic}')
     messaging.subscribe_to_topic(registration_tokens, topic)
 
-    for lang in Languages:
-        if not lang == topic:
-            messaging.unsubscribe_from_topic(registration_tokens, topic)
+
+def unsubscribe_from_topic(topic: str, registration_tokens: List[str]) -> None:
+    print(f'UNSUBSCRIBE_TO_TOPIC. {len(registration_tokens)} device from {topic}')
+    messaging.unsubscribe_from_topic(registration_tokens, topic)
 
 
 def push_broadcast(notify_data):

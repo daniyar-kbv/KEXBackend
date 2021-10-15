@@ -1,13 +1,26 @@
-import logging
+from typing import List
 
 from django.conf import settings
 
+from config.settings import Languages
+from config import celery_app
+
 from . import PushTypes
 from .models import Notification, NotificationTemplate
-from config import celery_app
-from .firebase import push_broadcast, push_multicast
+from .firebase import (
+    push_broadcast,
+    push_multicast,
+    subscribe_to_topic,
+    unsubscribe_from_topic,
+)
 
-logger = logging.getLogger('fcm')
+
+@celery_app.task(name='notifications.subscribe_to_topic')
+def register_token_in_firebase(topic: str, registration_tokens: List[str]) -> None:
+    print(f'REGISTER_TOKEN_IN_FIREBASE. tokens: {registration_tokens}')
+
+    subscribe_to_topic(topic=topic, registration_tokens=registration_tokens)
+    [unsubscribe_from_topic(lang, registration_tokens) for lang in Languages if lang != topic]
 
 
 @celery_app.task

@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.conf import settings
 
-from .firebase import subscribe_to_language_topic
+from .tasks import register_token_in_firebase
 from .models import Notification, FirebaseToken
 from .services import form_notify_data
 from .tasks import push_broadcast_later
@@ -29,4 +29,4 @@ def save_fbtoken_signal(sender, instance, **kwargs):
     else:
         language = settings.DEFAULT_LANGUAGE
 
-    subscribe_to_language_topic(language, [instance.token])
+    register_token_in_firebase.delay(topic=language, registration_tokens=instance.token)
