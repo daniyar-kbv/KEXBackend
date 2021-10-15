@@ -4,6 +4,7 @@ from django.conf import settings
 
 from config.settings import Languages
 from config import celery_app
+from apps.orders.models import Order
 
 from . import PushTypes
 from .models import Notification, NotificationTemplate
@@ -45,16 +46,14 @@ def push_order_rate_to_user(fb_tokens, order, lang=settings.DEFAULT_LANGUAGE):
     push_multicast(fb_tokens, getattr(template.title, lang), getattr(template.description, lang), extra)
 
 
-@celery_app.task
-def push_order_status_update_to_user(fb_tokens, order_id, order_status, lang=settings.DEFAULT_LANGUAGE):
-    try:
-        template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_STATUS_UPDATE)
-        title = getattr(template.title, lang).format(order_id)
-        body = getattr(template.description, lang).format(order_status)
-        extra = {
-            'push_type': str(PushTypes.ORDER_STATUS_UPDATE),
-            'push_type_value': str(order_id)
-        }
-        push_multicast(fb_tokens, title, body, extra)
-    except Exception as e:
-        print("push_order_status_update_to_user task: ", str(e))
+@celery_app.task(name='notifications.status_update_notifier')
+def status_update_notifier(order_pk: int):
+    order = Order.objects.select_related('user').get(pk=order_pk)
+    template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_STATUS_UPDATE)
+    push_multicast(
+        [order.user.fb_token],
+        getattr(template.title, order.user.language).format('order_id'),
+        getattr(template.description, order.user.language).format(order.status),
+        {'push_type': str(PushTypes.ORDER_STATUS_UPDATE),
+         'push_type_value': str(order_pk)},
+    )
