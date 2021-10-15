@@ -177,10 +177,10 @@ class Order(
             OrderStatuses.ON_WAY,
             OrderStatuses.DELIVERED,
         ]:
-            status_update_notifier(self.pk)
+            status_update_notifier.delay(order_pk=self.pk)
 
         if status == OrderStatuses.DONE:
-            rate_order_notifier(self.pk)
+            rate_order_notifier.delay(order_pk=self.pk)
 
     def mark_as_paid(self):
         from apps.pipeline.iiko.celery_tasks import order_apply_task
