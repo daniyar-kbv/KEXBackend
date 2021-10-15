@@ -171,6 +171,7 @@ class BranchPosition(UUIDModel):
             position_modifier_group, _ = PositionModifierGroup.objects.update_or_create(
                 branch_position=branch_position,
                 modifier_group=ModifierGroup.objects.get(
+                    local_brand=branch.local_brand,
                     outer_id=modifier_group["outer_id"]
                 ),
                 defaults={

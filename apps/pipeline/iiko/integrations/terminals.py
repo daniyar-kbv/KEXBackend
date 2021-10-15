@@ -38,6 +38,9 @@ class GetLocalBrandTerminals(BaseIIKOService):
         } for terminal in filtered_terminals
         ]
 
+    def finalize_response(self, response):
+        print(super().finalize_response(response))
+
     def save(self, prepared_data):
         for i in self.prepare_to_save(prepared_data):
             branch = Branch.objects.get(
@@ -78,6 +81,9 @@ class CheckLocalBrandOrganizationsLiveness(BaseIIKOService):
                 ).exists()
             ), data.get("isAliveStatus", []))
         )
+
+    def finalize_response(self, response):
+        print(super().finalize_response(response))
 
     def save(self, prepared_data):
         prepared_data = self.prepare_to_save(prepared_data)
