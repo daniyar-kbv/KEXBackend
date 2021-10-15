@@ -89,6 +89,7 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
 
         instance, created = Branch.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),
+            local_brand=validated_data.pop('local_brand'),
             defaults={
                 "is_active": True,
                 **validated_data,

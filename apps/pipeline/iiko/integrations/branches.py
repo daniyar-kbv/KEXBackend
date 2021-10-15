@@ -44,7 +44,6 @@ class GetBranches(BaseIIKOService):
                 "iiko_name": org.get("name"),
                 "outer_id": org.get("id"),
                 "address": {
-                    # "country": self.instance.country_id,
                     "longitude": org.get("longitude"),
                     "latitude": org.get("latitude"),
                     "city": self.instance.city_id,
