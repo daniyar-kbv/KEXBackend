@@ -94,11 +94,10 @@ class AbstractNameModelForm(forms.ModelForm):
         if obj.name:
             obj.name.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageChar.objects.create(
+            obj.name = MultiLanguageChar.objects.create(
                 text_ru=lang_dict['ru'], text_kk=lang_dict['kk'], text_en=lang_dict['en']
             )
-            if created:
-                obj.name = mlchar
+
         if commit:
             obj.save()
         return obj
@@ -132,11 +131,10 @@ class AbstractTitleModelForm(forms.ModelForm):
         if obj.title:
             obj.title.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageChar.objects.create(
+            obj.title = MultiLanguageChar.objects.create(
                 text_ru=lang_dict['ru'], text_kk=lang_dict['kk'], text_en=lang_dict['en']
             )
-            if created:
-                obj.title = mlchar
+
         if commit:
             obj.save()
         return obj
@@ -170,11 +168,9 @@ class AbstractDescriptionModelForm(forms.ModelForm):
         if obj.description:
             obj.description.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageText.objects.create(
+            obj.description = MultiLanguageText.objects.create(
                 text_ru=lang_dict['ru'], text_kk=lang_dict['kk'], text_en=lang_dict['en']
             )
-            if created:
-                obj.description = mlchar
         if commit:
             obj.save()
         return obj
@@ -208,11 +204,9 @@ class AbstractTemplateModelForm(forms.ModelForm):
         if obj.template:
             obj.template.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageTextEditor.objects.create(
+            obj.template = MultiLanguageTextEditor.objects.create(
                 text_ru=lang_dict['ru'], text_kk=lang_dict['kk'], text_en=lang_dict['en']
             )
-            if created:
-                obj.template = mlchar
         if commit:
             obj.save()
         return obj
@@ -260,11 +254,9 @@ class AbstractImageModelForm(forms.ModelForm):
         if obj.image:
             obj.image.set_all_langs(lang_dict)
         else:
-            mlchar, created = MultiLanguageFile.objects.create(
+            obj.image = MultiLanguageFile.objects.create(
                 file_ru=lang_dict['ru'], file_kk=lang_dict['kk'], file_en=lang_dict['en']
             )
-            if created:
-                obj.image = mlchar
 
         lang_big_dict = {
             'ru': self.cleaned_data.get('image_big_ru', None),
@@ -274,11 +266,10 @@ class AbstractImageModelForm(forms.ModelForm):
         if obj.image_big:
             obj.image_big.set_all_langs(lang_big_dict)
         else:
-            mlchar, created = MultiLanguageFile.objects.create(
+            obj.image_big = MultiLanguageFile.objects.create(
                 file_ru=lang_big_dict['ru'], file_kk=lang_big_dict['kk'], file_en=lang_big_dict['en']
             )
-            if created:
-                obj.image_big = mlchar
+
         if commit:
             obj.save()
         return obj
