@@ -165,8 +165,16 @@ class Order(
         self.status = status
         self.status_reason = status_reason
         self.save(update_fields=["status", "status_reason"])
-        status_update_notifier.delay(order_pk=self.pk)
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
+
+        if status in [
+            OrderStatuses.COOKING_STARTED,
+            OrderStatuses.COOKING_COMPLETED,
+            OrderStatuses.WAITING,
+            OrderStatuses.ON_WAY,
+            OrderStatuses.DELIVERED,
+        ]:
+            status_update_notifier.delay(order_pk=self.pk)
 
     def mark_as_paid(self):
         from apps.pipeline.iiko.celery_tasks import order_apply_task
