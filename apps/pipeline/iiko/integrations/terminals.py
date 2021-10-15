@@ -40,7 +40,10 @@ class GetLocalBrandTerminals(BaseIIKOService):
 
     def save(self, prepared_data):
         for i in self.prepare_to_save(prepared_data):
-            branch = Branch.objects.get(outer_id=i["branch_outer_id"])
+            branch = Branch.objects.get(
+                local_brand=self.instance,
+                outer_id=i["branch_outer_id"]
+            )
             branch.terminal_id = i["terminal_id"]
             branch.save(update_fields=["terminal_id"])
 
@@ -79,6 +82,9 @@ class CheckLocalBrandOrganizationsLiveness(BaseIIKOService):
     def save(self, prepared_data):
         prepared_data = self.prepare_to_save(prepared_data)
         for i in prepared_data:
-            branch = Branch.objects.get(outer_id=i["organizationId"])
+            branch = Branch.objects.get(
+                local_brand=self.instance,
+                outer_id=i["organizationId"],
+            )
             branch.is_alive = i["isAlive"]
             branch.save(update_fields=["is_alive"])
