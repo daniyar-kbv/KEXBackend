@@ -1,42 +1,26 @@
-from __future__ import print_function
-from config.settings import Languages
-
-import datetime
-import logging
-
 from django.conf import settings
 from firebase_admin import messaging, credentials, initialize_app
+
+from config.settings import Languages
 
 cred = credentials.Certificate(settings.GOOGLE_APPLICATION_CREDENTIALS)
 initialize_app(cred)
 
 
 def subscribe_to_language_topic(topic, registration_tokens=None):
-    if registration_tokens is None:
-        return
+    print('SUBSCRIBE_TO_LANGUAGE_TOPIC (registration_tokens): %r' % registration_tokens)
 
-    langs = [str(l) for l in Languages]
-    if isinstance(registration_tokens, str):
-        registration_tokens = [registration_tokens]
-    response = messaging.subscribe_to_topic(registration_tokens, topic)
-    print(response.success_count, ' tokens were subscribed successfully')
-    print(response.failure_count, ' failed')
-    if response.failure_count > 0:
-        print(response.errors[0])
-        print(response.errors[0].__dict__)
-    langs.remove(topic)
-    for lang in langs:
-        unsubscribe_from_topic(lang, registration_tokens)
-
-
-def unsubscribe_from_topic(topic, registration_tokens=None):
     if registration_tokens is None:
         return
 
     if isinstance(registration_tokens, str):
         registration_tokens = [registration_tokens]
 
-    messaging.unsubscribe_from_topic(registration_tokens, topic)
+    messaging.subscribe_to_topic(registration_tokens, topic)
+
+    for lang in Languages:
+        if not lang == topic:
+            messaging.unsubscribe_from_topic(registration_tokens, topic)
 
 
 def push_broadcast(notify_data):
@@ -44,8 +28,8 @@ def push_broadcast(notify_data):
     messages = [
         messaging.Message(
             notification=messaging.Notification(
-                title=notify_data[ lang[0] ]['title'],
-                body=notify_data[ lang[0] ]['body'],
+                title=notify_data[lang[0]]['title'],
+                body=notify_data[lang[0]]['body'],
             ),
             topic=lang[0],
             data=notify_data['extra']
@@ -59,7 +43,6 @@ def push_broadcast(notify_data):
         print(response.responses[0].__dict__)
     print('{0} messages were sent successfully'.format(response.success_count))
     print("FCM: push_broadcast finished")
-
 
 
 def push_multicast(user_tokens, title, body, extra_data=None):
