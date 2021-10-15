@@ -55,20 +55,20 @@ def status_update_notifier(order_pk: int):
     push_multicast(
         [order.user.fb_token],
         getattr(template.title, order.user.language).format('order_id'),
-        getattr(template.description, order.user.language).format(order.status),
+        getattr(template.description, order.user.language).format(order.get_status_display()),
         {'push_type': str(PushTypes.ORDER_STATUS_UPDATE),
          'push_type_value': str(order_pk)},
     )
-
-def a(order, fb_token):
-    from apps.notifications.firebase import push_multicast
-    from apps.notifications.models import NotificationTemplate
-    from apps.notifications import PushTypes
-    template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_STATUS_UPDATE)
-    push_multicast(
-        fb_token,
-        getattr(template.title, order.user.language).format('order_id'),
-        getattr(template.description, order.user.language).format(order.status),
-        {'push_type': str(PushTypes.ORDER_STATUS_UPDATE),
-         'push_type_value': str(order.pk)},
-    )
+#
+# def a(order, fb_token):
+#     from apps.notifications.firebase import push_multicast
+#     from apps.notifications.models import NotificationTemplate
+#     from apps.notifications import PushTypes
+#     template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_STATUS_UPDATE)
+#     push_multicast(
+#         fb_token,
+#         getattr(template.title, order.user.language).format('order_id'),
+#         getattr(template.description, order.user.language).format(order.status),
+#         {'push_type': str(PushTypes.ORDER_STATUS_UPDATE),
+#          'push_type_value': str(order.pk)},
+#     )
