@@ -12,6 +12,7 @@ from .dataclasses import CustomError
 
 class AbstractHandler(ABC):
     _default_error_code: str = None
+    use_default_code: bool = False
 
     def __init__(
             self,
@@ -24,7 +25,7 @@ class AbstractHandler(ABC):
     def get_error_detail(self) -> Tuple[str, str]:
         _error_code, _error_message = self._default_error_code, ""
 
-        if isinstance(self.raw_data.get("detail"), ErrorDetail):
+        if isinstance(self.raw_data.get("detail"), ErrorDetail) and not self.use_default_code:
             _error_code = self.raw_data.get("detail").code
 
         _config_error_code = f"{_error_code}_{self.language}"
@@ -55,7 +56,6 @@ class HandlerCode400(AbstractHandler):
     _default_error_code = error_codes.INVALID_INPUT_DATA
 
     def format_logic(self):
-        print(self.raw_data)
         return None, CustomError(*self.get_error_detail()).__dict__
 
 
@@ -68,6 +68,14 @@ class HandlerCode401(AbstractHandler):
 
 class HandlerCode404(AbstractHandler):
     _default_error_code = error_codes.NOT_FOUND
+
+    def format_logic(self):
+        return None, CustomError(*self.get_error_detail()).__dict__
+
+
+class HandlerCode429(AbstractHandler):
+    _default_error_code = error_codes.TOO_MANY_REQUESTS
+    use_default_code = True
 
     def format_logic(self):
         return None, CustomError(*self.get_error_detail()).__dict__
