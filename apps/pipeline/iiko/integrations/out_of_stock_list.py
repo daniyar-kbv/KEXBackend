@@ -8,7 +8,6 @@ from .base import BaseIIKOService
 
 if TYPE_CHECKING:
     from apps.partners.models import LocalBrand
-    from apps.nomenclature.models import BranchPosition
 
 
 class GetBrandOutOfStockList(BaseIIKOService):
@@ -39,14 +38,15 @@ class GetBrandOutOfStockList(BaseIIKOService):
                 prepared_data.append({
                     branch['organizationId']: [j['productId'] for j in branch['items'][0]['items']]
                 })
-            except:
+            except Exception as exc:
+                print(f'Error while update out of stock list: {exc}')
                 continue
         return prepared_data
 
     @atomic
     def update_organization_out_of_stock_list(self, data):
         branch_outer_id = list(data.keys())[0]
-        branch = Branch.objects.get(outer_id=branch_outer_id)
+        branch = Branch.objects.get(outer_id=branch_outer_id, local_brand=self.instance)
         branch.branch_positions.filter(position__outer_id__in=data[branch_outer_id]).update(is_available=False)
         branch.branch_positions.exclude(position__outer_id__in=data[branch_outer_id]).update(is_available=True)
 
