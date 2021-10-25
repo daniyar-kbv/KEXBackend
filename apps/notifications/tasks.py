@@ -16,6 +16,15 @@ from .firebase import (
 )
 
 
+@celery_app.task(name='notifications.unsubscribe', queue='celery-gevent')
+def unregister_token_from_firebase(registration_tokens: List[str]) -> None:
+    print(f'UNREGISTER_TOKEN_FROM_FIREBASE')
+    if not isinstance(registration_tokens, list):
+        registration_tokens = [registration_tokens]
+
+    [unsubscribe_from_topic(lang, registration_tokens) for lang in Languages]
+
+
 @celery_app.task(name='notifications.subscribe_to_topic', queue='celery-gevent')
 def register_token_in_firebase(topic: str, registration_tokens: List[str]) -> None:
     print(f'REGISTER_TOKEN_IN_FIREBASE. tokens: {registration_tokens}')

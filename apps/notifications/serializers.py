@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from apps.notifications.exceptions import FirebaseTokenDoesntExist
-from apps.notifications.models import FirebaseToken
-from apps.orders.models import Lead
+from .exceptions import FirebaseTokenDoesntExist
+from .models import FirebaseToken
+from .tasks import unregister_token_from_firebase
 
 
 class CreateFirebaseTokenSerializer(serializers.ModelSerializer):
@@ -35,9 +35,10 @@ class FirebaseTokenSerializer(serializers.ModelSerializer):
         return attrs
 
     def delete_user(self):
-        fbtoken = FirebaseToken.objects.filter(
+        fbtoken: FirebaseToken = FirebaseToken.objects.filter(
             token=self.data['firebase_token'],
             user=self.context.get('request').user
         ).first()
+        unregister_token_from_firebase(fbtoken.token)
         fbtoken.user = None
         fbtoken.save()
