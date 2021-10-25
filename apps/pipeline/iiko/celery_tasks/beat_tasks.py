@@ -5,6 +5,7 @@ from apps.partners.models import LocalBrand
 from ..integrations.branches import GetBranches
 from ..integrations.nomenclature import GetLocalBrandNomenclature, GetBranchNomenclaturePrices
 from ..integrations.terminals import GetLocalBrandTerminals, CheckLocalBrandOrganizationsLiveness
+from ..integrations.out_of_stock_list import GetBrandOutOfStockList
 
 
 @celery_app.task(name="iiko.update_brand_organizations")  # noqa
@@ -24,3 +25,9 @@ def update_local_brands_nomenclatures():
             GetLocalBrandNomenclature(instance=local_brand).run()
             for branch in local_brand.branches.all():
                 GetBranchNomenclaturePrices(instance=branch).run()
+
+
+@celery_app.task(name='iiko.update_out_of_stock_list')
+def update_out_of_stock_list() -> None:
+    for local_brand in LocalBrand.objects.all():
+        GetBrandOutOfStockList(local_brand).run()

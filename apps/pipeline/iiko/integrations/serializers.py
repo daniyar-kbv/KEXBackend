@@ -157,7 +157,7 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
         for frequent updating of "stop list"
         p.s. expires in 1 hour
         """
-        cache.set(str(lead.branch.outer_id), True, 60 * 60)
+        cache.set(f'{lead.local_brand.cache_mask}_{lead.branch.outer_id}', True, 60 * 60 * 3)
 
         return lead
 

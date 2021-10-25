@@ -39,10 +39,3 @@ class OrderApplyTask(Task):
 
 
 order_apply_task = celery_app.register_task(OrderApplyTask())
-
-"""
-from apps.orders.models import Order
-from apps.pipeline.iiko.celery_tasks.apply_order import order_apply_task
-t = Order.objects.get()
-order_apply_task.delay(order_pk=t.id)
-"""
