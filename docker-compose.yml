@@ -60,6 +60,22 @@ services:
     depends_on:
       - rabbitmq
 
+  celery-gevent-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - USE_DEFAULT_OTP=True
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+      - RABBIT_HOST=rabbitmq
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - CONTAINER_TYPE=GEVENT-CELERY
+    depends_on:
+      - rabbitmq
+
   postgres:
     image: postgres
     volumes:
