@@ -39,6 +39,6 @@ class FirebaseTokenSerializer(serializers.ModelSerializer):
             token=self.data['firebase_token'],
             user=self.context.get('request').user
         ).first()
-        unregister_token_from_firebase(fbtoken.token)
+        unregister_token_from_firebase.delay(fbtoken.token)
         fbtoken.user = None
         fbtoken.save()
