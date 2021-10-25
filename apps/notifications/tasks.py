@@ -16,7 +16,7 @@ from .firebase import (
 )
 
 
-@celery_app.task(name='notifications.subscribe_to_topic')
+@celery_app.task(name='notifications.subscribe_to_topic', queue='celery-gevent')
 def register_token_in_firebase(topic: str, registration_tokens: List[str]) -> None:
     print(f'REGISTER_TOKEN_IN_FIREBASE. tokens: {registration_tokens}')
     if not isinstance(registration_tokens, list):
@@ -26,7 +26,7 @@ def register_token_in_firebase(topic: str, registration_tokens: List[str]) -> No
     [unsubscribe_from_topic(lang, registration_tokens) for lang in Languages if lang != topic]
 
 
-@celery_app.task
+@celery_app.task(name='notifications.push_broadcast_later', queue='celery-gevent')
 def push_broadcast_later(notify_data):
     push = Notification.objects.filter(title__text_ru=notify_data['ru']['title'], date=notify_data['date'])
 
@@ -38,7 +38,7 @@ def push_broadcast_later(notify_data):
         print(f"There is no such push: {notify_data['ru']['title']}")
 
 
-@celery_app.task(name='notifications.rate_order_notifier')
+@celery_app.task(name='notifications.rate_order_notifier', queue='celery-gevent')
 def rate_order_notifier(order_pk: int):
     order = Order.objects.select_related('user').get(pk=order_pk)
     template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_RATE)
@@ -51,7 +51,7 @@ def rate_order_notifier(order_pk: int):
     )
 
 
-@celery_app.task(name='notifications.status_update_notifier')
+@celery_app.task(name='notifications.status_update_notifier', queue='celery-gevent')
 def status_update_notifier(order_pk: int):
     order = Order.objects.select_related('user').get(pk=order_pk)
     template = NotificationTemplate.objects.get(push_type=PushTypes.ORDER_STATUS_UPDATE)
