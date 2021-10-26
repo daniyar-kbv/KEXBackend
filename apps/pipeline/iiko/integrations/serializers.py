@@ -233,8 +233,8 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     @staticmethod
-    def get_category(outer_id):
-        return Category.objects.filter(outer_id=outer_id).first()
+    def get_category(outer_id, local_brand):
+        return Category.objects.filter(outer_id=outer_id, local_brand=local_brand).first()
 
     def create(self, validated_data):
         position, created = Position.objects.get_or_create(
@@ -242,7 +242,10 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             local_brand=validated_data["local_brand"],
         )
         position.position_type = position.position_type or validated_data["position_type"]
-        position.category = self.get_category(validated_data["category_outer_id"])
+        position.category = self.get_category(
+            validated_data["category_outer_id"],
+            validated_data['local_brand'],
+        )
 
         if validated_data["iiko_name"] and position.name is None:
             position.name = create_multi_language_char(validated_data["iiko_name"])
