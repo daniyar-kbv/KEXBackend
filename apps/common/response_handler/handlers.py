@@ -18,9 +18,11 @@ class AbstractHandler(ABC):
             self,
             raw_data: Dict,
             language: str = None,
+            device_uuid: str = None,
     ) -> None:
         self.raw_data = raw_data
         self.language = language or settings.DEFAULT_LANGUAGE
+        self.device_uuid = device_uuid
 
     def get_error_detail(self) -> Tuple[str, str]:
         _error_code, _error_message = self._default_error_code, ""
@@ -63,6 +65,10 @@ class HandlerCode401(AbstractHandler):
     _default_error_code = error_codes.NOT_AUTHENTICATED
 
     def format_logic(self):
+        if self.device_uuid:
+            from apps.notifications.tasks import unregister_token_from_firebase
+            unregister_token_from_firebase.delay(self.device_uuid)
+
         return None, CustomError(*self.get_error_detail()).__dict__
 
 
