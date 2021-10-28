@@ -63,7 +63,6 @@ class LeadShowView(PublicJSONRendererMixin, RetrieveAPIView):
     serializer_class = LeadDetailSerializer
 
 @method_decorator(check_branch_is_open_and_active, name="get")
-@method_decorator(check_out_of_stock, name='get')
 @method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     queryset = Lead.objects.all()
@@ -73,7 +72,6 @@ class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, Retr
 
 
 @method_decorator(check_branch_is_open_and_active, name="get")
-@method_decorator(check_out_of_stock, name='get')
 @method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     serializer_class = BranchPositionSerializer
@@ -84,7 +82,6 @@ class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMix
 
 
 @method_decorator(check_branch_is_open_and_active, name="get")
-@method_decorator(check_out_of_stock, name='get')
 @method_decorator(update_delivery_positions, name='get')
 class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, ListAPIView):
     serializer_class = AdditionalNomenclaturePositionSerializer
@@ -116,7 +113,6 @@ class OrdersListView(JSONRendererMixin, ListAPIView):
 
 
 @method_decorator(check_branch_is_open_and_active, name="put")
-@method_decorator(check_out_of_stock, name='put')
 @method_decorator(update_delivery_positions, name='put')
 class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
     queryset = Cart.objects.all()
