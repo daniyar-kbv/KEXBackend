@@ -15,7 +15,7 @@ from apps.nomenclature.models import BranchPosition
 from apps.payments.models import Payment
 from apps.payments.serializers import CreatePaymentSerializer
 
-from .decorators import check_branch_is_open, update_delivery_positions
+from .decorators import check_branch_is_open_and_active, update_delivery_positions
 from .models import Order, Lead, Cart
 from .serializers import (
     ApplyLeadSerializer,
@@ -59,7 +59,7 @@ class LeadShowView(PublicJSONRendererMixin, RetrieveAPIView):
     serializer_class = LeadDetailSerializer
 
 
-@method_decorator(check_branch_is_open, name="get")
+@method_decorator(check_branch_is_open_and_active, name="get")
 @method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     queryset = Lead.objects.all()
@@ -68,7 +68,7 @@ class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, Retr
     serializer_class = LeadNomenclatureSerializer
 
 
-@method_decorator(check_branch_is_open, name="get")
+@method_decorator(check_branch_is_open_and_active, name="get")
 @method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     serializer_class = BranchPositionSerializer
@@ -78,7 +78,7 @@ class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMix
         return get_object_or_404(BranchPosition, uuid=self.kwargs["position_uuid"])
 
 
-@method_decorator(check_branch_is_open, name="get")
+@method_decorator(check_branch_is_open_and_active, name="get")
 @method_decorator(update_delivery_positions, name='get')
 class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, ListAPIView):
     serializer_class = AdditionalNomenclaturePositionSerializer
@@ -109,7 +109,7 @@ class OrdersListView(JSONRendererMixin, ListAPIView):
         return self.queryset.filter(user=self.request.user)
 
 
-@method_decorator(check_branch_is_open, name="put")
+@method_decorator(check_branch_is_open_and_active, name="put")
 @method_decorator(update_delivery_positions, name='put')
 class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
     queryset = Cart.objects.all()
@@ -170,7 +170,7 @@ class GetCheckView(PublicAPIMixin, GenericAPIView):
         return render(request, 'orders/check.html', {'data': data})
 
 
-@method_decorator(check_branch_is_open, name="post")
+@method_decorator(check_branch_is_open_and_active, name="post")
 class CreateOrderView(JSONRendererMixin, CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = CreateOrderSerializer
