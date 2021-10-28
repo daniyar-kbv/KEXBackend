@@ -46,7 +46,7 @@ def update_delivery_positions(function):
         print('DECORATOR (update_delivery_positions) is called')
         lead: Lead = get_object_or_404(
             Lead.objects.select_related('branch'),
-            uuid=kwargs['lead_uuid']
+            uuid=kwargs['lead_uuid'] or request.data.get('lead')
         )
 
         lead.update_delivery_params()
