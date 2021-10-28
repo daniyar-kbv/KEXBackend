@@ -24,10 +24,6 @@ class UpdateOrderStatus(BaseIIKOService):
         'Cancelled': OrderStatuses.CANCELLED,
     }
 
-    log_headers = True
-    log_request = True
-    log_response = True
-
     def get_local_brand_pk(self):
         return self.instance.local_brand_id  # noqa
 
