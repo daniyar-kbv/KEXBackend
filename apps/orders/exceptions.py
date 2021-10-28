@@ -33,6 +33,11 @@ class DeliveryNotAvailableError(APIException):
     default_code = error_codes.DELIVERY_NOT_AVAILABLE
 
 
-class BranchIsClosed(APIException):
+class BranchIsClosedError(APIException):
     status_code = 400
     default_code = error_codes.BRANCH_IS_CLOSED
+
+
+class OutOfStockError(APIException):
+    status_code = 400
+    default_code = error_codes.CART_POSITION_IS_OUT_OF_STOCK
