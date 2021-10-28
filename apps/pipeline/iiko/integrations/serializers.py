@@ -5,7 +5,9 @@ from apps.orders.models import Order, Lead, Cart
 from apps.location.models import Address
 from apps.partners.models import Branch, LocalBrandPaymentType
 from apps.common.utils import (
-    create_multi_language_char, create_multi_language_text,
+    create_multi_language_char,
+    create_multi_language_text,
+    update_multi_language_model_instance,
 )
 from apps.nomenclature.models import (
     Category,
@@ -183,6 +185,9 @@ class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
             modifier_group.name = create_multi_language_char(validated_data['name'])
             modifier_group.save(update_fields=['name'])
 
+        elif modifier_group.name.text_ru != validated_data['name']:
+            update_multi_language_model_instance(validated_data['name'], modifier_group.name)
+
         return modifier_group
 
 
@@ -206,6 +211,9 @@ class IIKOCategorySerializer(serializers.ModelSerializer):
         if category.name is None:
             category.name = create_multi_language_char(validated_data["name"])
             category.save(update_fields=["name"])
+
+        elif category.name.text_ru != validated_data['name']:
+            update_multi_language_model_instance(validated_data['name'], category.name)
 
         return category
 
@@ -249,9 +257,14 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
 
         if validated_data["iiko_name"] and position.name is None:
             position.name = create_multi_language_char(validated_data["iiko_name"])
+        elif position.name.text_ru != validated_data['name']:
+            update_multi_language_model_instance(validated_data['name'], position.name)
 
         if validated_data["iiko_description"] and position.description is None:
             position.description = create_multi_language_text(validated_data["iiko_description"])
+        elif position.description.text_ru != validated_data['name']:
+            update_multi_language_model_instance(validated_data['name'], position.description.name)
+
 
         position.save()
 
