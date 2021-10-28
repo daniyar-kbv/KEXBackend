@@ -13,7 +13,7 @@ from apps.common.models import (
     ImageModel
 )
 
-from . import DeliveryTypes
+from . import DeliveryTypes, RequiredLocalBrandPaymentTypes
 from .managers import (
     BranchDeliveryTimeQuerySet,
     LocalBrandManager,
@@ -194,6 +194,11 @@ class LocalBrandPaymentType(models.Model):
     uuid = models.UUIDField("Идентификатор", default=uuid4, editable=False)
     name = models.CharField(max_length=256, null=True)
     code = models.CharField(max_length=256, null=True)
+    payment_type = models.CharField(
+        max_length=26,
+        choices=RequiredLocalBrandPaymentTypes.choices,
+        null=True,
+    )
 
 
 class BranchDeliveryTime(models.Model):
