@@ -22,7 +22,7 @@ class LocalBrandPaymentTypeInline(admin.TabularInline):
     model = LocalBrandPaymentType
     extra = 0
     classes = ('collapse',)
-    fields = ('name', 'is_current')
+    fields = ('name', 'payment_type')
     readonly_fields = 'name',
 
 
