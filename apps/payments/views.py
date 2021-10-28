@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.db.models import Value, When, Case, BooleanField
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView, UpdateAPIView
@@ -16,15 +17,39 @@ from .serializers import (
     CreateWidgetPaymentSerializer,
 )
 
+from apps.orders.decorators import (
+    check_branch_is_open_and_active,
+    update_delivery_positions,
+    check_out_of_stock,
+)
 
+
+@method_decorator(check_branch_is_open_and_active, name="post")
+@method_decorator(check_out_of_stock, name='post')
+@method_decorator(update_delivery_positions, name='post')
 class CreatePaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = CreatePaymentSerializer
 
 
+@method_decorator(check_branch_is_open_and_active, name="post")
+@method_decorator(check_out_of_stock, name='post')
+@method_decorator(update_delivery_positions, name='post')
 class CreateCardPaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = CreateCardPaymentSerializer
+
+
+@method_decorator(check_branch_is_open_and_active, name="post")
+@method_decorator(check_out_of_stock, name='post')
+@method_decorator(update_delivery_positions, name='post')
+class CreateWidgetPaymentView(JSONRendererMixin, CreateAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = CreateWidgetPaymentSerializer
+
+    def perform_create(self, serializer):
+        payment = serializer.save()
+        payment.change_status(PaymentStatusTypes.IN_PROGRESS)
 
 
 class Confirm3DSPaymentView(JSONRendererMixin, UpdateAPIView):
@@ -35,6 +60,9 @@ class Confirm3DSPaymentView(JSONRendererMixin, UpdateAPIView):
     lookup_url_kwarg = "payment_uuid"
 
 
+@method_decorator(check_branch_is_open_and_active, name="post")
+@method_decorator(check_out_of_stock, name='post')
+@method_decorator(update_delivery_positions, name='post')
 class DebitCardsListViewSet(
     JSONRendererMixin,
     ModelViewSet,
@@ -55,15 +83,6 @@ class DebitCardsListViewSet(
                     output_field=BooleanField()
                 )
             )
-
-
-class CreateWidgetPaymentView(JSONRendererMixin, CreateAPIView):
-    queryset = Payment.objects.all()
-    serializer_class = CreateWidgetPaymentSerializer
-
-    def perform_create(self, serializer):
-        payment = serializer.save()
-        payment.change_status(PaymentStatusTypes.IN_PROGRESS)
 
 
 class TestPaymentRenderView(PublicAPIMixin, APIView):

@@ -62,6 +62,7 @@ class LeadShowView(PublicJSONRendererMixin, RetrieveAPIView):
     lookup_url_kwarg = "lead_uuid"
     serializer_class = LeadDetailSerializer
 
+
 @method_decorator(check_branch_is_open_and_active, name="get")
 @method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
