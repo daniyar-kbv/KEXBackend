@@ -66,8 +66,17 @@ class HandlerCode401(AbstractHandler):
 
     def format_logic(self):
         if self.device_uuid:
-            print('device_uuid to unregister, ', self.device_uuid)
             from apps.notifications.tasks import unregister_token_from_firebase
+            from apps.notifications.models import FirebaseToken
+
+            fbtoken: FirebaseToken = FirebaseToken.objects.filter(
+                token=self.device_uuid,
+            ).first()
+            if fbtoken:
+                print('401', fbtoken)
+                fbtoken.user = None
+                fbtoken.save(update_fields=['user'])
+
             unregister_token_from_firebase.delay(self.device_uuid)
 
         return None, CustomError(*self.get_error_detail()).__dict__
