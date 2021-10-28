@@ -13,6 +13,7 @@ class CreateFirebaseTokenSerializer(serializers.ModelSerializer):
         fields = ('firebase_token',)
 
     def create(self, validated_data):
+        print('firebase token create', validated_data['token'])
         fbtoken, _ = FirebaseToken.objects.update_or_create(
             token=validated_data['token'],
             defaults={
