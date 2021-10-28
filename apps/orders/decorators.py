@@ -32,7 +32,7 @@ def check_out_of_stock(function):
             uuid=kwargs.get('lead_uuid') or request.data.get('lead')
         )
 
-        if lead.cart.has_unavailable_positions():
+        if lead.cart.has_unavailable_positions:
             print('DECORATOR (check_out_of_stock) raised OutOfStockError')
             raise OutOfStockError
 
