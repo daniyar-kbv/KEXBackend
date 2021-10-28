@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.core.cache import cache
 
 from apps.orders.models import Order, Lead, Cart
 from apps.location.models import Address
@@ -153,13 +152,6 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
                 user.add_new_address(
                     lead.address, lead.local_brand
                 )
-
-        """
-        add branch to cache
-        for frequent updating of "stop list"
-        p.s. expires in 1 hour
-        """
-        cache.set(f'{lead.local_brand.cache_mask}_{lead.branch.outer_id}', True, 60 * 60 * 3)
 
         return lead
 

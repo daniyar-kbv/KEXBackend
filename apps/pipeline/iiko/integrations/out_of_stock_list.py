@@ -19,12 +19,7 @@ class GetBrandOutOfStockList(BaseIIKOService):
         return self.instance.pk
 
     def get_branches_list(self):
-        return [
-            i.split('_')[-1] for i in cache.keys(f'{self.instance.cache_mask}_*')
-        ]
-
-    def skip_task(self):
-        return not bool(cache.keys(f'{self.instance.cache_mask}_*'))
+        return [str(i) for i in self.instance.branches.active().values_list('outer_id', flat=True)]
 
     def run_service(self):
         return self.fetch(json={

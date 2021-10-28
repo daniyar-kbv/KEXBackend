@@ -29,5 +29,5 @@ def update_local_brands_nomenclatures():
 
 @celery_app.task(name='iiko.update_out_of_stock_list')
 def update_out_of_stock_list() -> None:
-    for local_brand in LocalBrand.objects.all():
+    for local_brand in LocalBrand.objects.active():
         GetBrandOutOfStockList(local_brand).run()
