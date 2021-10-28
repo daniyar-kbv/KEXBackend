@@ -194,7 +194,6 @@ class LocalBrandPaymentType(models.Model):
     uuid = models.UUIDField("Идентификатор", default=uuid4, editable=False)
     name = models.CharField(max_length=256, null=True)
     code = models.CharField(max_length=256, null=True)
-    is_current = models.BooleanField(default=False)
 
 
 class BranchDeliveryTime(models.Model):
