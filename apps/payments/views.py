@@ -60,9 +60,6 @@ class Confirm3DSPaymentView(JSONRendererMixin, UpdateAPIView):
     lookup_url_kwarg = "payment_uuid"
 
 
-@method_decorator(check_branch_is_open_and_active, name="post")
-@method_decorator(check_out_of_stock, name='post')
-@method_decorator(update_delivery_positions, name='post')
 class DebitCardsListViewSet(
     JSONRendererMixin,
     ModelViewSet,
