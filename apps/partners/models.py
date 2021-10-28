@@ -6,23 +6,18 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
+from apps.common import ImageTypes
 from apps.common.models import (
     AbstractNameModel,
     ServiceHistoryModel,
-    MainModel,
     ImageModel
-)
-from apps.common import (
-    ImageTypes,
-    PlatformTypes,
 )
 
 from . import DeliveryTypes
 from .managers import (
-    LocalBrandManager,
-    BranchesQuerySet,
     BranchDeliveryTimeQuerySet,
-    BrandImageQuerySet,
+    LocalBrandManager,
+    BranchManager,
 )
 
 
@@ -184,7 +179,7 @@ class Branch(AbstractNameModel):
         _("Доступен в системе IIKO"), default=False
     )
 
-    objects = BranchesQuerySet.as_manager()
+    objects = BranchManager()
 
     def __str__(self):
         return self.iiko_name

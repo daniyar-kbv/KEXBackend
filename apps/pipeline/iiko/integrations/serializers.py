@@ -265,7 +265,6 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         elif position.description.text_ru != validated_data['name']:
             update_multi_language_model_instance(validated_data['name'], position.description.name)
 
-
         position.save()
 
         for branch in validated_data["local_brand"].branches.all():

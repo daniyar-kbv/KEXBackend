@@ -11,17 +11,21 @@ class LocalBrandQuerySet(QuerySet):
 
 
 class LocalBrandManager(BaseManager.from_queryset(LocalBrandQuerySet)):
-    """reserved"""
     ...
 
 
-class BranchesQuerySet(QuerySet):
+class BranchQuerySet(QuerySet):
     def active(self):
         return self.filter(
             is_active=True,
+            local_brand__is_active=True,
             outer_id__isnull=False,
             terminal_id__isnull=False,
         )
+
+
+class BranchManager(BaseManager.from_queryset(BranchQuerySet)):
+    ...
 
 
 class BranchDeliveryTimeQuerySet(QuerySet):
