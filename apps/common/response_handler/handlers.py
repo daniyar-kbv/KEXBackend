@@ -66,6 +66,7 @@ class HandlerCode401(AbstractHandler):
 
     def format_logic(self):
         if self.device_uuid:
+            print('device_uuid to unregister, ', self.device_uuid)
             from apps.notifications.tasks import unregister_token_from_firebase
             unregister_token_from_firebase.delay(self.device_uuid)
 
