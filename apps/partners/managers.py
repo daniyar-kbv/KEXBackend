@@ -15,7 +15,7 @@ class LocalBrandQuerySet(QuerySet):
                 RequiredLocalBrandPaymentTypes.CASH,
                 RequiredLocalBrandPaymentTypes.CARD,
             ]
-        )
+        ).distinct()
 
 
 class LocalBrandManager(BaseManager.from_queryset(LocalBrandQuerySet)):
