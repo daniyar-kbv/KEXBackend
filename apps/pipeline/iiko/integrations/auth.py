@@ -28,6 +28,10 @@ class GetAuthToken(BaseService):
 
         return self.fetch(json=data)
 
+    @classmethod
+    def remove_from_cache(cls, local_brand: 'LocalBrand'):
+        cache.delete(local_brand.cache_mask)
+
     def prepare_to_save(self, data):
         return data.get("token")
 

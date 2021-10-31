@@ -13,6 +13,7 @@ from apps.pipeline.models import ServiceHistory
 from apps.pipeline.exceptions import (
     ServiceUnavailable,
     ServiceNotFound,
+    UnauthorizedError,
 )
 
 
@@ -102,6 +103,9 @@ class BaseService(ABC):
         if response_raw.status_code == 400:
             return self.handle_400(response_raw)
 
+        if response_raw.status_code == 401:
+            return self.handle_401(response_raw)
+
         if response_raw.status_code == 404:
             return self.handle_404(response_raw)
 
@@ -109,6 +113,9 @@ class BaseService(ABC):
 
     def handle_400(self, response: Response): # noqa
         return response.json()
+
+    def handle_401(self, response: Response):
+        raise UnauthorizedError
 
     def handle_404(self, response: Response): # noqa
         raise ServiceNotFound
@@ -147,6 +154,10 @@ class BaseService(ABC):
         except ServiceUnavailable:
             print(f"Service is unavailable {self.__class__.__name__}")
             self.status = ServiceStatuses.SERVICE_UNAVAILABLE
+
+        except UnauthorizedError:
+            print(f"Service is unauthorized {self.__class__.__name__}")
+            self.status = ServiceStatuses.UNAUTHORIZED
 
         except Exception as exc:
             print(f"Exception({self.__class__.__name__}): {exc.__class__} {exc}")
