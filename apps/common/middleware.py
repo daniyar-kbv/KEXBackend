@@ -7,6 +7,7 @@ class UserAgent(object):
     is_pc = None
 
     def __init__(self, uastring):
+        print('uastring', uastring)
         self.user_agent_string = uastring
         self.is_pc = False
         self.is_mobile = False
