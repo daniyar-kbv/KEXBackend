@@ -56,7 +56,7 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
         queryset = self.queryset
         if city_id:
             queryset = queryset.annotate(
-                is_available=Exists(LocalBrand.objects.filter(brand_id=OuterRef('pk'), city_id=city_id))
+                is_available=Exists(LocalBrand.objects.active().filter(brand_id=OuterRef('pk'), city_id=city_id))
             )
             if platform == PlatformTypes.MOBILE:
                 for i, brand in enumerate(queryset):
