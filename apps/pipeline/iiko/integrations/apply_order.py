@@ -4,6 +4,8 @@ from .base import BaseIIKOService
 
 from apps.orders.models import Order
 from apps.orders import OrderStatuses
+from apps.payments import PaymentTypes
+from apps.partners import RequiredLocalBrandPaymentTypes
 
 from .serializers import IIKOOrderIDSerializer
 
@@ -51,8 +53,6 @@ class ApplyDeliveryOrder(BaseApplyOrder):
         super().__init__(instance, **kwargs)
 
     def get_iiko_payment_type(self, completed_payment_type):
-        from apps.payments import PaymentTypes
-        from apps.partners import RequiredLocalBrandPaymentTypes
         payment_mapping = {
             PaymentTypes.CASH: RequiredLocalBrandPaymentTypes.CASH
         }
@@ -60,6 +60,12 @@ class ApplyDeliveryOrder(BaseApplyOrder):
         return self.instance.local_brand.payment_types.filter(
             payment_type=payment_mapping.get(completed_payment_type, RequiredLocalBrandPaymentTypes.CARD)
         ).first()
+
+    def get_comment(self):
+        if self.payment.payment_type == PaymentTypes.CASH:
+            return f"Нужна сдача с {self.payment.price}"
+
+        return ""
 
     def run_service(self):
         return self.fetch(json={
@@ -69,7 +75,7 @@ class ApplyDeliveryOrder(BaseApplyOrder):
                 'transportToFrontTimeout': 20
             },
             'order': {
-                'comment': str(self.instance.lead.address.full_address()),
+                'comment': self.get_comment(),
                 'phone': str(self.instance.user.mobile_phone),
                 'customer': {'name': self.instance.user.name},
                 'orderServiceType': 'DeliveryByCourier',
@@ -78,6 +84,7 @@ class ApplyDeliveryOrder(BaseApplyOrder):
                         'latitude': str(self.instance.lead.address.latitude),
                         'longitude': str(self.instance.lead.address.longitude)
                     },
+                    'comment': str(self.instance.lead.address.full_address()),
                 },
                 'payments': [
                     {
