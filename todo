@@ -1,4 +1,0 @@
-misli vsluh kak govoritsya
-1. force 'select_related' for tables that depends on MultiLang relations
-2. method clean for BrandImage model
-3. force select_related of position modifiers
