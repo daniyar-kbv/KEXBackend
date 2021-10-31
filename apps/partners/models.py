@@ -198,6 +198,7 @@ class LocalBrandPaymentType(models.Model):
         max_length=26,
         choices=RequiredLocalBrandPaymentTypes.choices,
         null=True,
+        blank=True,
     )
 
 
