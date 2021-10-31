@@ -9,6 +9,7 @@ from .serializers import IIKOOrderIDSerializer
 
 if TYPE_CHECKING:
     from apps.payments.models import Payment
+    from apps.partners.models import LocalBrandPaymentType
 
 
 class BaseApplyOrder(BaseIIKOService):
@@ -45,7 +46,20 @@ class ApplyDeliveryOrder(BaseApplyOrder):
 
     def __init__(self, instance=None, **kwargs):
         self.payment: 'Payment' = instance.completed_payment
+        self.iiko_payment_type: 'LocalBrandPaymentType' = self.get_iiko_payment_type(self.payment.payment_type)
+
         super().__init__(instance, **kwargs)
+
+    def get_iiko_payment_type(self, completed_payment_type):
+        from apps.payments import PaymentTypes
+        from apps.partners import RequiredLocalBrandPaymentTypes
+        payment_mapping = {
+            PaymentTypes.CASH: RequiredLocalBrandPaymentTypes.CASH
+        }
+
+        return self.instance.local_brand.payment_types.filter(
+            payment_type=payment_mapping.get(completed_payment_type, RequiredLocalBrandPaymentTypes.CARD)
+        ).first()
 
     def run_service(self):
         return self.fetch(json={
@@ -69,8 +83,8 @@ class ApplyDeliveryOrder(BaseApplyOrder):
                     {
                         'sum': float(self.payment.price),
                         'isProcessedExternally': False,
-                        'paymentTypeId': '09322f46-578a-d210-add7-eec222a08871',
-                        'paymentTypeKind': 'Cash',
+                        'paymentTypeId': str(self.iiko_payment_type.uuid) if self.iiko_payment_type else None,
+                        'paymentTypeKind': self.iiko_payment_type.code if self.iiko_payment_type else None,
                     }
                 ],
                 'items': [{
