@@ -73,6 +73,7 @@ class Brand(BrandImageMixin, AbstractNameModel):
         default=1,
     )
     images = GenericRelation(ImageModel)
+    kml_map = models.FileField(null=True, blank=True)
 
 
 class LocalBrand(ServiceHistoryModel):

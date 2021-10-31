@@ -26,6 +26,7 @@ class BrandSerializer(AbstractNameSerializer):
     image_square = serializers.CharField(required=False)
     position = serializers.IntegerField()
     is_available = serializers.BooleanField(required=False)
+    kml_map_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Brand
@@ -37,8 +38,15 @@ class BrandSerializer(AbstractNameSerializer):
             "favicon",
             "image_long",
             "image_square",
-            "is_available"
+            "is_available",
+            "kml_map_url",
         )
+
+    def get_kml_map_url(self, brand):
+        request = self.context.get('request')
+        if brand.kml_map:
+            kml_map_url = brand.kml_map.url
+            return request.build_absolute_uri(kml_map_url)
 
     def get_id(self, obj):
         local_brand = obj.local_brands.filter(city_id=self.context["city_id"]).first()
