@@ -61,7 +61,7 @@ class IIKOPaymentTypeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print('IIKOPaymentTypeSerializer (validated_data):', validated_data)
 
-        instance, created = LocalBrandPaymentType.objects.get_or_create(
+        instance, created = LocalBrandPaymentType.objects.update_or_create(
             uuid=validated_data.pop('iiko_uuid'),
             local_brand=self.context['local_brand'],
             defaults={
