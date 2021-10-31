@@ -28,6 +28,8 @@ CONSTANCE_CONFIG = {
     "CLOUDPAYMENTS_HOST": ("https://api.cloudpayments.ru", ""),
     "CLOUDPAYMENTS_PUBLIC_KEY": ("pk_2ec019c3a3a24b44996a1a2ca6f8c", ""),
     "CLOUDPAYMENTS_SECRET_KEY": ("3da278f77c31ca71b652a25a85b65826", ""),
+    "IOS_ON": (True, "ios devices"),
+    "ANDROID_ON": (True, "android devices"),
     **ERROR_MESSAGES,
     **CONTACTS,
 }
@@ -42,6 +44,10 @@ CONSTANCE_CONFIG_FIELDSETS = OrderedDict([
         "CLOUDPAYMENTS_HOST",
         "CLOUDPAYMENTS_PUBLIC_KEY",
         "CLOUDPAYMENTS_SECRET_KEY",
+    )),
+    ("Control devices", (
+        "IOS_ON",
+        "ANDROID_ON",
     )),
     ("Error messages", tuple(ERROR_MESSAGES.keys())),
 ])
