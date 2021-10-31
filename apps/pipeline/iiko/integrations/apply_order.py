@@ -20,10 +20,6 @@ class BaseApplyOrder(BaseIIKOService):
         "Success": OrderStatuses.APPLIED,
     }
 
-    log_headers = True
-    log_request = True
-    log_response = True
-
     def skip_task(self):
         if self.instance.status == OrderStatuses.APPLIED:
             return True
