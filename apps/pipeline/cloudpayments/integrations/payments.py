@@ -13,6 +13,9 @@ class PaymentBaseService(BaseCloudPaymentsService):
     save_serializer = CloudPaymentsPaymentSerializer
     instance: 'Payment'
 
+    log_response = True
+    log_request = True
+    log_headers = True
     _status_mapping = {
         "Completed": PaymentStatusTypes.COMPLETED,
         "Cancelled": PaymentStatusTypes.CANCELLED,
