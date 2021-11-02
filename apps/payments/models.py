@@ -2,7 +2,7 @@ from django.db import models
 from django.db.transaction import atomic
 from django.contrib.auth import get_user_model
 
-from apps.common.models import TimestampModel, UUIDModel
+from apps.common.models import TimestampModel, UUIDModel, ServiceHistoryModel
 
 from . import CurrencyTypes, PaymentTypes, PaymentStatusTypes
 from .managers import PaymentsManager, DebitCardsManager
@@ -51,7 +51,7 @@ class DebitCard(UUIDModel, TimestampModel):
         self.save(update_fields=["card_token"])
 
 
-class Payment(TimestampModel, UUIDModel):
+class Payment(TimestampModel, ServiceHistoryModel, UUIDModel):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
