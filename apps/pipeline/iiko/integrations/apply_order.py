@@ -67,7 +67,8 @@ class ApplyDeliveryOrder(BaseApplyOrder):
         ).first()
 
     def get_comment(self):
-        if self.payment.payment_type == PaymentTypes.CASH:
+        if self.payment.payment_type == PaymentTypes.CASH \
+                and self.payment.price != self.instance.cart.total_price:
             return f"Нужна сдача с {self.payment.price}"
 
         return ""
