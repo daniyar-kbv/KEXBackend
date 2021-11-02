@@ -3,11 +3,7 @@ from rest_framework import serializers
 from apps.orders.models import Order, Lead, Cart
 from apps.location.models import Address
 from apps.partners.models import Branch, LocalBrandPaymentType
-from apps.common.utils import (
-    create_multi_language_char,
-    create_multi_language_text,
-    update_multi_language_model_instance,
-)
+
 from apps.nomenclature.models import (
     Category,
     Position,
@@ -178,13 +174,8 @@ class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
             outer_id=validated_data['outer_id'],
             local_brand=self.context['local_brand'],
         )
-
-        if validated_data.get('name'):
-            if modifier_group.name is None:
-                modifier_group.name = create_multi_language_char(validated_data['name'])
-                modifier_group.save(update_fields=['name'])
-            elif modifier_group.name.text_ru != validated_data['name']:
-                update_multi_language_model_instance(validated_data['name'], modifier_group.name)
+        modifier_group.name = validated_data.get('name')
+        modifier_group.save(update_fields=['name'])
 
         return modifier_group
 
@@ -205,13 +196,8 @@ class IIKOCategorySerializer(serializers.ModelSerializer):
             outer_id=validated_data['outer_id'],
             local_brand=self.context['local_brand'],
         )
-
-        if validated_data.get('name'):
-            if category.name is None:
-                category.name = create_multi_language_char(validated_data["name"])
-                category.save(update_fields=["name"])
-            elif category.name.text_ru != validated_data['name']:
-                update_multi_language_model_instance(validated_data['name'], category.name)
+        category.name = validated_data.get('name')
+        category.save(update_fields=['name'])
 
         return category
 
@@ -252,19 +238,8 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             validated_data["category_outer_id"],
             validated_data['local_brand'],
         )
-
-        if validated_data["iiko_name"]:
-            if position.name is None:
-                position.name = create_multi_language_char(validated_data["iiko_name"])
-            elif position.name.text_ru != validated_data['iiko_name']:
-                update_multi_language_model_instance(validated_data['iiko_name'], position.name)
-
-        if validated_data["iiko_description"]:
-            if position.description is None:
-                position.description = create_multi_language_text(validated_data["iiko_description"])
-            elif position.description.text_ru != validated_data['iiko_description']:
-                update_multi_language_model_instance(validated_data['iiko_description'], position.description.name)
-
+        position.name = validated_data['iiko_name']
+        position.description = validated_data['iiko_description']
         position.save()
 
         for branch in validated_data["local_brand"].branches.all():

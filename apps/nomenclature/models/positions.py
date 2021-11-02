@@ -30,7 +30,7 @@ class PositionTypes(models.TextChoices):
     NIGHT_DELIVERY = "NIGHT_DELIVERY", "Ночная доставка"
 
 
-class Position(AbstractNameModel, AbstractDescriptionModel):
+class Position(models.Model):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
@@ -39,6 +39,14 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
         "partners.LocalBrand",
         on_delete=models.PROTECT,
         related_name="positions",
+    )
+    name = models.CharField(
+        max_length=256,
+        null=True
+    )
+    description = models.CharField(
+        max_length=1024,
+        null=True
     )
     priority = models.PositiveSmallIntegerField(
         null=True,

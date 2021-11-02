@@ -4,20 +4,23 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.common.utils import create_multi_language_char
-from apps.common.models import UUIDModel, AbstractNameModel
+from apps.common.models import UUIDModel
 from apps.nomenclature.managers import PositionModifierGroupManager
 
 if TYPE_CHECKING:
     from apps.partners.models import LocalBrand
 
 
-class ModifierGroup(UUIDModel, AbstractNameModel):
+class ModifierGroup(UUIDModel):
     local_brand = models.ForeignKey(
         "partners.LocalBrand",
         on_delete=models.PROTECT,
         related_name="modifier_groups",
         null=True,
+    )
+    name = models.CharField(
+        max_length=256,
+        null=True
     )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa
@@ -30,9 +33,7 @@ class ModifierGroup(UUIDModel, AbstractNameModel):
             local_brand=local_brand,
         )
 
-        if modifier_group.name is None:
-            modifier_group.name = create_multi_language_char(iiko_name)
-
+        modifier_group.name = iiko_name
         modifier_group.save(update_fields=["name"])
 
         return modifier_group
