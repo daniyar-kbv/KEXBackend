@@ -45,6 +45,9 @@ class BaseApplyOrder(BaseIIKOService):
 class ApplyDeliveryOrder(BaseApplyOrder):
     """Создание заказа в системе IIKO"""
     endpoint = 'api/1/deliveries/create'
+    log_request = True
+    log_response = True
+    log_headers = True
 
     def __init__(self, instance=None, **kwargs):
         self.payment: 'Payment' = instance.completed_payment
