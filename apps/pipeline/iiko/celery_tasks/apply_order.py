@@ -19,8 +19,9 @@ class OrderApplyTask(Task):
         return Order.objects.get(id=order_pk)
 
     def run(self, order_pk, *args, **kwargs):
+        print("OrderApplyTask", order_pk)
         instance = self.get_instance(order_pk)
-
+        print('instance is', instance)
         VerifyDeliveryOrder(instance=instance).run()
         ApplyDeliveryOrder(instance=instance).run()
         VerifyDeliveryOrder(instance=instance).run()

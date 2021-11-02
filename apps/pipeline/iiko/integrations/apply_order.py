@@ -50,6 +50,8 @@ class ApplyDeliveryOrder(BaseApplyOrder):
     log_headers = True
 
     def __init__(self, instance=None, **kwargs):
+        print('self.instance ApplyDeliveryOrder', instance)
+        self.instance = instance
         self.payment: 'Payment' = instance.completed_payment
         self.iiko_payment_type: 'LocalBrandPaymentType' = self.get_iiko_payment_type(self.payment.payment_type)
 
