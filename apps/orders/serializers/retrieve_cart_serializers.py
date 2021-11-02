@@ -8,9 +8,7 @@ from apps.nomenclature.models import BranchPosition
 
 
 class BranchPositionShortSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField(read_only=True)
     image = serializers.SerializerMethodField(read_only=True)
-    description = serializers.SerializerMethodField(read_only=True)
     category = serializers.UUIDField(source="branch_category_id", read_only=True)
 
     class Meta:
@@ -29,12 +27,6 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
             "price": {"read_only": True}
         }
 
-    def get_name(self, obj):
-        if not obj.name:
-            return
-
-        return obj.name.text(lang=self.context.get("language", "ru"))
-
     def get_image(self, obj):
         request = self.context.get("request")
         if request:
@@ -42,15 +34,9 @@ class BranchPositionShortSerializer(serializers.ModelSerializer):
             if image:
                 return request.build_absolute_uri(image.url)
 
-    def get_description(self, obj):
-        if not obj.description:
-            return
-
-        return obj.description.text(lang=self.context.get("language", "ru"))
-
 
 class RetrieveCartPositionModifiersSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField(required=False)
+    name = serializers.CharField(source='position_modifier_group.name', required=False)
     position = BranchPositionShortSerializer(source="branch_position")
     modifier_group = serializers.UUIDField(source='position_modifier_group.uuid')
 
@@ -62,12 +48,6 @@ class RetrieveCartPositionModifiersSerializer(serializers.ModelSerializer):
             "modifier_group",
             "count",
         )
-
-    def get_name(self, obj):
-        if not obj.position_modifier_group or not obj.position_modifier_group.name:
-            return
-
-        return obj.position_modifier_group.name.text(lang=self.context.get("language", "ru"))
 
 
 class RetrieveCartPositionSerializer(serializers.ModelSerializer):
