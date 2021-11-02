@@ -1,9 +1,16 @@
 from django.contrib import admin
 
 from apps.common.admin import HistoryInline, ReadOnlyMixin
+from apps.payments.models import Payment
 
 from . import OrderStatuses
 from .models import Lead, Cart, Order, OrderStatusTransition
+
+
+class PaymentsInline(ReadOnlyMixin, admin.TabularInline):
+    model = Payment
+    extra = 0
+    classes = ('collapse',)
 
 
 class OrderStatusTransitionInline(ReadOnlyMixin, admin.TabularInline):
@@ -19,7 +26,7 @@ class LeadAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
-    inlines = (HistoryInline, OrderStatusTransitionInline)
+    inlines = (HistoryInline, OrderStatusTransitionInline, PaymentsInline)
     actions = 'retry_apply_to_iiko',
 
     def retry_apply_to_iiko(self, request, queryset):
