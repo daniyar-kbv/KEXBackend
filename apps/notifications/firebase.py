@@ -43,6 +43,7 @@ def push_broadcast(notify_data):
 
 def push_multicast(user_tokens, title, body, extra_data=None):
     # Create a list containing up to 500 registration tokens.
+    print('Push multicast is called:', user_tokens)
     if not isinstance(user_tokens, list):
         user_tokens = [user_tokens]
     message = messaging.MulticastMessage(
