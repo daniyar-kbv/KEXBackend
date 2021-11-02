@@ -3,7 +3,7 @@ container_type=${CONTAINER_TYPE-DJANGO};
 celery_loglevel=${CELERY_LOGLEVEL-INFO};
 
 if [ $container_type = "CELERY" ]; then
-  celery -A config.celery_app worker --concurrency 4 --loglevel=$celery_loglevel
+  celery -A config.celery_app worker --concurrency 4 --loglevel=$celery_loglevel --queues=celery
 
 elif [ $container_type = "GEVENT-CELERY" ]; then
   celery -A config.celery_app worker --loglevel=$celery_loglevel --queues=celery-gevent --pool=gevent --concurrency=200
