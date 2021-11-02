@@ -73,11 +73,8 @@ class HandlerCode401(AbstractHandler):
                 token=self.device_uuid,
             ).first()
             if fbtoken:
-                print('401', fbtoken)
-                fbtoken.user = None
-                fbtoken.save(update_fields=['user'])
-
-            unregister_token_from_firebase.delay(self.device_uuid)
+                fbtoken.delete()
+                unregister_token_from_firebase.delay(self.device_uuid)
 
         return None, CustomError(*self.get_error_detail()).__dict__
 
