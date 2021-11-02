@@ -30,8 +30,12 @@ class GetBrandOutOfStockList(BaseIIKOService):
         prepared_data = []
         for branch in data.get('terminalGroupStopLists', []):
             try:
+                organizations = []
+                for k in branch['items']:
+                    for i in k['items']:
+                        organizations.append(i['productId'])
                 prepared_data.append({
-                    branch['organizationId']: [j['productId'] for j in branch['items'][0]['items']]
+                    branch['organizationId']: organizations
                 })
             except Exception as exc:
                 print(f'Error while update out of stock list: {exc}')
