@@ -60,7 +60,7 @@ class ApplyDeliveryOrder(BaseApplyOrder):
             PaymentTypes.CASH: RequiredLocalBrandPaymentTypes.CASH
         }
 
-        return self.instance.local_brand.payment_types.filter(
+        return self.instance.lead.local_brand.payment_types.filter(
             payment_type=payment_mapping.get(completed_payment_type, RequiredLocalBrandPaymentTypes.CARD)
         ).first()
 
