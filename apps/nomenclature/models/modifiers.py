@@ -26,18 +26,6 @@ class ModifierGroup(UUIDModel):
         _("UUID в системе IIKO"), null=True,  # noqa
     )
 
-    @classmethod
-    def register_modifier_group(cls, local_brand: 'LocalBrand', outer_id: UUID, iiko_name: str):
-        modifier_group, created = cls.objects.get_or_create(
-            outer_id=outer_id,
-            local_brand=local_brand,
-        )
-
-        modifier_group.name = iiko_name
-        modifier_group.save(update_fields=["name"])
-
-        return modifier_group
-
 
 class PositionModifierGroup(UUIDModel):
     modifier_group = models.ForeignKey(
