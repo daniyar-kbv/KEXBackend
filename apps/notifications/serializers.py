@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from apps.notifications.exceptions import FirebaseTokenDoesntExist
-from apps.notifications.models import FirebaseToken
-from apps.orders.models import Lead
+from .exceptions import FirebaseTokenDoesntExist
+from .models import FirebaseToken
+from .tasks import unregister_token_from_firebase
 
 
 class CreateFirebaseTokenSerializer(serializers.ModelSerializer):
@@ -13,11 +13,12 @@ class CreateFirebaseTokenSerializer(serializers.ModelSerializer):
         fields = ('firebase_token',)
 
     def create(self, validated_data):
-        fbtoken, _ = FirebaseToken.objects.update_or_create(
+        FirebaseToken.objects.filter(token=validated_data['token']).delete()
+        FirebaseToken.objects.filter(user=validated_data.get('user')).delete()
+
+        fbtoken = FirebaseToken.objects.create(
             token=validated_data['token'],
-            defaults={
-                "user": validated_data.get("user")
-            }
+            user= validated_data.get("user"),
         )
         return fbtoken
 
@@ -29,15 +30,11 @@ class FirebaseTokenSerializer(serializers.ModelSerializer):
         model = FirebaseToken
         fields = ('firebase_token',)
 
-    def validate(self, attrs):
-        if not FirebaseToken.objects.filter(token=attrs['token'], user=self.context.get('request').user).exists():
-            raise FirebaseTokenDoesntExist
-        return attrs
-
     def delete_user(self):
-        fbtoken = FirebaseToken.objects.filter(
+        fbtoken: FirebaseToken = FirebaseToken.objects.filter(
             token=self.data['firebase_token'],
             user=self.context.get('request').user
         ).first()
-        fbtoken.user = None
-        fbtoken.save()
+        if fbtoken:
+            unregister_token_from_firebase.delay(fbtoken.token)
+            fbtoken.delete()

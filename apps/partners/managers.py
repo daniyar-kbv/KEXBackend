@@ -4,24 +4,36 @@ from django.utils.timezone import localtime
 
 from apps.common import PlatformTypes, ImageTypes
 
+from . import RequiredLocalBrandPaymentTypes
+
 
 class LocalBrandQuerySet(QuerySet):
     def active(self):
-        return self.filter(is_active=True)
+        return self.filter(
+            is_active=True,
+            payment_types__payment_type__in=[
+                RequiredLocalBrandPaymentTypes.CASH,
+                RequiredLocalBrandPaymentTypes.CARD,
+            ]
+        ).distinct()
 
 
 class LocalBrandManager(BaseManager.from_queryset(LocalBrandQuerySet)):
-    """reserved"""
     ...
 
 
-class BranchesQuerySet(QuerySet):
+class BranchQuerySet(QuerySet):
     def active(self):
         return self.filter(
             is_active=True,
+            local_brand__is_active=True,
             outer_id__isnull=False,
             terminal_id__isnull=False,
         )
+
+
+class BranchManager(BaseManager.from_queryset(BranchQuerySet)):
+    ...
 
 
 class BranchDeliveryTimeQuerySet(QuerySet):

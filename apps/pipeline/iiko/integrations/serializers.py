@@ -1,12 +1,9 @@
 from rest_framework import serializers
-from django.core.cache import cache
 
 from apps.orders.models import Order, Lead, Cart
 from apps.location.models import Address
 from apps.partners.models import Branch, LocalBrandPaymentType
-from apps.common.utils import (
-    create_multi_language_char, create_multi_language_text,
-)
+
 from apps.nomenclature.models import (
     Category,
     Position,
@@ -59,11 +56,17 @@ class IIKOPaymentTypeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         print('IIKOPaymentTypeSerializer (validated_data):', validated_data)
-        uuid = validated_data.pop('iiko_uuid')
-        if LocalBrandPaymentType.objects.filter(uuid=uuid, local_brand=self.context['local_brand']).exists():
-            LocalBrandPaymentType.objects.get(uuid=uuid).delete()
 
-        return super().create({'uuid': uuid, "local_brand": self.context['local_brand'], **validated_data})
+        instance, created = LocalBrandPaymentType.objects.update_or_create(
+            uuid=validated_data.pop('iiko_uuid'),
+            local_brand=self.context['local_brand'],
+            defaults={
+                'name': validated_data.get('name'),
+                'code': validated_data.get('code'),
+            }
+        )
+
+        return instance
 
 
 class IIKOAddressSerializer(serializers.ModelSerializer):
@@ -89,6 +92,7 @@ class IIKOOrganizationSerializer(serializers.ModelSerializer):
 
         instance, created = Branch.objects.update_or_create(
             outer_id=validated_data.pop("outer_id"),
+            local_brand=validated_data.pop('local_brand'),
             defaults={
                 "is_active": True,
                 **validated_data,
@@ -151,13 +155,6 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
                     lead.address, lead.local_brand
                 )
 
-        """
-        add branch to cache
-        for frequent updating of "stop list"
-        p.s. expires in 1 hour
-        """
-        cache.set(str(lead.branch.outer_id), True, 60 * 60)
-
         return lead
 
 
@@ -177,10 +174,8 @@ class IIKOModifierGroupCreateSerializer(serializers.ModelSerializer):
             outer_id=validated_data['outer_id'],
             local_brand=self.context['local_brand'],
         )
-
-        if modifier_group.name is None:
-            modifier_group.name = create_multi_language_char(validated_data['name'])
-            modifier_group.save(update_fields=['name'])
+        modifier_group.name = validated_data.get('name')
+        modifier_group.save(update_fields=['name'])
 
         return modifier_group
 
@@ -201,10 +196,8 @@ class IIKOCategorySerializer(serializers.ModelSerializer):
             outer_id=validated_data['outer_id'],
             local_brand=self.context['local_brand'],
         )
-
-        if category.name is None:
-            category.name = create_multi_language_char(validated_data["name"])
-            category.save(update_fields=["name"])
+        category.name = validated_data.get('name')
+        category.save(update_fields=['name'])
 
         return category
 
@@ -232,8 +225,8 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     @staticmethod
-    def get_category(outer_id):
-        return Category.objects.filter(outer_id=outer_id).first()
+    def get_category(outer_id, local_brand):
+        return Category.objects.filter(outer_id=outer_id, local_brand=local_brand).first()
 
     def create(self, validated_data):
         position, created = Position.objects.get_or_create(
@@ -241,14 +234,12 @@ class IIKONomenclatureSerializer(serializers.ModelSerializer):
             local_brand=validated_data["local_brand"],
         )
         position.position_type = position.position_type or validated_data["position_type"]
-        position.category = self.get_category(validated_data["category_outer_id"])
-
-        if validated_data["iiko_name"] and position.name is None:
-            position.name = create_multi_language_char(validated_data["iiko_name"])
-
-        if validated_data["iiko_description"] and position.description is None:
-            position.description = create_multi_language_text(validated_data["iiko_description"])
-
+        position.category = self.get_category(
+            validated_data["category_outer_id"],
+            validated_data['local_brand'],
+        )
+        position.name = validated_data['iiko_name']
+        position.description = validated_data['iiko_description']
         position.save()
 
         for branch in validated_data["local_brand"].branches.all():

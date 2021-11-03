@@ -20,8 +20,7 @@ from .serializers import (
     OTPResendSerializer,
     TokenRefreshSerializer,
 )
-from ..notifications.models import FirebaseToken
-from ..notifications.serializers import CreateFirebaseTokenSerializer, FirebaseTokenSerializer
+from ..notifications.serializers import FirebaseTokenSerializer
 
 User = get_user_model()
 

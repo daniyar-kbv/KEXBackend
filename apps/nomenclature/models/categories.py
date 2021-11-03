@@ -1,11 +1,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.common.models import AbstractNameModel, UUIDModel
+from apps.common.models import UUIDModel
 from apps.nomenclature.managers import CategoryManager
 
 
-class Category(UUIDModel, AbstractNameModel):
+class Category(UUIDModel):
     class Meta:
         verbose_name = _("Категория")
         verbose_name_plural = _("Категории")
@@ -17,6 +17,10 @@ class Category(UUIDModel, AbstractNameModel):
         null=True,
         related_name="categories",
         verbose_name=_("Локальный бренд"),
+    )
+    name = models.CharField(
+        max_length=256,
+        null=True
     )
     priority = models.PositiveSmallIntegerField(
         null=True,

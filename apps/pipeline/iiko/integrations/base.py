@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING
 
 from constance import config
+from requests.models import Response
 
 from apps.pipeline.services import BaseService
 
-from ..celery_tasks.auth import fetch_auth_token
+from ..celery_tasks.auth import fetch_auth_token, remove_auth_token
 
 if TYPE_CHECKING:
     from apps.partners.models import LocalBrand
@@ -26,3 +27,9 @@ class BaseIIKOService(BaseService):  # noqa
     def __init__(self, instance=None, **kwargs):
         super().__init__(instance, **kwargs)
         self.auth_token = fetch_auth_token(self.get_local_brand_pk())
+
+    def handle_401(self, response: Response):
+        remove_auth_token(self.get_local_brand_pk())
+        self.__class__(instance=self.instance).run()
+
+        super().handle_401(response)

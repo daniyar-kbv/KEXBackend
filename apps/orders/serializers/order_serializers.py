@@ -17,7 +17,7 @@ from ..exceptions import EmptyCartError
 
 class ModifierSerializer(serializers.ModelSerializer):
     uuid = serializers.CharField(source="modifier.uuid")
-    name = serializers.SerializerMethodField()
+    name = serializers.CharField(source="modifier.name")
     image = serializers.SerializerMethodField()
 
     class Meta:
@@ -28,12 +28,6 @@ class ModifierSerializer(serializers.ModelSerializer):
             "image",
         )
 
-    def get_name(self, obj):
-        if not obj.modifier.name:
-            return
-
-        return obj.modifier.name.text(lang=self.context["language"])
-
     def get_image(self, obj):
         request = self.context.get("request")
         if request:
@@ -43,7 +37,7 @@ class ModifierSerializer(serializers.ModelSerializer):
 
 
 class ModifierGroupSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
+    name = serializers.CharField(source='modifier_group.name')
     modifiers = ModifierSerializer(many=True, required=False)
 
     class Meta:
@@ -57,16 +51,8 @@ class ModifierGroupSerializer(serializers.ModelSerializer):
             "is_required",
         )
 
-    def get_name(self, obj):
-        if not obj.modifier_group.name:
-            return
-
-        return obj.modifier_group.name.text(lang=self.context["language"])
-
 
 class BranchPositionSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-    description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     branch_category = serializers.UUIDField(source='category_id')
     modifier_groups = ModifierGroupSerializer(source="position_modifier_groups", many=True, required=False)
@@ -82,18 +68,6 @@ class BranchPositionSerializer(serializers.ModelSerializer):
             "branch_category",
             "modifier_groups",
         )
-
-    def get_name(self, obj):
-        if not obj.name:
-            return
-
-        return obj.name.text(lang=self.context["language"])
-
-    def get_description(self, obj):
-        if not obj.description:
-            return
-
-        return obj.description.text(lang=self.context["language"])
 
     def get_image(self, obj):
         request = self.context.get("request")

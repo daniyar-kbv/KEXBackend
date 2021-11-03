@@ -13,6 +13,9 @@ class PaymentBaseService(BaseCloudPaymentsService):
     save_serializer = CloudPaymentsPaymentSerializer
     instance: 'Payment'
 
+    log_response = True
+    log_request = True
+    log_headers = True
     _status_mapping = {
         "Completed": PaymentStatusTypes.COMPLETED,
         "Cancelled": PaymentStatusTypes.CANCELLED,
@@ -56,6 +59,7 @@ class PaymentBaseService(BaseCloudPaymentsService):
 
 
 class PaymentService(PaymentBaseService):
+    """Проведение платежа"""
     endpoint = "/payments/cards/charge"
 
     def run_service(self):
@@ -70,6 +74,8 @@ class PaymentService(PaymentBaseService):
 
 
 class CardPaymentService(PaymentBaseService):
+    """Проведение платежа сохраненной картой"""
+
     endpoint = "/payments/tokens/charge"
 
     def run_service(self):
@@ -83,6 +89,8 @@ class CardPaymentService(PaymentBaseService):
 
 
 class Confirm3DSService(PaymentBaseService):
+    """Подтверждение платежа"""
+
     endpoint = "/payments/cards/post3ds"
 
     def run_service(self):

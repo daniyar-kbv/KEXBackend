@@ -9,9 +9,10 @@ from ..integrations.update_iiko_status import UpdateOrderStatus
 
 @celery_app.task(
     name='iiko.update_order_status',
+    queue='celery-gevent',
     autoretry_for=(ConnectionError, HTTPError, Timeout),
     default_retry_delay=60,
-    max_retries=100,
+    max_retries=150,
     retry_kwargs={'max_retries': 100},
 )
 def update_order_status(order_pk: int):

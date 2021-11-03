@@ -19,6 +19,7 @@ def execute_handler(
     data: Dict,
     raw_response: 'Response',
     language: str = None,
+    device_uuid: str = None,
 ) -> Dict:
     status_code = str(raw_response.status_code)
     handler_class = _get_handler_class(status_code)
@@ -27,7 +28,7 @@ def execute_handler(
         return data
 
     data, error = handler_class(
-        data, language # noqa
+        data, language, device_uuid # noqa
     ).format()
 
     return CustomResponse(data, error).__dict__

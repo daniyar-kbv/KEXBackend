@@ -30,7 +30,7 @@ class PositionTypes(models.TextChoices):
     NIGHT_DELIVERY = "NIGHT_DELIVERY", "Ночная доставка"
 
 
-class Position(AbstractNameModel, AbstractDescriptionModel):
+class Position(models.Model):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
@@ -39,6 +39,14 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
         "partners.LocalBrand",
         on_delete=models.PROTECT,
         related_name="positions",
+    )
+    name = models.CharField(
+        max_length=256,
+        null=True
+    )
+    description = models.CharField(
+        max_length=1024,
+        null=True
     )
     priority = models.PositiveSmallIntegerField(
         null=True,
@@ -70,6 +78,7 @@ class Position(AbstractNameModel, AbstractDescriptionModel):
     is_active = models.BooleanField(
         _("Активен в системе mti"),
         default=True,
+        db_index=True,
     )
     images = GenericRelation(ImageModel)
 
@@ -115,14 +124,17 @@ class BranchPosition(UUIDModel):
     is_active = models.BooleanField(
         _("Активен в системе mti"),
         default=True,
+        db_index=True,
     )
     is_exists = models.BooleanField(
         _("Имеется в данной точке"),
         default=False,
+        db_index=True,
     )
     is_available = models.BooleanField(
         _("Доступен в системе IIKO"),
         default=True,
+        db_index=True,
         help_text=_("Если отключен, то продукт отобразится как не доступный в приложении")
     )
 
@@ -167,6 +179,7 @@ class BranchPosition(UUIDModel):
             position_modifier_group, _ = PositionModifierGroup.objects.update_or_create(
                 branch_position=branch_position,
                 modifier_group=ModifierGroup.objects.get(
+                    local_brand=branch.local_brand,
                     outer_id=modifier_group["outer_id"]
                 ),
                 defaults={

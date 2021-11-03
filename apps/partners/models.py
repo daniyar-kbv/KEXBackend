@@ -6,23 +6,18 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
+from apps.common import ImageTypes
 from apps.common.models import (
     AbstractNameModel,
     ServiceHistoryModel,
-    MainModel,
     ImageModel
 )
-from apps.common import (
-    ImageTypes,
-    PlatformTypes,
-)
 
-from . import DeliveryTypes
+from . import DeliveryTypes, RequiredLocalBrandPaymentTypes
 from .managers import (
-    LocalBrandManager,
-    BranchesQuerySet,
     BranchDeliveryTimeQuerySet,
-    BrandImageQuerySet,
+    LocalBrandManager,
+    BranchManager,
 )
 
 
@@ -78,6 +73,7 @@ class Brand(BrandImageMixin, AbstractNameModel):
         default=1,
     )
     images = GenericRelation(ImageModel)
+    kml_map = models.FileField(null=True, blank=True)
 
 
 class LocalBrand(ServiceHistoryModel):
@@ -184,7 +180,7 @@ class Branch(AbstractNameModel):
         _("Доступен в системе IIKO"), default=False
     )
 
-    objects = BranchesQuerySet.as_manager()
+    objects = BranchManager()
 
     def __str__(self):
         return self.iiko_name
@@ -199,7 +195,12 @@ class LocalBrandPaymentType(models.Model):
     uuid = models.UUIDField("Идентификатор", default=uuid4, editable=False)
     name = models.CharField(max_length=256, null=True)
     code = models.CharField(max_length=256, null=True)
-    is_current = models.BooleanField(default=False)
+    payment_type = models.CharField(
+        max_length=26,
+        choices=RequiredLocalBrandPaymentTypes.choices,
+        null=True,
+        blank=True,
+    )
 
 
 class BranchDeliveryTime(models.Model):

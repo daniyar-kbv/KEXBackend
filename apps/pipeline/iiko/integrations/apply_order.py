@@ -4,11 +4,14 @@ from .base import BaseIIKOService
 
 from apps.orders.models import Order
 from apps.orders import OrderStatuses
+from apps.payments import PaymentTypes
+from apps.partners import RequiredLocalBrandPaymentTypes
 
 from .serializers import IIKOOrderIDSerializer
 
 if TYPE_CHECKING:
     from apps.payments.models import Payment
+    from apps.partners.models import LocalBrandPaymentType
 
 
 class BaseApplyOrder(BaseIIKOService):
@@ -19,10 +22,6 @@ class BaseApplyOrder(BaseIIKOService):
         "InProgress": OrderStatuses.APPLYING,
         "Success": OrderStatuses.APPLIED,
     }
-
-    log_headers = True
-    log_request = True
-    log_response = True
 
     def skip_task(self):
         if self.instance.status == OrderStatuses.APPLIED:
@@ -46,10 +45,33 @@ class BaseApplyOrder(BaseIIKOService):
 class ApplyDeliveryOrder(BaseApplyOrder):
     """Создание заказа в системе IIKO"""
     endpoint = 'api/1/deliveries/create'
+    log_request = True
+    log_response = True
+    log_headers = True
 
     def __init__(self, instance=None, **kwargs):
+        print('self.instance ApplyDeliveryOrder', instance)
+        self.instance = instance
         self.payment: 'Payment' = instance.completed_payment
+        self.iiko_payment_type: 'LocalBrandPaymentType' = self.get_iiko_payment_type(self.payment.payment_type)
+
         super().__init__(instance, **kwargs)
+
+    def get_iiko_payment_type(self, completed_payment_type):
+        payment_mapping = {
+            PaymentTypes.CASH: RequiredLocalBrandPaymentTypes.CASH
+        }
+
+        return self.instance.lead.local_brand.payment_types.filter(
+            payment_type=payment_mapping.get(completed_payment_type, RequiredLocalBrandPaymentTypes.CARD)
+        ).first()
+
+    def get_comment(self):
+        if self.payment.payment_type == PaymentTypes.CASH \
+                and self.payment.price != self.instance.cart.total_price:
+            return f"Нужна сдача с {self.payment.price}"
+
+        return ""
 
     def run_service(self):
         return self.fetch(json={
@@ -59,7 +81,7 @@ class ApplyDeliveryOrder(BaseApplyOrder):
                 'transportToFrontTimeout': 20
             },
             'order': {
-                'comment': str(self.instance.lead.address.full_address()),
+                'comment': self.get_comment(),
                 'phone': str(self.instance.user.mobile_phone),
                 'customer': {'name': self.instance.user.name},
                 'orderServiceType': 'DeliveryByCourier',
@@ -68,13 +90,14 @@ class ApplyDeliveryOrder(BaseApplyOrder):
                         'latitude': str(self.instance.lead.address.latitude),
                         'longitude': str(self.instance.lead.address.longitude)
                     },
+                    'comment': str(self.instance.lead.address.full_address()),
                 },
                 'payments': [
                     {
                         'sum': float(self.payment.price),
                         'isProcessedExternally': False,
-                        'paymentTypeId': '09322f46-578a-d210-add7-eec222a08871',
-                        'paymentTypeKind': 'Cash',
+                        'paymentTypeId': str(self.iiko_payment_type.uuid) if self.iiko_payment_type else None,
+                        'paymentTypeKind': self.iiko_payment_type.code if self.iiko_payment_type else None,
                     }
                 ],
                 'items': [{

@@ -28,6 +28,8 @@ CONSTANCE_CONFIG = {
     "CLOUDPAYMENTS_HOST": ("https://api.cloudpayments.ru", ""),
     "CLOUDPAYMENTS_PUBLIC_KEY": ("pk_2ec019c3a3a24b44996a1a2ca6f8c", ""),
     "CLOUDPAYMENTS_SECRET_KEY": ("3da278f77c31ca71b652a25a85b65826", ""),
+    "IOS_ON": (True, "ios devices"),
+    "ANDROID_ON": (True, "android devices"),
     **ERROR_MESSAGES,
     **CONTACTS,
 }
@@ -42,6 +44,10 @@ CONSTANCE_CONFIG_FIELDSETS = OrderedDict([
         "CLOUDPAYMENTS_HOST",
         "CLOUDPAYMENTS_PUBLIC_KEY",
         "CLOUDPAYMENTS_SECRET_KEY",
+    )),
+    ("Control devices", (
+        "IOS_ON",
+        "ANDROID_ON",
     )),
     ("Error messages", tuple(ERROR_MESSAGES.keys())),
 ])
@@ -198,14 +204,12 @@ MEDIA_URL = os.getenv("MEDIA_URL", "/media/")
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
 # FIREBASE CLOUD MESSAGING (FCM)
-GOOGLE_APPLICATION_CREDENTIALS = os.path.join(BASE_DIR, "google-credentials.json") # service account in Firebase Project
-
+GOOGLE_APPLICATION_CREDENTIALS = os.path.join(BASE_DIR, "google-credentials.json")
 
 CKEDITOR_UPLOAD_PATH = "ncrm_helper"
 CKEDITOR_CONFIGS = {
     'default': {
         'skin': 'moono',
-        # 'skin': 'office2013',
         'toolbar_Basic': [
             ['Source', '-', 'Bold', 'Italic']
         ],
@@ -233,37 +237,25 @@ CKEDITOR_CONFIGS = {
             {'name': 'about', 'items': ['About']},
             '/',  # put this to force next toolbar on new line
             {'name': 'yourcustomtools', 'items': [
-                # put the name of your editor.ui.addButton here
                 'Preview',
                 'Maximize',
-                # 'Youtube'
             ]},
         ],
         'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
-        # 'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
-        # 'height': 291,
-        # 'width': '100%',
-        # 'filebrowserWindowHeight': 725,
-        # 'filebrowserWindowWidth': 940,
-        # 'toolbarCanCollapse': True,
-        # 'mathJaxLib': '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
         'tabSpaces': 4,
         'extraPlugins': ','.join([
             'uploadimage', # the upload image feature
-            # your extra plugins here
             'div',
             'autolink',
             'autoembed',
             'embedsemantic',
             'autogrow',
-            # 'devtools',
             'widget',
             'lineutils',
             'clipboard',
             'dialog',
             'dialogui',
             'elementspath',
-            # 'youtube'
         ]),
     }
 }
@@ -277,6 +269,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
     'COERCE_DECIMAL_TO_STRING': False,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/minute',
+        'user': '100/minute'
+    }
 }
 
 SIMPLE_JWT = {

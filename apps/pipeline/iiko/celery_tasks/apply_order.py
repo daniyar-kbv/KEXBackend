@@ -11,7 +11,7 @@ from ..integrations.apply_order import ApplyDeliveryOrder, VerifyDeliveryOrder
 class OrderApplyTask(Task):
     name = 'iiko.order_apply_task'
     autoretry_for = (ConnectionError, HTTPError, Timeout)
-    default_retry_delay = 10
+    default_retry_delay = 60
     max_retries = 10
 
     @staticmethod
@@ -19,8 +19,9 @@ class OrderApplyTask(Task):
         return Order.objects.get(id=order_pk)
 
     def run(self, order_pk, *args, **kwargs):
+        print("OrderApplyTask", order_pk)
         instance = self.get_instance(order_pk)
-
+        print('instance is', instance)
         VerifyDeliveryOrder(instance=instance).run()
         ApplyDeliveryOrder(instance=instance).run()
         VerifyDeliveryOrder(instance=instance).run()
@@ -39,10 +40,3 @@ class OrderApplyTask(Task):
 
 
 order_apply_task = celery_app.register_task(OrderApplyTask())
-
-"""
-from apps.orders.models import Order
-from apps.pipeline.iiko.celery_tasks.apply_order import order_apply_task
-t = Order.objects.get()
-order_apply_task.delay(order_pk=t.id)
-"""

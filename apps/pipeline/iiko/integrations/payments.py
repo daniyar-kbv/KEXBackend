@@ -25,7 +25,9 @@ class GetPayments(BaseIIKOService):
             'iiko_uuid': payment_type.get('id'),
             'code': payment_type.get('paymentTypeKind'),
             'name': payment_type.get('name')
-        } for payment_type in data.get('paymentTypes', [])]
+        } for payment_type in data.get('paymentTypes', [])
+        if payment_type.get('terminalGroups')
+        ]
 
     def finalize_response(self, response):
         return response

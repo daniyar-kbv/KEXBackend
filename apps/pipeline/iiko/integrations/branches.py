@@ -38,13 +38,15 @@ class GetBranches(BaseIIKOService):
 
     def prepare_to_save(self, data: dict) -> list:
         prepared_data = list()
+        if not data:
+            return prepared_data
+
         for org in data["organizations"]:
             prepared_data.append({
                 "local_brand": self.instance.pk,  # noqa
                 "iiko_name": org.get("name"),
                 "outer_id": org.get("id"),
                 "address": {
-                    # "country": self.instance.country_id,
                     "longitude": org.get("longitude"),
                     "latitude": org.get("latitude"),
                     "city": self.instance.city_id,

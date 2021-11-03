@@ -14,6 +14,7 @@ django-rosetta==0.9.3
 # Celery
 celery[redis]==5.0.2
 django-celery-beat==2.2.0
+gevent==21.8.0
 
 # Redis
 django-redis==4.12.1

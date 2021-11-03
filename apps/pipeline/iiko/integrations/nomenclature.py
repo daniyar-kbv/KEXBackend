@@ -168,15 +168,22 @@ class GetBranchNomenclaturePrices(BaseIIKOService):
             ), products)
         )
 
-    def prepare_to_save(self, data: dict):
-        products = self.filter_products(data.get("products"))
+    def set_false_branch_positions_existing_flag(self):
+        self.instance.branch_positions.all().update(is_exists=False)
 
+    def fetch_branch_position_prices(self, products: List):
         for product in products:
             if self.instance.branch_positions.filter(position__outer_id=product.get('id')).exists():
-                branch_position: 'BranchPosition' = self.instance.branch_positions.get(position__outer_id=product.get('id'))
+                branch_position: 'BranchPosition' = self.instance.branch_positions.get(
+                    position__outer_id=product.get('id')
+                )
                 branch_position.is_exists = True
                 branch_position.price = self.fetch_price(product)
                 branch_position.save(update_fields=['is_exists', 'price'])
+
+    def prepare_to_save(self, data: dict):
+        self.set_false_branch_positions_existing_flag()
+        self.fetch_branch_position_prices(self.filter_products(data.get('products')))
 
     def finalize_response(self, response):
         ...

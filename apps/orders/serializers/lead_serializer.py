@@ -213,8 +213,6 @@ class LeadCheckSerializer(serializers.ModelSerializer):
 
 
 class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-    description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
     category = serializers.UUIDField(source="branch_category_id", required=False)
@@ -236,18 +234,6 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
         cart = self.context['lead'].cart
         return cart.get_count_for_given_position(str(obj.uuid))
 
-    def get_name(self, obj):
-        if not obj.name:
-            return
-
-        return obj.name.text(lang=self.context["language"])
-
-    def get_description(self, obj):
-        if not obj.description:
-            return
-
-        return obj.description.text(lang=self.context["language"])
-
     def get_image(self, obj):
         request = self.context.get("request")
         if request:
@@ -257,8 +243,6 @@ class AdditionalNomenclaturePositionSerializer(serializers.ModelSerializer):
 
 
 class NomenclaturePositionSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-    description = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     category = serializers.UUIDField(source="category_id")
 
@@ -274,18 +258,6 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
             "category",
         )
 
-    def get_name(self, obj):
-        if not obj.name:
-            return
-
-        return obj.name.text(lang=self.context["language"])
-
-    def get_description(self, obj):
-        if not obj.description:
-            return
-
-        return obj.description.text(lang=self.context["language"])
-
     def get_image(self, obj):
         request = self.context.get("request")
         if request:
@@ -295,7 +267,6 @@ class NomenclaturePositionSerializer(serializers.ModelSerializer):
 
 
 class NomenclatureCategorySerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
     positions = serializers.SerializerMethodField()
 
     class Meta:
@@ -305,12 +276,6 @@ class NomenclatureCategorySerializer(serializers.ModelSerializer):
             "uuid",
             "positions",
         )
-
-    def get_name(self, obj):
-        if not obj.name:
-            return
-
-        return obj.name.text(lang=self.context["language"])
 
     def get_positions(self, obj):
         lead: Lead = self.context['lead']

@@ -5,7 +5,6 @@ from django.db.transaction import atomic
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _  # noqa
 
-from apps.notifications.tasks import push_order_status_update_to_user
 from apps.orders import OrderStatuses
 from apps.partners import DeliveryTypes
 from apps.payments import PaymentStatusTypes
@@ -164,8 +163,24 @@ class Order(
         self.status = status
         self.status_reason = status_reason
         self.save(update_fields=["status", "status_reason"])
-        # push_order_status_update_to_user.delay(self.user.fb_tokens, self.id, status)
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
+        self.push(status=self.status)
+
+    def push(self, status: str):
+        from apps.notifications.tasks import (
+            status_update_notifier,
+            rate_order_notifier,
+        )
+        if status in [
+            OrderStatuses.COOKING_STARTED,
+            OrderStatuses.WAITING,
+            OrderStatuses.ON_WAY,
+            OrderStatuses.DELIVERED,
+        ]:
+            status_update_notifier.delay(order_pk=self.pk)
+
+        if status == OrderStatuses.DONE:
+            rate_order_notifier.delay(order_pk=self.pk)
 
     def mark_as_paid(self):
         from apps.pipeline.iiko.celery_tasks import order_apply_task

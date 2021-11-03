@@ -11,3 +11,11 @@ def fetch_auth_token(iiko_brand_pk: int):
     )
 
     return GetAuthToken(instance=local_brand).run()
+
+
+def remove_auth_token(iiko_brand_pk: int):
+    local_brand = LocalBrand.objects.get(
+        pk=iiko_brand_pk
+    )
+
+    GetAuthToken.remove_from_cache(local_brand)

@@ -39,7 +39,6 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
 
     def get_image_type(self, index):
         index = index % len(self.image_map) if index % len(self.image_map) != 0 else len(self.image_map)
-        print("index is: ", index)
         return self.image_map[index]
 
     def get_serializer_context(self):
@@ -57,7 +56,7 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
         queryset = self.queryset
         if city_id:
             queryset = queryset.annotate(
-                is_available=Exists(LocalBrand.objects.filter(brand_id=OuterRef('pk'), city_id=city_id))
+                is_available=Exists(LocalBrand.objects.active().filter(brand_id=OuterRef('pk'), city_id=city_id))
             )
             if platform == PlatformTypes.MOBILE:
                 for i, brand in enumerate(queryset):
@@ -81,5 +80,5 @@ class BrandListView(PublicAPIMixin, JSONRendererMixin, ListAPIView):
                         brand, 'image_long',
                         self.request.build_absolute_uri(brand.web_image_long.url) if brand.web_image_long else None
                     )
-            # print(queryset)
+
             return queryset
