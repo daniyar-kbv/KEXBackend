@@ -1,14 +1,8 @@
-from uuid import UUID
-from typing import TYPE_CHECKING
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import UUIDModel
 from apps.nomenclature.managers import PositionModifierGroupManager
-
-if TYPE_CHECKING:
-    from apps.partners.models import LocalBrand
 
 
 class ModifierGroup(UUIDModel):
@@ -20,7 +14,8 @@ class ModifierGroup(UUIDModel):
     )
     name = models.CharField(
         max_length=256,
-        null=True
+        null=True,
+        blank=True,
     )
     outer_id = models.UUIDField(
         _("UUID в системе IIKO"), null=True,  # noqa

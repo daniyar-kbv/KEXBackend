@@ -20,7 +20,8 @@ class Category(UUIDModel):
     )
     name = models.CharField(
         max_length=256,
-        null=True
+        null=True,
+        blank=True,
     )
     priority = models.PositiveSmallIntegerField(
         null=True,

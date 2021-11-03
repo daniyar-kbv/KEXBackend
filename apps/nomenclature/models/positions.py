@@ -7,11 +7,7 @@ from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common import ImageTypes
 from apps.nomenclature.managers import BranchPositionManager
-from apps.common.models import (
-    AbstractDescriptionModel,
-    AbstractNameModel,
-    UUIDModel,
-    ImageModel)
+from apps.common.models import UUIDModel, ImageModel
 
 if TYPE_CHECKING:
     from apps.partners.models import Branch
@@ -42,11 +38,13 @@ class Position(models.Model):
     )
     name = models.CharField(
         max_length=256,
-        null=True
+        null=True,
+        blank=True,
     )
     description = models.CharField(
         max_length=1024,
-        null=True
+        null=True,
+        blank=True,
     )
     priority = models.PositiveSmallIntegerField(
         null=True,
