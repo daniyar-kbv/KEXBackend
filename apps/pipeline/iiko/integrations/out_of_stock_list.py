@@ -30,10 +30,9 @@ class GetBrandOutOfStockList(BaseIIKOService):
         prepared_data = []
         for branch in data.get('terminalGroupStopLists', []):
             try:
-                organizations = []
-                for k in branch['items']:
-                    for i in k['items']:
-                        organizations.append(i['productId'])
+                organizations = {}
+                for terminal in branch['items']:
+                    organizations[terminal['terminalGroupId']] = [item['productId'] for item in terminal['items']]
                 prepared_data.append({
                     branch['organizationId']: organizations
                 })
@@ -46,8 +45,9 @@ class GetBrandOutOfStockList(BaseIIKOService):
     def update_organization_out_of_stock_list(self, data):
         branch_outer_id = list(data.keys())[0]
         branch = Branch.objects.get(outer_id=branch_outer_id, local_brand=self.instance)
-        branch.branch_positions.filter(position__outer_id__in=data[branch_outer_id]).update(is_available=False)
-        branch.branch_positions.exclude(position__outer_id__in=data[branch_outer_id]).update(is_available=True)
+        out_of_stock_list = data[branch_outer_id].get(str(branch.terminal_id), [])
+        branch.branch_positions.filter(position__outer_id__in=out_of_stock_list).update(is_available=False)
+        branch.branch_positions.exclude(position__outer_id__in=out_of_stock_list).update(is_available=True)
 
     def finalize_response(self, response):
         ...
