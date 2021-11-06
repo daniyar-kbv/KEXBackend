@@ -27,6 +27,7 @@ class ModifierSerializer(serializers.ModelSerializer):
             "uuid",
             "name",
             "image",
+            "price",
         )
 
     def get_image(self, obj):
