@@ -100,7 +100,8 @@ class CartPosition(models.Model):
 
     @property
     def price(self):
-        return self.branch_position.price * self.count
+        modifiers_price = [modifier.count * modifier.branch_position.price for modifier in self.modifiers.all()]
+        return (self.branch_position.price * self.count) + modifiers_price
 
 
 class CartPositionModifier(models.Model):
