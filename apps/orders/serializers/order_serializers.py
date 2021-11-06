@@ -40,7 +40,7 @@ class ModifierSerializer(serializers.ModelSerializer):
 
 class ModifierGroupSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='modifier_group.name')
-    modifiers = ModifierSerializer(many=True, required=False)
+    modifiers = ModifierSerializer(source='modifiers.active', many=True, required=False)
 
     class Meta:
         model = PositionModifierGroup

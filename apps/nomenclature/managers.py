@@ -32,6 +32,19 @@ class CategoryManager(BaseManager.from_queryset(CategoryQuerySet)):
     ...
 
 
-class PositionModifierGroupManager(Manager):
+class PositionModifierGroupQuerySet(QuerySet):
+    ...
+
+
+class PositionModifierGroupManager(BaseManager.from_queryset(PositionModifierGroupQuerySet)):
     def get_queryset(self):
         return super(PositionModifierGroupManager, self).get_queryset().select_related('modifier_group')
+
+
+class PositionModifierQuerySet(QuerySet):
+    def active(self):
+        return self.filter(branch_position__is_exist=True)
+
+
+class PositionModifierManager(BaseManager.from_queryset(PositionModifierQuerySet)):
+    ...

@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _  # noqa
 
 from apps.common.models import UUIDModel
-from apps.nomenclature.managers import PositionModifierGroupManager
+from apps.nomenclature.managers import PositionModifierGroupManager, PositionModifierManager
 
 
 class ModifierGroup(UUIDModel):
@@ -68,3 +68,5 @@ class PositionModifier(models.Model):
         related_name="modifiers",
         null=True,
     )
+
+    objects = PositionModifierManager()
