@@ -40,7 +40,7 @@ class ModifierSerializer(serializers.ModelSerializer):
 
 class ModifierGroupSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='modifier_group.name')
-    modifiers = serializers.SerializerMethodField()
+    modifiers = ModifierSerializer(source='modifiers.active', many=True, required=False)
 
     class Meta:
         model = PositionModifierGroup
@@ -53,18 +53,11 @@ class ModifierGroupSerializer(serializers.ModelSerializer):
             "is_required",
         )
 
-    def get_modifiers(self, obj):
-        return ModifierSerializer(
-            instance=obj.modifiers.active(),
-            context={**self.context},
-            many=True, required=False
-        ).data
-
 
 class BranchPositionSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     branch_category = serializers.UUIDField(source='category_id')
-    modifier_groups = ModifierGroupSerializer(source="position_modifier_groups", many=True, required=False)
+    modifier_groups = ModifierGroupSerializer(source="position_modifier_groups.active", many=True, required=False)
 
     class Meta:
         model = BranchPosition

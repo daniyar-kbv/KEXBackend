@@ -44,7 +44,7 @@ class PositionModifierGroupManager(BaseManager.from_queryset(PositionModifierGro
 
 class PositionModifierQuerySet(QuerySet):
     def active(self):
-        return self.filter(branch_position__is_exist=True)
+        return self.filter(modifier__is_exist=True)
 
 
 class PositionModifierManager(BaseManager.from_queryset(PositionModifierQuerySet)):
