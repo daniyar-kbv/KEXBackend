@@ -33,7 +33,8 @@ class CategoryManager(BaseManager.from_queryset(CategoryQuerySet)):
 
 
 class PositionModifierGroupQuerySet(QuerySet):
-    ...
+    def active(self):
+        return self.filter(is_exists=True)
 
 
 class PositionModifierGroupManager(BaseManager.from_queryset(PositionModifierGroupQuerySet)):
