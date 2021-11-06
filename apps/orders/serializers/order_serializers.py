@@ -40,7 +40,7 @@ class ModifierSerializer(serializers.ModelSerializer):
 
 class ModifierGroupSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='modifier_group.name')
-    modifiers = ModifierSerializer(source='modifiers.active', many=True, required=False)
+    modifiers = serializers.SerializerMethodField()
 
     class Meta:
         model = PositionModifierGroup
@@ -52,6 +52,13 @@ class ModifierGroupSerializer(serializers.ModelSerializer):
             "max_amount",
             "is_required",
         )
+
+    def get_modifiers(self, obj):
+        return ModifierSerializer(
+            instance=obj.modifiers.active(),
+            context={**self.context},
+            many=True, required=False
+        ).data
 
 
 class BranchPositionSerializer(serializers.ModelSerializer):
