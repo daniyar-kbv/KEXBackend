@@ -23,6 +23,12 @@ class ModifierGroup(UUIDModel):
 
 
 class PositionModifierGroup(UUIDModel):
+    branch = models.ForeignKey(
+        "partners.Branch",
+        on_delete=models.CASCADE,
+        related_name="branch_modifier_groups",
+        null=True,
+    )
     modifier_group = models.ForeignKey(
         ModifierGroup,
         null=True,
@@ -42,6 +48,11 @@ class PositionModifierGroup(UUIDModel):
     )
     is_required = models.BooleanField(
         default=False,
+    )
+    is_exists = models.BooleanField(
+        _("Имеется в данной точке"),
+        default=False,
+        db_index=True,
     )
 
     objects = PositionModifierGroupManager()
