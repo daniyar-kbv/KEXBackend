@@ -21,6 +21,10 @@ class OrderApplyTask(Task):
     def run(self, order_pk, *args, **kwargs):
         print("OrderApplyTask", order_pk)
         instance = self.get_instance(order_pk)
+
+        if instance.status in [OrderStatuses.DONE, OrderStatuses.CANCELLED]:
+            return
+
         print('instance is', instance)
         VerifyDeliveryOrder(instance=instance).run()
         ApplyDeliveryOrder(instance=instance).run()
