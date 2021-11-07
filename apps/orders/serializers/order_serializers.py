@@ -16,7 +16,7 @@ from ..exceptions import EmptyCartError
 
 
 class ModifierSerializer(serializers.ModelSerializer):
-    price = serializers.CharField(source='modifier.price')
+    price = serializers.DecimalField(source='modifier.price', max_digits=12, decimal_places=2)
     uuid = serializers.CharField(source="modifier.uuid")
     name = serializers.CharField(source="modifier.name")
     image = serializers.SerializerMethodField()
