@@ -203,6 +203,19 @@ class LocalBrandPaymentType(models.Model):
     )
 
 
+class LocalBrandCancelCause(models.Model):
+    local_brand = models.ForeignKey(
+        'partners.LocalBrand',
+        on_delete=models.CASCADE,
+        related_name='cancel_causes',
+    )
+    uuid = models.UUIDField('Идентификатор', editable=False, null=True)
+    name = models.CharField(max_length=1024, null=True)
+    is_default = models.BooleanField(
+        default=False,
+    )
+
+
 class BranchDeliveryTime(models.Model):
     branch = models.ForeignKey(
         Branch,
