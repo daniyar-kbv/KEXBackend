@@ -33,24 +33,34 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
 
     def cancel_order(self, request, queryset):
         from apps.pipeline.iiko.integrations.cancel_order import CancelDeliveryOrder
+        from apps.pipeline.cloudpayments.integrations.cancel_payment import CancelPayment
         from django.contrib import messages
 
         if queryset.count() != 1:
             self.message_user(request, 'Можно отменять по одному заказу', messages.ERROR)
             return
 
-        order = queryset.first()
+        order: Order = queryset.first()
         if not order.is_allowed_to_cancel:
             self.message_user(request, 'Статус не позволяет отменить заказ', messages.ERROR)
             return
 
-        cancel_result = CancelDeliveryOrder(order).run()
-        if not cancel_result:
+        iiko_cancel_result = CancelDeliveryOrder(order).run()
+        print('iiko cancel_result', iiko_cancel_result)
+
+        if not iiko_cancel_result:
             self.message_user(request, 'Ошибка при отмене заказа', messages.ERROR)
             return
 
-        self.message_user(request, 'Успешно оформлен возврат', messages.SUCCESS)
-        print('cancel_result', cancel_result)
+        cloudpayments_cancel_result = True
+
+        if order.completed_payment:
+            cloudpayments_cancel_result = CancelPayment(order.completed_payment).run()
+
+        if not cloudpayments_cancel_result:
+            self.message_user(request, 'Успешно оформлен возврат, ошибка в CloudPayments', messages.SUCCESS)
+        else:
+            self.message_user(request, 'Успешно оформлен возврат', messages.SUCCESS)
 
     cancel_order.short_description = 'Отмена заказа'
 

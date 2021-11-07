@@ -128,6 +128,10 @@ class Payment(TimestampModel, ServiceHistoryModel, UUIDModel):
     @atomic
     def change_status(self, status: str, status_reason: str = None):
         if self.status == status:
+            if status_reason:
+                self.status_reason = status_reason
+                self.save(update_fields=['status_reason'])
+
             return
 
         self.status = status
@@ -138,6 +142,12 @@ class Payment(TimestampModel, ServiceHistoryModel, UUIDModel):
         self.status_reason = status_reason
         self.save(update_fields=["status", "status_reason"])
         self.status_transitions.create(status=status, status_reason=status_reason)  # noqa
+
+    def mark_as_cancelled(self):
+        self.change_status(status=PaymentStatusTypes.CANCELLED)
+
+    def cancel_error(self, status_reason: str):
+        self.change_status(status=self.status, status_reason=status_reason)
 
 
 class PaymentStatusTransition(TimestampModel):
