@@ -15,6 +15,8 @@ class CancelDeliveryOrder(BaseIIKOService):
     instance: 'Order' = None
 
     def skip_task(self):
+        if not self.instance.outer_id:
+            return True
         if not self.instance.is_allowed_to_cancel:
             return True
 
@@ -30,7 +32,6 @@ class CancelDeliveryOrder(BaseIIKOService):
 
     def finalize_response(self, response):
         if response.status_code == 200:
-            self.instance.mark_as_canceled()
             return True
 
         return False
