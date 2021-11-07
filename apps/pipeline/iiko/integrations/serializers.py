@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from apps.orders.models import Order, Lead, Cart
 from apps.location.models import Address
-from apps.partners.models import Branch, LocalBrandPaymentType
+from apps.partners.models import Branch, LocalBrandPaymentType, LocalBrandCancelCause
 
 from apps.nomenclature.models import (
     Category,
@@ -68,6 +68,27 @@ class IIKOPaymentTypeSerializer(serializers.ModelSerializer):
 
         return instance
 
+
+class IIKOCancelCauseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocalBrandCancelCause
+        fields = (
+            "uuid",
+            "name",
+        )
+
+    def create(self, validated_data):
+        print('IIKOPaymentTypeSerializer (validated_data):', validated_data)
+
+        instance, created = LocalBrandCancelCause.objects.update_or_create(
+            uuid=validated_data.pop('uuid'),
+            local_brand=self.context['local_brand'],
+            defaults={
+                'name': validated_data.get('name'),
+            }
+        )
+
+        return instance
 
 class IIKOAddressSerializer(serializers.ModelSerializer):
     longitude = serializers.CharField()
