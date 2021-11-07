@@ -16,9 +16,11 @@ class CancelDeliveryOrder(BaseIIKOService):
 
     def skip_task(self):
         if not self.instance.outer_id:
+            self.instance.mark_as_canceled()
             return True
+
         if not self.instance.is_allowed_to_cancel:
-            return True
+            return False
 
     def get_local_brand_pk(self):
         return self.instance.local_brand_id  # noqa
@@ -31,7 +33,8 @@ class CancelDeliveryOrder(BaseIIKOService):
         })
 
     def finalize_response(self, response):
-        if response.status_code == 200:
+        if self.status_code == 200:
+            self.instance.mark_as_canceled()
             return True
 
         return False

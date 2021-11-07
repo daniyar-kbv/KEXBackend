@@ -32,12 +32,18 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
 
     def cancel_order(self, request, queryset):
         from apps.pipeline.iiko.integrations.cancel_order import CancelDeliveryOrder
+        from django.contrib import messages
 
         if queryset.count() != 1:
-            raise ValidationError('Можно отменять по одной заявке')
+            self.message_user(request, 'Можно отменять по одному заказу', messages.ERROR)
+            return
 
         order = queryset.first()
         cancel_result = CancelDeliveryOrder(order).run()
+        if not cancel_result:
+            self.message_user(request, 'Ошибка при отмене заказа', messages.ERROR)
+            return
+
         print('cancel_result', cancel_result)
 
     cancel_order.short_description = 'Отмена заказа'
