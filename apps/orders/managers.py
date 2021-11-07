@@ -38,11 +38,4 @@ class OrdersManager(Manager):
             }
         )
 
-        # user.addresses.get_or_create(
-        #     address=lead.address,
-        #     defaults={
-        #         "local_brand": lead.local_brand,
-        #     }
-        # )
-
         return order
