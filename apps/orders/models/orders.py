@@ -176,6 +176,7 @@ class Order(
             OrderStatuses.WAITING,
             OrderStatuses.ON_WAY,
             OrderStatuses.DELIVERED,
+            OrderStatuses.CANCELLED,
         ]:
             status_update_notifier.delay(order_pk=self.pk)
 
