@@ -28,7 +28,7 @@ class CancelDeliveryOrder(BaseIIKOService):
     def run_service(self):
         return self.fetch(json={
             'organizationId': str(self.instance.branch.outer_id),
-            'terminalGroupId': str(self.instance.outer_id),
+            'orderId': str(self.instance.outer_id),
             'cancelCauseId': str(self.instance.local_brand.get_default_cancel_cause_uuid)
         })
 
