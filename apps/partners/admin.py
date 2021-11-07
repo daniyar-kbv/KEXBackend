@@ -1,4 +1,3 @@
-from django.contrib.contenttypes.admin import GenericStackedInline
 from django.urls import reverse
 from django.contrib import admin
 from django.utils.html import format_html
@@ -14,8 +13,21 @@ from apps.nomenclature.admin import (
 )
 
 from .models import (
-    Brand, LocalBrand, Branch, BranchDeliveryTime, LocalBrandPaymentType
+    Brand,
+    LocalBrand,
+    Branch,
+    BranchDeliveryTime,
+    LocalBrandPaymentType,
+    LocalBrandCancelCause,
 )
+
+
+class LocalBrandCancelCauseInline(admin.TabularInline):
+    model = LocalBrandCancelCause
+    extra = 0
+    classes = ('collapse',)
+    fields = ('name', 'is_default')
+    readonly_fields = 'name',
 
 
 class LocalBrandPaymentTypeInline(admin.TabularInline):
@@ -112,6 +124,7 @@ class LocalBrandAdmin(admin.ModelAdmin):
         PositionInline,
         BranchInline,
         LocalBrandPaymentTypeInline,
+        LocalBrandCancelCauseInline,
     ]
     list_filter = ('city',)
 
