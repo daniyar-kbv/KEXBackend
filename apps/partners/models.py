@@ -209,7 +209,7 @@ class LocalBrandCancelCause(models.Model):
         on_delete=models.CASCADE,
         related_name='cancel_causes',
     )
-    uuid = models.UUIDField('Идентификатор', editable=False, null=True)
+    uuid = models.UUIDField('Идентификатор', null=True)
     name = models.CharField(max_length=1024, null=True)
     is_default = models.BooleanField(
         default=False,
