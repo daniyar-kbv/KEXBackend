@@ -44,6 +44,7 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
             self.message_user(request, 'Ошибка при отмене заказа', messages.ERROR)
             return
 
+        self.message_user(request, 'Успешно оформлен возврат', messages.SUCCESS)
         print('cancel_result', cancel_result)
 
     cancel_order.short_description = 'Отмена заказа'
