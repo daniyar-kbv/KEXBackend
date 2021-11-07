@@ -143,8 +143,10 @@ class BaseService(ABC):
 
     def run(self):
         response_data = None
-        if self.skip_task():
-            return
+        skip_task = self.skip_task()
+
+        if skip_task:
+            return skip_task
 
         try:
             response_data = self.run_service()

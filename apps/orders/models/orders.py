@@ -182,6 +182,9 @@ class Order(
         if status == OrderStatuses.DONE:
             rate_order_notifier.delay(order_pk=self.pk)
 
+    def mark_as_canceled(self):
+        self.change_status(status=OrderStatuses.CANCELLED)
+
     def mark_as_paid(self):
         from apps.pipeline.iiko.celery_tasks import order_apply_task
 
@@ -192,6 +195,15 @@ class Order(
         self.outer_id = None
         self.save(update_fields=['outer_id'])
         self.change_status(OrderStatuses.APPLY_ERROR, "Заказ не дошел до ресторона")
+
+    @property
+    def is_allowed_to_cancel(self):
+        return self.status not in [
+            OrderStatuses.ON_WAY,
+            OrderStatuses.DELIVERED,
+            OrderStatuses.DONE,
+            OrderStatuses.CANCELLED,
+        ]
 
     @property
     def is_completed_payment_exists(self) -> bool:
