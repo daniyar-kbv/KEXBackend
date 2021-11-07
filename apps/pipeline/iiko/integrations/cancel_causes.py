@@ -4,7 +4,7 @@ from .base import BaseIIKOService
 from .serializers import IIKOCancelCauseSerializer
 
 
-class GetPayments(BaseIIKOService):
+class GetCancelCauses(BaseIIKOService):
     """Получение причины отказа"""
     endpoint = 'api/1/cancel_causes'
     save_serializer = IIKOCancelCauseSerializer
