@@ -182,8 +182,8 @@ class Order(
         if status == OrderStatuses.DONE:
             rate_order_notifier.delay(order_pk=self.pk)
 
-    def mark_as_canceled(self):
-        self.change_status(status=OrderStatuses.CANCELLED)
+    def mark_as_canceled(self, status_reason: str = None):
+        self.change_status(status=OrderStatuses.CANCELLED, status_reason=status_reason)
 
     def mark_as_paid(self):
         from apps.pipeline.iiko.celery_tasks import order_apply_task

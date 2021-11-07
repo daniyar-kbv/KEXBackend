@@ -128,6 +128,11 @@ class LocalBrand(ServiceHistoryModel):
         if self.cancel_causes.filter(is_default=True).exists():
             return self.cancel_causes.filter(is_default=True).first().uuid
 
+    @property
+    def get_default_cancel_cause_name(self):
+        if self.cancel_causes.filter(is_default=True).exists():
+            return self.cancel_causes.filter(is_default=True).first().name
+
     def __str__(self):
         return f"{self.brand}. {self.city}"
 
