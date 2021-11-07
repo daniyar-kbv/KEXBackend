@@ -211,8 +211,8 @@ class Order(
 
     @property
     def completed_payment(self):
-        if self.payments.filter(status=PaymentStatusTypes.COMPLETED).exists():
-            return self.payments.get(status=PaymentStatusTypes.COMPLETED)
+        if self.payments.filter(status__in=[PaymentStatusTypes.COMPLETED, PaymentStatusTypes.CANCELLED]).exists():
+            return self.payments.get(status__in=[PaymentStatusTypes.COMPLETED, PaymentStatusTypes.CANCELLED])
 
 
 class OrderStatusTransition(TimestampModel):
