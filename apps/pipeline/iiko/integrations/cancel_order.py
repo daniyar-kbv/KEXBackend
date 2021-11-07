@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from apps.orders import OrderStatuses
 from .base import BaseIIKOService
 
 if TYPE_CHECKING:
@@ -15,6 +16,9 @@ class CancelDeliveryOrder(BaseIIKOService):
     instance: 'Order' = None
 
     def skip_task(self):
+        if self.instance.status == OrderStatuses.CANCELLED:
+            return True
+
         if not self.instance.outer_id:
             self.cancel_order()
             return True

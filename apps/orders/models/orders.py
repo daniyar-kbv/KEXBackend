@@ -202,7 +202,6 @@ class Order(
             OrderStatuses.ON_WAY,
             OrderStatuses.DELIVERED,
             OrderStatuses.DONE,
-            OrderStatuses.CANCELLED,
         ]
 
     @property
