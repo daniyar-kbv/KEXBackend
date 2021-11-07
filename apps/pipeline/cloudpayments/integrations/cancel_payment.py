@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from apps.payments import PaymentStatusTypes, PaymentTypes
 from .base import BaseCloudPaymentsService
 
 if TYPE_CHECKING:
@@ -14,6 +15,11 @@ class CancelPayment(BaseCloudPaymentsService):
     log_response = True
     log_request = True
     log_headers = True
+
+    def skip_task(self):
+        if self.instance.payment_type == PaymentTypes.CASH:
+            self.instance.mark_as_cancelled()
+            return True
 
     def run_service(self):
         return self.fetch(json={
