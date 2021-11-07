@@ -18,7 +18,7 @@ class CancelPayment(BaseCloudPaymentsService):
     def run_service(self):
         return self.fetch(json={
             'Amount': str(self.instance.price),
-            'TransactionId': str(self.instance.rrn),
+            'TransactionId': str(self.instance.outer_id),
         })
 
     def finalize_response(self, response):
