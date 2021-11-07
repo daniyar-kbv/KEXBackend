@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 
 from apps.common.admin import HistoryInline, ReadOnlyMixin
 from apps.payments.models import Payment
@@ -27,7 +28,20 @@ class LeadAdmin(admin.ModelAdmin):
 
 class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
     inlines = (HistoryInline, OrderStatusTransitionInline, PaymentsInline)
-    actions = 'retry_apply_to_iiko',
+    actions = 'retry_apply_to_iiko', 'cancel_order'
+
+    def cancel_order(self, request, queryset):
+        from apps.pipeline.iiko.integrations.cancel_order import CancelDeliveryOrder
+
+        if queryset.count() != 1:
+            raise ValidationError('Можно отменять по одной заявке')
+
+        order = queryset.first()
+        cancel_result = CancelDeliveryOrder(order).run()
+        print('cancel_result', cancel_result)
+
+    cancel_order.short_description = 'Отмена заказа'
+
 
     def retry_apply_to_iiko(self, request, queryset):
         from apps.pipeline.iiko.celery_tasks import order_apply_task
