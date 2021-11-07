@@ -40,6 +40,10 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
             return
 
         order = queryset.first()
+        if not order.is_allowed_to_cancel:
+            self.message_user(request, 'Статус не позволяет отменить заказ', messages.ERROR)
+            return
+
         cancel_result = CancelDeliveryOrder(order).run()
         if not cancel_result:
             self.message_user(request, 'Ошибка при отмене заказа', messages.ERROR)
