@@ -29,6 +29,7 @@ class LeadAdmin(admin.ModelAdmin):
 class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
     inlines = (HistoryInline, OrderStatusTransitionInline, PaymentsInline)
     actions = 'retry_apply_to_iiko', 'cancel_order'
+    list_display = ('lead', 'branch', 'local_brand','status', 'status_reason', 'user', 'outer_id')
 
     def cancel_order(self, request, queryset):
         from apps.pipeline.iiko.integrations.cancel_order import CancelDeliveryOrder
