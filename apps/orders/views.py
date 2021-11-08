@@ -106,7 +106,7 @@ class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextM
 
 class OrdersListView(JSONRendererMixin, ListAPIView):
     queryset = Order.objects.select_related('lead', 'cart').prefetch_related('payments')\
-        .filter(payments__status=PaymentStatusTypes.COMPLETED).order_by('-created_at')
+        .filter(payments__status__in=[PaymentStatusTypes.COMPLETED, PaymentStatusTypes.CANCELLED]).order_by('-created_at')
     serializer_class = OrdersListSerializer
 
     def get_queryset(self):

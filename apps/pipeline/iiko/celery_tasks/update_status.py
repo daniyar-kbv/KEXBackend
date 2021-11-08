@@ -17,10 +17,12 @@ from ..integrations.update_iiko_status import UpdateOrderStatus
 )
 def update_order_status(order_pk: int):
     order = Order.objects.get(id=order_pk)
-    UpdateOrderStatus(order).run()
-    order.refresh_from_db()
 
     if order.status in [OrderStatuses.DONE, OrderStatuses.CANCELLED]:
         return
+
+    UpdateOrderStatus(order).run()
+    order.refresh_from_db()
+
 
     update_order_status.retry()

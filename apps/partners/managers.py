@@ -11,6 +11,7 @@ class LocalBrandQuerySet(QuerySet):
     def active(self):
         return self.filter(
             is_active=True,
+            cancel_causes__is_default=True,
             payment_types__payment_type__in=[
                 RequiredLocalBrandPaymentTypes.CASH,
                 RequiredLocalBrandPaymentTypes.CARD,

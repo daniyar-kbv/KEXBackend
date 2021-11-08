@@ -171,6 +171,21 @@ class GetBranchNomenclaturePrices(BaseIIKOService):
     def set_false_branch_positions_existing_flag(self):
         self.instance.branch_positions.all().update(is_exists=False)
 
+    def set_false_branch_modifier_groups_existsing_flag(self):
+        self.instance.branch_modifier_groups.all().update(is_exists=False)
+
+    @staticmethod
+    def fetch_modifier_groups(position_groups):
+        return [
+            position_group for position_group in position_groups
+            if position_group.get("isGroupModifier")
+        ]
+
+    def fetch_branch_modifier_groups(self, modifier_groups: List):
+        self.instance.branch_modifier_groups.filter(
+            modifier_group__outer_id__in=[i['id'] for i in modifier_groups]
+        ).update(is_exists=True)
+
     def fetch_branch_position_prices(self, products: List):
         for product in products:
             if self.instance.branch_positions.filter(position__outer_id=product.get('id')).exists():
@@ -182,6 +197,8 @@ class GetBranchNomenclaturePrices(BaseIIKOService):
                 branch_position.save(update_fields=['is_exists', 'price'])
 
     def prepare_to_save(self, data: dict):
+        self.set_false_branch_modifier_groups_existsing_flag()
+        self.fetch_branch_modifier_groups(self.fetch_modifier_groups(data.get("groups")))
         self.set_false_branch_positions_existing_flag()
         self.fetch_branch_position_prices(self.filter_products(data.get('products')))
 

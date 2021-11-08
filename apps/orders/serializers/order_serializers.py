@@ -16,6 +16,7 @@ from ..exceptions import EmptyCartError
 
 
 class ModifierSerializer(serializers.ModelSerializer):
+    price = serializers.DecimalField(source='modifier.price', max_digits=12, decimal_places=2)
     uuid = serializers.CharField(source="modifier.uuid")
     name = serializers.CharField(source="modifier.name")
     image = serializers.SerializerMethodField()
@@ -26,6 +27,7 @@ class ModifierSerializer(serializers.ModelSerializer):
             "uuid",
             "name",
             "image",
+            "price",
         )
 
     def get_image(self, obj):
@@ -38,7 +40,7 @@ class ModifierSerializer(serializers.ModelSerializer):
 
 class ModifierGroupSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='modifier_group.name')
-    modifiers = ModifierSerializer(many=True, required=False)
+    modifiers = ModifierSerializer(source='modifiers.active', many=True, required=False)
 
     class Meta:
         model = PositionModifierGroup
@@ -55,7 +57,7 @@ class ModifierGroupSerializer(serializers.ModelSerializer):
 class BranchPositionSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     branch_category = serializers.UUIDField(source='category_id')
-    modifier_groups = ModifierGroupSerializer(source="position_modifier_groups", many=True, required=False)
+    modifier_groups = ModifierGroupSerializer(source="position_modifier_groups.active", many=True, required=False)
 
     class Meta:
         model = BranchPosition

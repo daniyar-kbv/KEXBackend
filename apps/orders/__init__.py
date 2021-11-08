@@ -17,4 +17,4 @@ class OrderStatuses(TextChoices):
     ON_WAY = 'ON_WAY', 'Заказ доставляется'
     DELIVERED = 'DELIVERED', 'Заказ доставлен'
     DONE = 'DONE', 'Заказ завершен'
-    CANCELLED = 'CANCELLED', 'Заказ отменен'
+    CANCELLED = 'CANCELLED', 'Заказ отменен в IIKO'

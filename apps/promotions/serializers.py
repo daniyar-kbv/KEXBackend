@@ -29,13 +29,3 @@ class PromotionListSerializer(AbstractNameSerializer, AbstractDescriptionSeriali
                 image = getattr(image, request.headers.get('language'))
             if image:
                 return request.build_absolute_uri(image.url)
-
-# class ParticipationSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Participation
-#         fields = [
-#             'user': {
-#                 'user',
-#                 'insta'
-#             }
-#         ]

@@ -181,6 +181,7 @@ class BranchPosition(UUIDModel):
                     outer_id=modifier_group["outer_id"]
                 ),
                 defaults={
+                    "branch": branch,
                     "is_required": modifier_group["is_required"],
                     "min_amount": modifier_group["min_amount"],
                     "max_amount": modifier_group["max_amount"],

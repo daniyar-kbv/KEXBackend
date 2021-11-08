@@ -124,18 +124,14 @@ class LocalBrand(ServiceHistoryModel):
         return f"{self.brand.name}_{self.api_login}".replace(" ", "_").upper()
 
     @property
-    def is_current_payment_type_exists(self):
-        return self.payment_types.filter(is_current=True).exists()
+    def get_default_cancel_cause_uuid(self):
+        if self.cancel_causes.filter(is_default=True).exists():
+            return self.cancel_causes.filter(is_default=True).first().uuid
 
     @property
-    def current_payment_type_id(self):
-        if self.is_current_payment_type_exists:
-            return self.payment_types.filter(is_current=True).first().uuid
-
-    @property
-    def current_payment_type_code(self):
-        if self.is_current_payment_type_exists:
-            return self.payment_types.filter(is_current=True).first().code
+    def get_default_cancel_cause_name(self):
+        if self.cancel_causes.filter(is_default=True).exists():
+            return self.cancel_causes.filter(is_default=True).first().name
 
     def __str__(self):
         return f"{self.brand}. {self.city}"
@@ -200,6 +196,19 @@ class LocalBrandPaymentType(models.Model):
         choices=RequiredLocalBrandPaymentTypes.choices,
         null=True,
         blank=True,
+    )
+
+
+class LocalBrandCancelCause(models.Model):
+    local_brand = models.ForeignKey(
+        'partners.LocalBrand',
+        on_delete=models.CASCADE,
+        related_name='cancel_causes',
+    )
+    uuid = models.UUIDField('Идентификатор', null=True)
+    name = models.CharField(max_length=1024, null=True)
+    is_default = models.BooleanField(
+        default=False,
     )
 
 

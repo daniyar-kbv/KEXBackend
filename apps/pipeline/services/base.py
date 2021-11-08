@@ -37,6 +37,7 @@ class BaseService(ABC):
     host_verify: bool = True
 
     # History attrs
+    status_code: int = None
     data: dict = None
     code: str = None
     status: ServiceStatuses
@@ -96,6 +97,7 @@ class BaseService(ABC):
             verify=self.host_verify,
             **kwargs
         )
+        self.status_code = response_raw.status_code
 
         self.runtime = time.perf_counter() - _start
         self.code = str(response_raw.status_code)
@@ -143,8 +145,10 @@ class BaseService(ABC):
 
     def run(self):
         response_data = None
-        if self.skip_task():
-            return
+        skip_task = self.skip_task()
+
+        if skip_task:
+            return skip_task
 
         try:
             response_data = self.run_service()
