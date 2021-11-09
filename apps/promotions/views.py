@@ -1,17 +1,18 @@
 from django.shortcuts import render
+from django.conf import settings
 from rest_framework import status
 from rest_framework.exceptions import APIException
-
 from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.conf import settings
+
+from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin, JSONRendererMixin
 
 from . import PromotionTypes
-from .models import Promotion, Participation
-from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin, JSONRendererMixin
+from .models import Promotion
 from .serializers import PromotionListSerializer
 from .services import get_instagram_username, save_participation_in_promotion, is_participant
+
 from ..orders.models import Lead
 
 
