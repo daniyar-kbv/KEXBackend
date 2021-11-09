@@ -5,7 +5,7 @@ from apps.pipeline.instagram.exceptions import InstagramCodeInvalid, InstagramUn
 from apps.pipeline.instagram.integrations import InstagramCode, InstagramAccessToken
 from apps.pipeline.instagram.integrations.base import GetAccessTokenByCode, GetUsername
 from apps.promotions.models import Promotion, Participation
-from apps.common.encryption import encrypt_user
+
 User = get_user_model()
 
 

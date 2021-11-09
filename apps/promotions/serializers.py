@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from apps.common.serializers import AbstractImageSerializer, AbstractNameSerializer, AbstractDescriptionSerializer
-from apps.promotions.models import Promotion, Participation
+from apps.common.serializers import AbstractNameSerializer, AbstractDescriptionSerializer
+from apps.promotions.models import Promotion
 
 
 class PromotionListSerializer(AbstractNameSerializer, AbstractDescriptionSerializer):
