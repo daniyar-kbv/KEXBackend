@@ -48,11 +48,7 @@ class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView
             local_brand__in=[Lead.objects.get(uuid=self.kwargs.get('lead_uuid')).local_brand]
         ).first()
         if promotion:
-            # if not period:
-            #     objs = self.queryset.filter(promotion=promotion).select_related('payments')
-            # else:
             objs = self.queryset.filter(promotion=promotion).select_related('user')
-            # print(objs)
             resp_body = {
                 "info_url": request.build_absolute_uri(app_name + promotion.slug),
                 "users": [],

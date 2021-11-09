@@ -1,7 +1,12 @@
 from django.urls import path, include
 
-from .views import PromotionRenderView, PromotionListView, PromotionDetailView, InstagramAuthParticipationView, \
-    InstagramRedirectURLView
+from .views import (
+    PromotionRenderView,
+    PromotionListView,
+    PromotionDetailView,
+    InstagramAuthParticipationView,
+    InstagramRedirectURLView,
+)
 
 urlpatterns = [
     path("instagram/", InstagramRedirectURLView.as_view(), name="instagram_redirect_url_view"),
