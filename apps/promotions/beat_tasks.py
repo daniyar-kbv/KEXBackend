@@ -15,7 +15,9 @@ def debut_contest_stats() -> None:
     participation = list(promotion.participations.values('user')\
         .order_by('user')\
         .annotate(total_price=Sum('user__payments__price', filter=(
-            Q(user__payments__status='COMPLETED')
+            Q(user__payments__status='COMPLETED') &
+            Q(user__payments__created_at__date__gte=promotion.start_date) &
+            Q(user__payments__created_at__date__lte=promotion.end_date)
         )))\
         .annotate(instagram=F('instagram_username'))\
         .annotate(name=F('user__name'))\
