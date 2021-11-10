@@ -33,8 +33,8 @@
         console.log(resp);
         users = resp.data.users
         for (i=0; i < users.length; i++){
-            $('.content').append(`<p> ${users[i].name}, ${users[i].instagram_username}, sum= ${users[i].total_price}$</p>`);
-            //$('.content').append(`${users[i].name}, ${users[i].instagram_username}, sum= ${users[i].total_price}$`);
+            $('.content').append(`<p> ${users[i].name}, ${users[i].instagram}, sum= ${users[i].total_price}$</p>`);
+            //$('.content').append(`${users[i].name}, ${users[i].instagram}, sum= ${users[i].total_price}$`);
         }
         $('.content').append(`<a href="${resp.data.participate_url}" class="mybtn">Участвовать</a>`);
         $('.content').append(`<button class="infobtn">Информация</button>`);
