@@ -31,7 +31,7 @@ class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView
         participation = cache.get(f'{promotion.promo_type}_PARTICIPATION', [])
         show_participate_url = False
 
-        if request.user and request.user.id not in [i['id'] for i in participation]:
+        if request.user and request.user.id not in [i.get('user') for i in participation]:
             show_participate_url = True
 
         return Response(data={
