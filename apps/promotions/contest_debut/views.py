@@ -20,8 +20,8 @@ class PromoTypeMixin:
 class PromotionContestRenderView(PromoTypeMixin, PublicAPIMixin, APIView):
     queryset = Promotion.objects.all()
 
-    def get(self, request, lead_uuid):
-        return render(request, 'promotions/contest.html', {'promo_type': self._promo_type, 'lead_uuid': lead_uuid})
+    def get(self, request):
+        return render(request, 'promotions/contest.html', {'promo_type': self._promo_type})
 
 
 class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView):
