@@ -29,12 +29,12 @@
     <div class="content"></div>
     <div class="modal"></div>
 <script>
-    $.get(document.location.origin + '/promotions/{{lead_uuid}}/contest/{{promo_type}}').done(function(resp){
+    $.get(document.location.origin + '/promotions/contest/{{promo_type}}').done(function(resp){
         console.log(resp);
         users = resp.data.users
         for (i=0; i < users.length; i++){
-            $('.content').append(`<p> ${users[i].name}, ${users[i].instagram}, sum= ${users[i].sum}$</p>`);
-            //$('.content').append(`${users[i].name}, ${users[i].instagram}, sum= ${users[i].sum}$`);
+            $('.content').append(`<p> ${users[i].name}, ${users[i].instagram_username}, sum= ${users[i].total_price}$</p>`);
+            //$('.content').append(`${users[i].name}, ${users[i].instagram_username}, sum= ${users[i].total_price}$`);
         }
         $('.content').append(`<a href="${resp.data.participate_url}" class="mybtn">Участвовать</a>`);
         $('.content').append(`<button class="infobtn">Информация</button>`);
