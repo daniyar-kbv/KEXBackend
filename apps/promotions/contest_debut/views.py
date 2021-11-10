@@ -7,6 +7,7 @@ from apps.common.mixins import PublicAPIMixin, PublicJSONRendererMixin
 from apps.promotions import PromotionTypes
 from apps.promotions.models import Promotion
 from apps.promotions.services import get_instagram_auth_url
+from apps.promotions.beat_tasks import debut_contest_stats
 
 
 class PromoTypeMixin:
@@ -29,6 +30,9 @@ class PromotionContestDebutView(PromoTypeMixin, PublicJSONRendererMixin, APIView
         app_name = '/promotions/'
         promotion = self.promotion
         participation = cache.get(f'{promotion.promo_type}_PARTICIPATION', [])
+        if not participation:
+            debut_contest_stats()
+
         show_participate_url = False
 
         if request.user and request.user.id not in [i.get('user') for i in participation]:
