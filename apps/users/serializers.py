@@ -24,6 +24,7 @@ class AccountInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            "id",
             "name",
             "email",
             "mobile_phone",
@@ -33,6 +34,7 @@ class AccountInfoSerializer(serializers.ModelSerializer):
             "language"
         ]
         extra_kwargs = {
+            "id": {'read_only': True},
             "last_payment_type": {"read_only": True, "required": False}
         }
 
