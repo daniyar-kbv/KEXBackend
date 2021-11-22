@@ -24,7 +24,7 @@ class GetCancelCauses(BaseIIKOService):
         return [{
             'uuid': cancel_cause.get('id'),
             'name': cancel_cause.get('name'),
-        } for cancel_cause in data.get('cancelCauses')
+        } for cancel_cause in data.get('cancelCauses', [])
         ]
 
     def finalize_response(self, response):
