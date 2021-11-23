@@ -121,7 +121,7 @@ class FindOrganization(BaseIIKOService):
 
         serializer = self.save_serializer(
             instance=self.instance,
-            data=sorted(prepared_data, key=lambda x: x['is_open'])[0],
+            data=sorted(prepared_data, key=lambda x: not x['is_open'])[0],
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
