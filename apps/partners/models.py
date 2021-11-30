@@ -231,6 +231,17 @@ class BranchDeliveryTime(models.Model):
     objects = BranchDeliveryTimeQuerySet.as_manager()
 
     @property
+    def is_open(self):
+        from django.utils.timezone import localtime
+        l_time = localtime().time()
+
+        if self.start_time < self.end_time:
+            return self.start_time <= l_time < self.end_time
+
+        elif self.start_time > self.end_time:
+            return self.start_time <= l_time or self.end_time > l_time
+
+    @property
     def is_branch_position_exists(self):
         return self.branch.branch_positions\
             .filter(position__position_type=self.delivery_type)\
