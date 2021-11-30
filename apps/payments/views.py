@@ -19,14 +19,12 @@ from .serializers import (
 
 from apps.orders.decorators import (
     check_branch_is_open_and_active,
-    update_delivery_positions,
     check_out_of_stock,
 )
 
 
 @method_decorator(check_branch_is_open_and_active, name="post")
 @method_decorator(check_out_of_stock, name='post')
-@method_decorator(update_delivery_positions, name='post')
 class CreatePaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = CreatePaymentSerializer
@@ -34,7 +32,6 @@ class CreatePaymentView(JSONRendererMixin, CreateAPIView):
 
 @method_decorator(check_branch_is_open_and_active, name="post")
 @method_decorator(check_out_of_stock, name='post')
-@method_decorator(update_delivery_positions, name='post')
 class CreateCardPaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = CreateCardPaymentSerializer
@@ -42,7 +39,6 @@ class CreateCardPaymentView(JSONRendererMixin, CreateAPIView):
 
 @method_decorator(check_branch_is_open_and_active, name="post")
 @method_decorator(check_out_of_stock, name='post')
-@method_decorator(update_delivery_positions, name='post')
 class CreateWidgetPaymentView(JSONRendererMixin, CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = CreateWidgetPaymentSerializer

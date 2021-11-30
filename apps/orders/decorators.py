@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from apps.orders.models import Lead
 
-from .exceptions import BranchIsClosedError, OutOfStockError
+from .exceptions import BranchIsClosedError, OutOfStockError, DeliveryIsChangedError
 
 
 def check_branch_is_open_and_active(function):
@@ -13,11 +13,13 @@ def check_branch_is_open_and_active(function):
             uuid=kwargs.get('lead_uuid') or request.data.get('lead')
         )
 
-        if not lead.branch.is_active or not lead.local_brand.is_active or \
-                not lead.branch.delivery_times.open().exists():
+        if not lead.branch.is_active or not lead.local_brand.is_active:
             print('DECORATOR (check_branch_is_open) raised BranchIsCalled')
-            lead.drop_delivery()
             raise BranchIsClosedError
+
+        if not lead.delivery_time.is_open:
+            print('DECORATOR (check_branch_is_open) raised DeliveryIsChangedError')
+            raise DeliveryIsChangedError
 
         return function(request, *args, **kwargs)
 
@@ -40,17 +42,17 @@ def check_out_of_stock(function):
 
     return _function
 
-
-def update_delivery_positions(function):
-    def _function(request, *args, **kwargs):
-        print('DECORATOR (update_delivery_positions) is called')
-        lead: Lead = get_object_or_404(
-            Lead.objects.select_related('branch'),
-            uuid=kwargs.get('lead_uuid') or request.data.get('lead')
-        )
-
-        lead.update_delivery_params()
-
-        return function(request, *args, **kwargs)
-
-    return _function
+#
+# def update_delivery_positions(function):
+#     def _function(request, *args, **kwargs):
+#         print('DECORATOR (update_delivery_positions) is called')
+#         lead: Lead = get_object_or_404(
+#             Lead.objects.select_related('branch'),
+#             uuid=kwargs.get('lead_uuid') or request.data.get('lead')
+#         )
+#
+#         lead.update_delivery_params()
+#
+#         return function(request, *args, **kwargs)
+#
+#     return _function
