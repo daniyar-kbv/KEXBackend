@@ -40,7 +40,10 @@ class GetBranchZones(BaseIIKOService):
 
         for delivery_restriction in delivery_restrictions:
             try:
-                branch = Branch.objects.get(outer_id=delivery_restriction['organizationId'])
+                branch = Branch.objects.get(
+                    local_brand=self.instance,
+                    outer_id=delivery_restriction['organizationId']
+                )
 
                 for restriction in delivery_restriction['restrictions']:
                     BranchDeliveryTime.objects.update_or_create(
