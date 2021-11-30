@@ -223,7 +223,7 @@ class BranchDeliveryTime(models.Model):
         choices=DeliveryTypes.choices,
     )
     zone_name = models.CharField(
-        max_length=256, editable=False
+        max_length=256
     )
     start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
