@@ -216,11 +216,14 @@ class BranchDeliveryTime(models.Model):
     branch = models.ForeignKey(
         Branch,
         on_delete=models.CASCADE,
-        related_name='delivery_times'
+        related_name='zones'
     )
     delivery_type = models.CharField(
         max_length=256,
         choices=DeliveryTypes.choices,
+    )
+    zone_name = models.CharField(
+        max_length=256, editable=False
     )
     start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
