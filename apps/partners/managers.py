@@ -38,6 +38,9 @@ class BranchManager(BaseManager.from_queryset(BranchQuerySet)):
 
 
 class BranchDeliveryTimeQuerySet(QuerySet):
+    def to_zone(self, zone: str):
+        return self.filter(zone_name=zone)
+
     def open(self):
         l_time = localtime().time()
 
