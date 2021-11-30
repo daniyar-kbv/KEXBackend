@@ -32,20 +32,19 @@ class GetBranchZones(BaseIIKOService):
         return time(hours, minutes)
 
     def save(self, prepared_data):
-        print('PreparedData is:', prepared_data)
         delivery_restrictions = prepared_data.get('deliveryRestrictions')
 
         if not delivery_restrictions:
             return
 
         for delivery_restriction in delivery_restrictions:
-            try:
-                branch = Branch.objects.get(
-                    local_brand=self.instance,
-                    outer_id=delivery_restriction['organizationId']
-                )
-
-                for restriction in delivery_restriction['restrictions']:
+            for restriction in delivery_restriction['restrictions']:
+                try:
+                    print(restriction['organizationId'])
+                    branch = Branch.objects.get(
+                        local_brand=self.instance,
+                        outer_id=restriction['organizationId']
+                    )
                     BranchDeliveryTime.objects.update_or_create(
                         branch=branch,
                         zone_name=restriction['zone'],
@@ -54,6 +53,5 @@ class GetBranchZones(BaseIIKOService):
                             'end_time': self.int_to_time(restriction['to'])
                         }
                     )
-
-            except Exception as exc:
-                print(exc)
+                except Exception as exc:
+                    print(exc)
