@@ -55,6 +55,11 @@ class Lead(
         on_delete=models.SET_NULL,
         null=True,
     )
+    delivery_time = models.ForeignKey(
+        "partners.BranchDeliveryTime",
+        on_delete=models.SET_NULL,
+        null=True
+    )
     order_zone = models.CharField(
         _("Зона"),
         max_length=256,
@@ -86,14 +91,12 @@ class Lead(
 
     @atomic
     def update_delivery_params(self):
-        actual_delivery: BranchDeliveryTime = self.branch.delivery_times.open().first()  # noqa
-
-        if (actual_delivery and
-            actual_delivery.delivery_type != self.delivery_type and
-            actual_delivery.is_branch_position_exists
+        if (self.delivery_time and
+            self.delivery_time.delivery_type != self.delivery_type and
+            self.delivery_time.is_branch_position_exists
         ):
-            self.cart.update_delivery_position(actual_delivery.branch_position)  # noqa
-            self.delivery_type = actual_delivery.delivery_type
+            self.cart.update_delivery_position(self.delivery_time.branch_position)  # noqa
+            self.delivery_type = self.delivery_time.delivery_type
             self.save(update_fields=['delivery_type'])
 
 

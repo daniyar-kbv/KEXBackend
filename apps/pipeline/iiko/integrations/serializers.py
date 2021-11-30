@@ -140,7 +140,7 @@ class IIKOLeadOrganizationSerializer(serializers.ModelSerializer):
             "is_open",
             "branch",
             "change_type",
-            "order_zone",
+            "delivery_time",
             "estimated_duration",
         )
 
