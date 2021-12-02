@@ -60,6 +60,10 @@ class Lead(
         on_delete=models.SET_NULL,
         null=True
     )
+    delivery_times = models.ManyToManyField(
+        'partners.BranchDeliveryTime',
+        related_name='leadss',
+    )
     order_zone = models.CharField(
         _("Зона"),
         max_length=256,

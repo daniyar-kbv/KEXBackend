@@ -104,6 +104,8 @@ class FindOrganization(BaseIIKOService):
 
         branch_delivery_time = branch.zones.to_zone(zone=allowed_item['zone']).first()
 
+        self.instance.delivery_times.add(branch_delivery_time)
+
         return {
             'branch': branch.pk,
             'delivery_time': branch_delivery_time.pk,
