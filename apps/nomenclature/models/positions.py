@@ -30,6 +30,7 @@ class Position(models.Model):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
+        ordering = ('priority',)
 
     local_brand = models.ForeignKey(
         "partners.LocalBrand",
