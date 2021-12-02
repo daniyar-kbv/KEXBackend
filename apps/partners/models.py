@@ -225,6 +225,7 @@ class BranchDeliveryTime(models.Model):
     zone_name = models.CharField(
         max_length=256
     )
+    priority = models.PositiveSmallIntegerField(default=1)
     start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
 

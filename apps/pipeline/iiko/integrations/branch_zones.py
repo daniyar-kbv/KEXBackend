@@ -48,6 +48,7 @@ class GetBranchZones(BaseIIKOService):
                     BranchDeliveryTime.objects.update_or_create(
                         branch=branch,
                         zone_name=restriction['zone'],
+                        priority=restriction['priority'],
                         defaults={
                             'start_time': self.int_to_time(restriction['from']),
                             'end_time': self.int_to_time(restriction['to'])
