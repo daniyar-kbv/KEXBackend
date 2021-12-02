@@ -18,8 +18,11 @@ def check_branch_is_open_and_active(function):
             raise BranchIsClosedError
 
         if not lead.delivery_time.is_open:
-            print('DECORATOR (check_branch_is_open) raised DeliveryIsChangedError')
-            raise DeliveryIsChangedError
+            if lead.delivery_times.open().exists():
+                print('DECORATOR (check_branch_is_open) raised DeliveryIsChangedError')
+                raise DeliveryIsChangedError
+
+            raise BranchIsClosedError
 
         return function(request, *args, **kwargs)
 
