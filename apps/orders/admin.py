@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 
 from apps.common.admin import HistoryInline, ReadOnlyMixin
 from apps.payments.models import Payment
@@ -28,6 +27,8 @@ class LeadAdmin(admin.ModelAdmin):
 
 class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
     inlines = (HistoryInline, OrderStatusTransitionInline, PaymentsInline)
+    list_filter = 'local_brand', 'branch', 'status'
+    search_fields = 'user__mobile_phone',
     actions = 'retry_apply_to_iiko', 'cancel_order'
     list_display = ('lead', 'branch', 'local_brand','status', 'status_reason', 'user', 'outer_id')
 
