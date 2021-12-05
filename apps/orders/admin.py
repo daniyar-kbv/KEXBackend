@@ -56,8 +56,15 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
             return obj.lead.address.full_address()
 
     def cart_info(self, obj):
-        if obj.cart and obj.cart.positions.all().exists():
-            return '.\n'.join([i.branch_position.name for i in obj.cart.positions.all()])
+        if obj.cart:
+            s = ''
+            for i in obj.cart.positions.all():
+                s += f'{i.branch_position.name} Цена {i.count} Количество {i.branch_position.price}' + '\n'
+                if i.modifiers.all().exists():
+                    s += '\tМодификаторы:'
+                    for j in i.modifiers.all():
+                        s += '\t' + f'{j.branch_position.name} Цена {j.count} Количество {j.branch_position.price}' + '\n'
+            return s
 
     def cancel_order(self, request, queryset):
         from apps.pipeline.iiko.integrations.cancel_order import CancelDeliveryOrder
