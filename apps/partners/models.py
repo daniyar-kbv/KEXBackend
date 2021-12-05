@@ -116,6 +116,17 @@ class LocalBrand(ServiceHistoryModel):
             branch.save(update_fields=["is_active"])
 
     @property
+    def is_configured(self):
+        return all([
+            self.is_active,
+            self.cancel_causes.filter(is_default=True).exists(),
+            self.payment_types.filter(payment_type__in=[
+                RequiredLocalBrandPaymentTypes.CASH,
+                RequiredLocalBrandPaymentTypes.CARD,
+            ])
+        ])
+
+    @property
     def name(self):
         return self.brand.name
 
