@@ -59,11 +59,11 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
         if obj.cart:
             s = ''
             for i in obj.cart.positions.all():
-                s += f'{i.branch_position.name} Цена {i.count} Количество {i.branch_position.price}' + '\n'
+                s += f'{i.branch_position.name}(количество {i.count}, цена {i.branch_position.price})' + '\n'
                 if i.modifiers.all().exists():
                     s += '\tМодификаторы:'
                     for j in i.modifiers.all():
-                        s += '\t' + f'{j.branch_position.name} Цена {j.count} Количество {j.branch_position.price}' + '\n'
+                        s += '\t' + f'{j.branch_position.name}(количество {j.count}, цена {j.branch_position.price})' + '\n'
             return s
 
     def cancel_order(self, request, queryset):
