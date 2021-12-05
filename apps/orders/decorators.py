@@ -44,18 +44,3 @@ def check_out_of_stock(function):
         return function(request, *args, **kwargs)
 
     return _function
-
-#
-# def update_delivery_positions(function):
-#     def _function(request, *args, **kwargs):
-#         print('DECORATOR (update_delivery_positions) is called')
-#         lead: Lead = get_object_or_404(
-#             Lead.objects.select_related('branch'),
-#             uuid=kwargs.get('lead_uuid') or request.data.get('lead')
-#         )
-#
-#         lead.update_delivery_params()
-#
-#         return function(request, *args, **kwargs)
-#
-#     return _function
