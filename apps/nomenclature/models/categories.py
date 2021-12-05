@@ -35,3 +35,6 @@ class Category(UUIDModel):
     )
 
     objects = CategoryManager()
+
+    def __str__(self):
+        return self.name
