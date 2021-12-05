@@ -61,9 +61,9 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
             for i_index, i in enumerate(obj.cart.positions.all()):
                 s += f'{i_index+1}. {i.branch_position.name}(количество {i.count}, цена {i.branch_position.price})' + '\n'
                 if i.modifiers.all().exists():
-                    s += 'Модификаторы:'
+                    s += 'Модификаторы:\n'
                     for j_index, j in enumerate(i.modifiers.all()):
-                        s += f'{j_index+1}. {j.branch_position.name}(количество {j.count}, цена {j.branch_position.price})' + '\n'
+                        s += f'{i_index+1}.{j_index+1}. {j.branch_position.name}(количество {j.count}, цена {j.branch_position.price})' + '\n'
                 s += '\n'
 
             return s
