@@ -99,14 +99,18 @@ class FindOrganization(BaseIIKOService):
 
     def get_organization_info(self, allowed_item):
         branch = self.instance.local_brand.branches\
-            .prefetch_related('delivery_times')\
+            .prefetch_related('zones')\
             .get(outer_id=allowed_item['organizationId'])
+
+        branch_delivery_time = branch.zones.to_zone(zone=allowed_item['zone']).first()
+
+        self.instance.delivery_times.add(branch_delivery_time)
 
         return {
             'branch': branch.pk,
-            'is_open': branch.delivery_times.open().exists(),
+            'delivery_time': branch_delivery_time.pk,
+            'is_open': branch_delivery_time.is_open,
             'change_type': self.kwargs.get('change_type'),
-            'order_zone': allowed_item['zone'],
             'estimated_duration': allowed_item['deliveryDurationInMinutes']
         }
 

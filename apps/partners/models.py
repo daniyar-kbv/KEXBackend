@@ -116,6 +116,17 @@ class LocalBrand(ServiceHistoryModel):
             branch.save(update_fields=["is_active"])
 
     @property
+    def is_configured(self):
+        return all([
+            self.is_active,
+            self.cancel_causes.filter(is_default=True).exists(),
+            self.payment_types.filter(payment_type__in=[
+                RequiredLocalBrandPaymentTypes.CASH,
+                RequiredLocalBrandPaymentTypes.CARD,
+            ])
+        ])
+
+    @property
     def name(self):
         return self.brand.name
 
@@ -216,16 +227,31 @@ class BranchDeliveryTime(models.Model):
     branch = models.ForeignKey(
         Branch,
         on_delete=models.CASCADE,
-        related_name='delivery_times'
+        related_name='zones'
     )
     delivery_type = models.CharField(
         max_length=256,
         choices=DeliveryTypes.choices,
     )
+    zone_name = models.CharField(
+        max_length=256
+    )
+    priority = models.PositiveSmallIntegerField(default=1)
     start_time = models.TimeField(_("Время работы с"), default=time(10, 0))
     end_time = models.TimeField(_("Время работы до"), default=time(22, 0))
 
     objects = BranchDeliveryTimeQuerySet.as_manager()
+
+    @property
+    def is_open(self):
+        from django.utils.timezone import localtime
+        l_time = localtime().time()
+
+        if self.start_time < self.end_time:
+            return self.start_time <= l_time < self.end_time
+
+        elif self.start_time > self.end_time:
+            return self.start_time <= l_time or self.end_time > l_time
 
     @property
     def is_branch_position_exists(self):

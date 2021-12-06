@@ -30,6 +30,7 @@ class Position(models.Model):
     class Meta:
         verbose_name = _("Позиция(Блюдо)")
         verbose_name_plural = _("Позиции(Блюда)")
+        ordering = ('priority',)
 
     local_brand = models.ForeignKey(
         "partners.LocalBrand",
@@ -55,14 +56,6 @@ class Position(models.Model):
         on_delete=models.SET_NULL,
         null=True, blank=True,
         related_name="positions"
-    )
-    image_small = models.ImageField(
-        "Картинка маленькая",
-        null=True, blank=True
-    )
-    image_big = models.ImageField(
-        "Картинка большая",
-        null=True, blank=True
     )
     position_type = models.CharField(
         max_length=256,
@@ -145,14 +138,6 @@ class BranchPosition(UUIDModel):
     @property
     def description(self):
         return self.position.description
-
-    @property
-    def image_small(self):
-        return self.position.image_small
-
-    @property
-    def image_big(self):
-        return self.position.image_big
 
     @property
     def position_type(self):

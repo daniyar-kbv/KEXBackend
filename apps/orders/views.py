@@ -18,7 +18,6 @@ from apps.payments.serializers import CreatePaymentSerializer
 from .models import Order, Lead, Cart
 from .decorators import (
     check_branch_is_open_and_active,
-    update_delivery_positions,
     check_out_of_stock,
 )
 from .serializers import (
@@ -55,7 +54,6 @@ class AuthorizedApplyView(JSONRendererMixin, CreateAPIView):
     serializer_class = AuthorizedApplySerializer
 
 
-@method_decorator(update_delivery_positions, name='get')
 class LeadShowView(PublicJSONRendererMixin, RetrieveAPIView):
     queryset = Lead.objects.all()
     lookup_field = "uuid"
@@ -64,7 +62,6 @@ class LeadShowView(PublicJSONRendererMixin, RetrieveAPIView):
 
 
 @method_decorator(check_branch_is_open_and_active, name="get")
-@method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     queryset = Lead.objects.all()
     lookup_field = "uuid"
@@ -73,7 +70,6 @@ class LeadNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, Retr
 
 
 @method_decorator(check_branch_is_open_and_active, name="get")
-@method_decorator(update_delivery_positions, name='get')
 class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMixin, RetrieveAPIView):
     serializer_class = BranchPositionSerializer
     queryset = BranchPosition.objects.all()
@@ -83,7 +79,6 @@ class LeadNomenclatureRetrieveView(PublicJSONRendererMixin, LanguageToContextMix
 
 
 @method_decorator(check_branch_is_open_and_active, name="get")
-@method_decorator(update_delivery_positions, name='get')
 class LeadAdditionalNomenclatureView(PublicJSONRendererMixin, LanguageToContextMixin, ListAPIView):
     serializer_class = AdditionalNomenclaturePositionSerializer
     queryset = BranchPosition.objects.additional_positions()
@@ -114,7 +109,6 @@ class OrdersListView(JSONRendererMixin, ListAPIView):
 
 
 @method_decorator(check_branch_is_open_and_active, name="put")
-@method_decorator(update_delivery_positions, name='put')
 class UpdateCartView(PublicJSONRendererMixin, GenericAPIView):
     queryset = Cart.objects.all()
     serializer_class = UpdateCartSerializer

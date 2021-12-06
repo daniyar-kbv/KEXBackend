@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 
 from apps.common.admin import HistoryInline, ReadOnlyMixin
 from apps.payments.models import Payment
@@ -28,8 +27,46 @@ class LeadAdmin(admin.ModelAdmin):
 
 class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
     inlines = (HistoryInline, OrderStatusTransitionInline, PaymentsInline)
+    list_filter = 'local_brand', 'branch', 'status'
+    search_fields = 'user__mobile_phone',
     actions = 'retry_apply_to_iiko', 'cancel_order'
-    list_display = ('lead', 'branch', 'local_brand','status', 'status_reason', 'user', 'outer_id')
+    list_display = ('lead', 'branch', 'local_brand', 'status', 'status_reason', 'user', 'outer_id')
+
+    fieldsets = (
+        ("Main", {
+            "fields": (
+                'lead',
+                'user_info',
+                'full_address',
+                "branch",
+                "local_brand",
+                'outer_id',
+                'status',
+                'status_reason',
+                'cart_info'
+            )}),
+    )
+
+    def user_info(self, obj):
+        if obj.user:
+            return f"{obj.user.name}-{obj.user.mobile_phone}"
+
+    def full_address(self, obj):
+        if obj.lead and obj.lead.address:
+            return obj.lead.address.full_address()
+
+    def cart_info(self, obj):
+        if obj.cart:
+            s = ''
+            for i_index, i in enumerate(obj.cart.positions.all()):
+                s += f'{i_index+1}. {i.branch_position.name}(количество {i.count}, цена {i.branch_position.price})' + '\n'
+                if i.modifiers.all().exists():
+                    s += 'Модификаторы:\n'
+                    for j_index, j in enumerate(i.modifiers.all()):
+                        s += f'{i_index+1}.{j_index+1}. {j.branch_position.name}(количество {j.count}, цена {j.branch_position.price})' + '\n'
+                s += '\n'
+
+            return s
 
     def cancel_order(self, request, queryset):
         from apps.pipeline.iiko.integrations.cancel_order import CancelDeliveryOrder
@@ -63,7 +100,6 @@ class OrderAdmin(ReadOnlyMixin, admin.ModelAdmin):
             self.message_user(request, 'Успешно оформлен возврат', messages.SUCCESS)
 
     cancel_order.short_description = 'Отмена заказа'
-
 
     def retry_apply_to_iiko(self, request, queryset):
         from apps.pipeline.iiko.celery_tasks import order_apply_task

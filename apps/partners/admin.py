@@ -127,6 +127,13 @@ class LocalBrandAdmin(admin.ModelAdmin):
         LocalBrandCancelCauseInline,
     ]
     list_filter = ('city',)
+    list_display = '__str__', 'is_configured'
+
+    readonly_fields = 'is_configured',
+
+    def is_configured(self, obj):
+        return obj.is_configured
+    is_configured.boolean = True
 
 
 @admin.register(Branch)

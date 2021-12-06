@@ -2,7 +2,9 @@ from config import celery_app
 from django.db.transaction import atomic
 
 from apps.partners.models import LocalBrand
+
 from ..integrations.branches import GetBranches
+from ..integrations.branch_zones import GetBranchZones
 from ..integrations.nomenclature import GetLocalBrandNomenclature, GetBranchNomenclaturePrices
 from ..integrations.terminals import GetLocalBrandTerminals, CheckLocalBrandOrganizationsLiveness
 from ..integrations.out_of_stock_list import GetBrandOutOfStockList
@@ -45,3 +47,9 @@ def update_out_of_stock_list() -> None:
 def update_brand_cancel_causes() -> None:
     for local_brand in LocalBrand.objects.all():
         GetCancelCauses(local_brand).run()
+
+
+@celery_app.task(name='iiko.update_branch_zones')
+def update_branch_zones() -> None:
+    for locals_brand in LocalBrand.objects.all():
+        GetBranchZones(locals_brand).run()

@@ -34,25 +34,3 @@ class AbstractDescriptionSerializer(serializers.ModelSerializer):
 
     def get_description(self, obj):
         return getattr(obj.description, self.context['request'].headers.get('language'))
-
-
-class AbstractImageSerializer(serializers.ModelSerializer):
-    image_small = serializers.SerializerMethodField(source='image')
-    image_big = serializers.SerializerMethodField()
-
-    class Meta:
-        abstract = True
-
-    def get_image_small(self, obj):
-        if obj.image:
-            image = getattr(obj.image, self.context['request'].headers.get('language'))
-            if image:
-                return self.context['request'].build_absolute_uri(image.url)
-        return None
-
-    def get_image_big(self, obj):
-        if obj.image_big:
-            image = getattr(obj.image_big, self.context['request'].headers.get('language'))
-            if image:
-                return self.context['request'].build_absolute_uri(image.url)
-        return None

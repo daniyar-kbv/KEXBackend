@@ -68,11 +68,27 @@ class BranchPositionInline(ReadChangeOnlyTabularInline):
 @admin.register(Position)
 class LocalPositionAdmin(admin.ModelAdmin):
     list_filter = "local_brand",
+    list_display = (
+        'name', 'local_brand', 'category', 'position_type',
+        'is_web_image_exists', 'is_mobile_image_exists'
+    )
     readonly_fields = (
         "category",
         "local_brand",
         "outer_id",
+        'is_web_image_exists',
+        'is_mobile_image_exists'
     )
     inlines = [
         ImageModelInline
     ]
+
+    def is_web_image_exists(self, obj) -> bool:
+        return obj.images.for_web().exists()
+
+    is_web_image_exists.boolean = True
+
+    def is_mobile_image_exists(self, obj) -> bool:
+        return obj.images.for_mobile().exists()
+
+    is_mobile_image_exists.boolean = True
