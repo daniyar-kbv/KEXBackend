@@ -93,7 +93,9 @@ class FindOrganization(BaseIIKOService):
         organizations = []
 
         for allowed_item in prepared_data.get('allowedItems'):
-            organizations.append(self.get_organization_info(allowed_item))
+            d = self.get_organization_info(allowed_item)
+            if d:
+                organizations.append(d)
 
         return organizations
 
@@ -102,17 +104,18 @@ class FindOrganization(BaseIIKOService):
             .prefetch_related('zones')\
             .get(outer_id=allowed_item['organizationId'])
 
-        branch_delivery_time = branch.zones.to_zone(zone=allowed_item['zone']).first()
+        branch_delivery_time = branch.zones.to_zone(zone=allowed_item['zone']).open().first()
 
-        self.instance.delivery_times.add(branch_delivery_time)
+        if branch_delivery_time:
+            self.instance.delivery_times.add(branch_delivery_time)
 
-        return {
-            'branch': branch.pk,
-            'delivery_time': branch_delivery_time.pk,
-            'is_open': branch_delivery_time.is_open,
-            'change_type': self.kwargs.get('change_type'),
-            'estimated_duration': allowed_item['deliveryDurationInMinutes']
-        }
+            return {
+                'branch': branch.pk,
+                'delivery_time': branch_delivery_time.pk,
+                'is_open': branch_delivery_time.is_open,
+                'change_type': self.kwargs.get('change_type'),
+                'estimated_duration': allowed_item['deliveryDurationInMinutes']
+            }
 
     def save(self, prepared_data):
         ...
