@@ -30,12 +30,20 @@ CONSTANCE_CONFIG = {
     "CLOUDPAYMENTS_SECRET_KEY": ("3da278f77c31ca71b652a25a85b65826", ""),
     "IOS_ON": (True, "ios devices"),
     "ANDROID_ON": (True, "android devices"),
+    "MOBIZON_API_KEY": ('qwerty', ''),
+    "SEND_OTP": (False, ''),
+    "USE_DEFAULT_OTP": (False, ''),
     **ERROR_MESSAGES,
     **CONTACTS,
 }
 
 CONSTANCE_CONFIG_FIELDSETS = OrderedDict([
     ("Contacts", tuple(CONTACTS.keys())),
+    ("SMS", (
+        "MOBIZON_API_KEY",
+        "SEND_OTP",
+        "USE_DEFAULT_OTP",
+    )),
     ("IIKO Credentials&settings", (
         "IIKO_SERVICE_HOST",
         "IIKO_AUTH_TOKEN_LIFETIME",
