@@ -104,7 +104,8 @@ class FindOrganization(BaseIIKOService):
             .prefetch_related('zones')\
             .get(outer_id=allowed_item['organizationId'])
 
-        branch_delivery_time = branch.zones.to_zone(zone=allowed_item['zone']).open().first()
+        query = branch.zones.to_zone(zone=allowed_item['zone'])
+        branch_delivery_time = query.open().first() or query.first()
 
         if branch_delivery_time:
             self.instance.delivery_times.add(branch_delivery_time)
