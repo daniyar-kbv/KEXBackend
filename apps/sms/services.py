@@ -5,6 +5,7 @@ from typing import Tuple, Union, Optional
 from django.db import transaction
 from django.utils import timezone
 from phonenumber_field.phonenumber import PhoneNumber
+from constance import config
 
 from .exceptions import InvalidOTP
 from .models import OTP, SMSMessage, SMSTemplate
@@ -40,11 +41,12 @@ def send_sms(
     with transaction.atomic():
         sms = SMSMessage(recipients=', '.join(recipient), content=message)
         sms.save()
-        transaction.on_commit(
-            lambda: send_sms_task.apply_async(
-                eta=eta, args=[recipient, message, sms.uuid]
+        if config.SEND_OTP:
+            transaction.on_commit(
+                lambda: send_sms_task.apply_async(
+                    eta=eta, args=[recipient, message, sms.uuid]
+                )
             )
-        )
 
 
 def send_otp(mobile_phone: PhoneNumber, template_name: str = "OTP"):
@@ -57,7 +59,7 @@ def send_otp(mobile_phone: PhoneNumber, template_name: str = "OTP"):
 def verify_otp(code: str, mobile_phone: PhoneNumber, save=False):
     otp = OTP.objects.active().filter(mobile_phone=mobile_phone).last()
 
-    if os.getenv("USE_DEFAULT_OTP", True) and code == "1111":
+    if config.USE_DEFAULT_OTP and code == "1111":
         return True
     elif not otp or otp.code != code:
         raise InvalidOTP
