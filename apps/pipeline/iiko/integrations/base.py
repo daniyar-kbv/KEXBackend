@@ -28,8 +28,20 @@ class BaseIIKOService(BaseService):  # noqa
         super().__init__(instance, **kwargs)
         self.auth_token = fetch_auth_token(self.get_local_brand_pk())
 
-    def handle_401(self, response: Response):
+    def operate_401(self, response: Response, json, params, **kwargs):
         remove_auth_token(self.get_local_brand_pk())
-        self.__class__(instance=self.instance).run()
+        headers = {
+            'Authorization': f"Bearer {fetch_auth_token(self.get_local_brand_pk())}"
+        }
 
-        super().handle_401(response)
+        return self.session.request(
+            method=self.method,
+            url=self.url,
+            auth=self.auth,
+            headers=headers,
+            params=params,
+            json=json,
+            timeout=self.timeout,
+            verify=self.host_verify,
+            **kwargs
+        )

@@ -98,9 +98,12 @@ class BaseService(ABC):
             **kwargs
         )
         self.status_code = response_raw.status_code
+        self.code = str(response_raw.status_code)
+
+        if response_raw.status_code == 401:
+            response_raw = self.operate_401(response_raw, json, params, **kwargs)
 
         self.runtime = time.perf_counter() - _start
-        self.code = str(response_raw.status_code)
 
         if response_raw.status_code == 400:
             return self.handle_400(response_raw)
@@ -115,6 +118,9 @@ class BaseService(ABC):
 
     def handle_400(self, response: Response): # noqa
         return response.json()
+
+    def operate_401(self, response: Response, json, params, **kwargs):
+        return response
 
     def handle_401(self, response: Response):
         raise UnauthorizedError
