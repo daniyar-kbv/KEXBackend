@@ -18,7 +18,9 @@ def check_branch_is_open_and_active(function):
             raise BranchIsClosedError
 
         if not lead.delivery_time.is_open:
-            if lead.delivery_times.open().exists():
+            if (lead.delivery_times.open().exists() or
+                    lead.branch.zones.filter(zone_name=lead.delivery_time.zone_name).open().exists()
+                ):
                 print('DECORATOR (check_branch_is_open) raised DeliveryIsChangedError')
                 raise DeliveryIsChangedError
 
