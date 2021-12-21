@@ -59,6 +59,9 @@ def send_otp(mobile_phone: PhoneNumber, template_name: str = "OTP"):
 def verify_otp(code: str, mobile_phone: PhoneNumber, save=False):
     otp = OTP.objects.active().filter(mobile_phone=mobile_phone).last()
 
+    if str(mobile_phone) in config.config.SMS_FREE_PHONES:
+        return True
+
     if config.USE_DEFAULT_OTP and code == "1111":
         return True
     elif not otp or otp.code != code:

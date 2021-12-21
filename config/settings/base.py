@@ -33,6 +33,7 @@ CONSTANCE_CONFIG = {
     "MOBIZON_API_KEY": ('qwerty', ''),
     "SEND_OTP": (False, ''),
     "USE_DEFAULT_OTP": (False, ''),
+    "SMS_FREE_PHONES": ('', ''),
     **ERROR_MESSAGES,
     **CONTACTS,
 }
@@ -43,6 +44,7 @@ CONSTANCE_CONFIG_FIELDSETS = OrderedDict([
         "MOBIZON_API_KEY",
         "SEND_OTP",
         "USE_DEFAULT_OTP",
+        "SMS_FREE_PHONES",
     )),
     ("IIKO Credentials&settings", (
         "IIKO_SERVICE_HOST",
