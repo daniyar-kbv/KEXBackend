@@ -28,3 +28,4 @@ TOO_MANY_REQUESTS = "too_many_requests"
 IOS_NOT_AVAILABLE = "ios_not_available"
 ANDROID_NOT_AVAILABLE = "android_not_available"
 DELIVERY_IS_CHANGED = 'delivery_is_changed'
+MIN_PRICE_ERROR = 'min_price_error'

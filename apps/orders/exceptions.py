@@ -46,3 +46,8 @@ class DeliveryIsChangedError(APIException):
 class OutOfStockError(APIException):
     status_code = 400
     default_code = error_codes.CART_POSITION_IS_OUT_OF_STOCK
+
+
+class MinPriceError(APIException):
+    status_code = 400
+    default_code = error_codes.MIN_PRICE_ERROR

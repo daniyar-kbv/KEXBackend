@@ -107,4 +107,7 @@ ERROR_MESSAGES = {
     f"{DELIVERY_IS_CHANGED}_{Languages.KAZAKH}": ("DELIVERY_IS_CHANGED_KK", ""),
     f"{DELIVERY_IS_CHANGED}_{Languages.ENGLISH}": ("DELIVERY_IS_CHANGED_EN", ""),
 
+    f"{MIN_PRICE_ERROR}_{Languages.RUSSIAN}": ("MIN_PRICE_ERROR_RU", ""),
+    f"{MIN_PRICE_ERROR}_{Languages.KAZAKH}": ("MIN_PRICE_ERROR_KK", ""),
+    f"{MIN_PRICE_ERROR}_{Languages.ENGLISH}": ("MIN_PRICE_ERROR_EN", ""),
 }
