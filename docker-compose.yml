@@ -78,7 +78,10 @@ services:
       - USE_DEFAULT_OTP=True
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - RABBIT_HOST=rabbitmq
-      - DB_HOST=postgres
+      - DB_HOST=109.233.111.82
+      - DB_NAME=kexbrands
+      - DB_USER=kexbrands
+      - DB_PASSWORD=6C7hsNzEKVkGBkfJ
       - REDIS_HOST=redis
       - CONTAINER_TYPE=GEVENT-CELERY
     depends_on:
